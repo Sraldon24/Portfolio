@@ -6,6 +6,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% trans "Portfolio" %}{% endblock %}</title>
+    <meta name="description"
+        content="{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}">
+    <meta name="author" content="Amir Sraldon">
+    <meta property="og:title" content="{% trans 'Portfolio' %} - Amir Sraldon">
+    <meta property="og:description"
+        content="{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="{% trans 'Portfolio' %} - Amir Sraldon">
+    <meta property="twitter:description"
+        content="{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom scrollbar */
