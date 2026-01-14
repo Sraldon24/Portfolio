@@ -1,0 +1,88 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% trans "Portfolio" %}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-100 font-sans antialiased">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-gray-900/90 backdrop-blur-sm border-b border-gray-800">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="{% url 'home' %}"
+                class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+                {% if profile %}{{ profile.name }}{% else %}Portfolio{% endif %}
+            </a>
+
+            <div class="flex items-center space-x-6">
+                <div class="hidden md:flex space-x-6">
+                    <a href="#about" class="hover:text-blue-400 transition-colors">{% trans "About" %}</a>
+                    <a href="#skills" class="hover:text-blue-400 transition-colors">{% trans "Skills" %}</a>
+                    <a href="#projects" class="hover:text-blue-400 transition-colors">{% trans "Projects" %}</a>
+                    <a href="#contact" class="hover:text-blue-400 transition-colors">{% trans "Contact" %}</a>
+                </div>
+
+                <!-- Language Switcher -->
+                <div class="flex items-center space-x-2 bg-gray-800 rounded-full px-1 py-1">
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% get_language_info_list for LANGUAGES as languages %}
+
+                    {% for language in languages %}
+                    <a href="/{{ language.code }}/"
+                        class="px-3 py-1 rounded-full text-sm font-medium transition-colors {% if language.code == LANGUAGE_CODE %}bg-blue-600 text-white shadow-lg{% else %}text-gray-400 hover:text-white{% endif %}">
+                        {{ language.code|upper }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-16">
+        {% if messages %}
+        <div class="container mx-auto px-4 mt-6">
+            {% for message in messages %}
+            <div
+                class="p-4 rounded-md {% if message.tags == 'success' %}bg-green-900/50 text-green-200 border border-green-800{% else %}bg-red-900/50 text-red-200 border border-red-800{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-900 border-t border-gray-800 py-8 mt-20">
+        <div class="container mx-auto px-4 text-center text-gray-500">
+            <p>&copy; {% now "Y" %} {% if profile %}{{ profile.name }}{% endif %}. {% trans "All rights reserved." %}
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>
