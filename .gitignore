@@ -19,3 +19,8 @@ media/
 
 # Brain/Artifacts
 .gemini/
+
+# Coverage
+htmlcov/
+.coverage
+test_error.log
