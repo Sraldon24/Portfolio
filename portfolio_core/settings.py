@@ -159,3 +159,7 @@ STORAGES = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+LOCALE_PATHS = [
+    BASE_DIR / 'main/locale',
+]
