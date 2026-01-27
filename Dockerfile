@@ -31,4 +31,4 @@ EXPOSE 8000
 RUN python manage.py collectstatic --noinput
 
 # Default command (Production)
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "portfolio_core.wsgi:application"]
+CMD ["gunicorn", "--config", "gunicorn.conf.py", "--bind", "0.0.0.0:8000", "portfolio_core.wsgi:application"]
