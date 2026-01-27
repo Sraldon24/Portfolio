@@ -30,6 +30,6 @@ class Command(BaseCommand):
             if not user.check_password(password):
                 user.set_password(password)
                 user.save()
-                self.stdout.write(self.style.SUCCESS(f"Superuser '{username}' password updated."))
+                self.stdout.write(self.style.SUCCESS(f"Superuser '{username}' password updated (Env var differed from DB)."))
             else:
-                self.stdout.write(self.style.SUCCESS(f"Superuser '{username}' already exists and password matches."))
+                self.stdout.write(self.style.SUCCESS(f"Superuser '{username}' password unchanged (Env var matches DB)."))
