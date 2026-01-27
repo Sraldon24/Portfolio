@@ -35,4 +35,4 @@ RUN python manage.py collectstatic --noinput
 
 
 # Default command (Production)
-CMD ["gunicorn", "--config", "gunicorn.conf.py", "--bind", "0.0.0.0:8000", "portfolio_core.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py ensure_admin && gunicorn --config gunicorn.conf.py --bind 0.0.0.0:8000 portfolio_core.wsgi:application"]
