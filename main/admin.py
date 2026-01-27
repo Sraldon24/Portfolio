@@ -44,7 +44,7 @@ class ProjectAdmin(TranslatableAdmin):
 
 @admin.register(Experience)
 class ExperienceAdmin(TranslatableAdmin):
-    list_display = ('job_title', 'company', 'start_date', 'end_date')
+    list_display = ('job_title', 'company', 'start_date', 'end_date', 'icon')
     search_fields = ('translations__job_title', 'translations__company')
     list_filter = ('start_date', 'end_date')
     ordering = ('-start_date',)
@@ -58,7 +58,7 @@ class EducationAdmin(TranslatableAdmin):
 
 @admin.register(Hobby)
 class HobbyAdmin(TranslatableAdmin):
-    list_display = ('name',)
+    list_display = ('name', 'font_awesome_icon', 'icon')
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):

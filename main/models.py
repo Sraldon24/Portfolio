@@ -75,6 +75,20 @@ class Experience(TranslatableModel):
     )
     start_date = models.DateField(verbose_name="Start Date")
     end_date = models.DateField(null=True, blank=True, verbose_name="End Date (Leave blank for 'Present')")
+    icon = models.CharField(max_length=50, blank=True, default='', choices=[
+        ('fa-solid fa-briefcase', 'Briefcase'),
+        ('fa-solid fa-building', 'Building'),
+        ('fa-solid fa-laptop-code', 'Laptop Code'),
+        ('fa-solid fa-code', 'Code'),
+        ('fa-solid fa-microchip', 'Microchip'),
+        ('fa-solid fa-server', 'Server'),
+        ('fa-solid fa-database', 'Database'),
+        ('fa-solid fa-desktop', 'Desktop'),
+        ('fa-solid fa-user-tie', 'User Tie'),
+        ('fa-solid fa-handshake', 'Handshake'),
+        ('fa-solid fa-chart-line', 'Chart Line'),
+        ('fa-solid fa-pen-nib', 'Pen Nib'),
+    ], help_text="Select a built-in icon")
 
     def __str__(self):
         return f"{self.safe_translation_getter('job_title', any_language=True)} at {self.safe_translation_getter('company', any_language=True)}"
@@ -95,7 +109,27 @@ class Hobby(TranslatableModel):
         name=models.CharField(max_length=100),
         description=models.TextField(),
     )
-    icon = models.ImageField(upload_to='hobbies/', blank=True) # Or CharField for font-awesome class
+    icon = models.ImageField(upload_to='hobbies/', blank=True, help_text="Upload custom icon/image (optional if built-in selected)")
+    font_awesome_icon = models.CharField(max_length=50, blank=True, default='', choices=[
+        ('fa-solid fa-gamepad', 'Gamepad'),
+        ('fa-solid fa-music', 'Music'),
+        ('fa-solid fa-book', 'Book'),
+        ('fa-solid fa-camera', 'Camera'),
+        ('fa-solid fa-plane', 'Plane'),
+        ('fa-solid fa-bicycle', 'Bicycle'),
+        ('fa-solid fa-palette', 'Palette'),
+        ('fa-solid fa-utensils', 'Utensils'),
+        ('fa-solid fa-film', 'Film'),
+        ('fa-solid fa-basketball', 'Basketball'),
+        ('fa-solid fa-futbol', 'Soccer'),
+        ('fa-solid fa-dumbbell', 'Dumbbell'),
+        ('fa-solid fa-campground', 'Camping'),
+        ('fa-solid fa-code', 'Code'),
+        ('fa-solid fa-chess', 'Chess'),
+        ('fa-solid fa-guitar', 'Guitar'),
+        ('fa-solid fa-running', 'Running'),
+        ('fa-solid fa-swimmer', 'Swimming'),
+    ], help_text="Select a built-in icon (overrides custom image if set)")
 
     def __str__(self):
         return self.safe_translation_getter('name', any_language=True)
