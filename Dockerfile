@@ -28,7 +28,11 @@ EXPOSE 8000
 
 # Default command
 # Collect static files during build
+# Run tests during build to ensure code integrity
+RUN python manage.py test main
+
 RUN python manage.py collectstatic --noinput
+
 
 # Default command (Production)
 CMD ["gunicorn", "--config", "gunicorn.conf.py", "--bind", "0.0.0.0:8000", "portfolio_core.wsgi:application"]
