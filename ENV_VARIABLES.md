@@ -10,7 +10,17 @@ This file explains the purpose of each environment variable used in this project
 | `SECRET_KEY` | A long, random string used by Django for cryptographic signing (sessions, cookies, etc.). **Keep this secret in production.** | `django-insecure-...` |
 | `ALLOWED_HOSTS` | A comma-separated list of domain names that this site can serve. Required when `DEBUG=False`. | `127.0.0.1,localhost,mysite.com` |
 
+## Production Deployment (AWS / DigitalOcean)
+
+> [!IMPORTANT]
+> **Ensure you set the following in your AWS/DigitalOcean dashboard:**
+>
+> - `DEBUG=False`
+> - `SECRET_KEY=<a-long-random-string>`
+> - `ALLOWED_HOSTS=yourdomain.com`
+
 ## Database
+
 
 | Variable | Description | Example |
 | :--- | :--- | :--- |
