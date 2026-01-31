@@ -24,3 +24,4 @@ media/
 htmlcov/
 .coverage
 test_error.log
+node_modules/

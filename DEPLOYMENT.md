@@ -58,26 +58,29 @@ SERVER_EMAIL = os.environ.get('SERVER_EMAIL', 'root@localhost')
 
 ## 3. AWS SES Setup Checklist
 
-1.  **Verify Domain**: Go to AWS SES > *Identities* > *Create Identity*. Enter your domain (e.g., `yourdomain.com`) and add the DNS records (DKIM) to your DNS provider.
+1.  **Verify Domain**: Go to AWS SES > _Identities_ > _Create Identity_. Enter your domain (e.g., `yourdomain.com`) and add the DNS records (DKIM) to your DNS provider.
 2.  **Move out of Sandbox**: By default, you can only send to verified emails. Request a "Production Access" limit increase in SES to send emails to anyone.
 3.  **Create SMTP Credentials**:
-    *   Go to SES > *SMTP Settings*.
-    *   Click "Create My SMTP Credentials".
-    *   This creates an IAM user. **Download the credentials**. These are what go into your `.env`.
+    - Go to SES > _SMTP Settings_.
+    - Click "Create My SMTP Credentials".
+    - This creates an IAM user. **Download the credentials**. These are what go into your `.env`.
 
 ## 4. Final Steps
 
 1.  **Collect Static Files**:
+
     ```bash
     python manage.py collectstatic
     ```
 
 2.  **Apply Migrations**:
+
     ```bash
     python manage.py migrate
     ```
 
 3.  **Create Superuser** (if not done):
+
     ```bash
     python manage.py createsuperuser
     ```

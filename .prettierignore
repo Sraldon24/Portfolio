@@ -1,0 +1,13 @@
+# Python stuff
+venv/
+__pycache__/
+*.py
+
+# Django specific
+db.sqlite3
+media/
+static/
+
+# Artifacts
+coverage/
+htmlcov/

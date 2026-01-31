@@ -1,7 +1,4 @@
-{% extends 'main/base.html' %}
-{% load i18n %}
-
-{% block content %}
+{% extends 'main/base.html' %} {% load i18n %} {% block content %}
 
 <!-- Hero Section -->
 <section id="about" class="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -13,33 +10,26 @@
     <div class="container mx-auto px-4 z-10 text-center relative">
         {% if profile.profile_picture %}
         <div class="mb-8 relative inline-block">
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-emerald-400 rounded-full blur opacity-50">
-            </div>
-            <img src="{{ profile.profile_picture.url }}" alt="{{ profile.name }}"
-                class="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover border-4 border-gray-800 relative shadow-xl">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-emerald-400 rounded-full blur opacity-50"></div>
+            <img src="{{ profile.profile_picture.url }}" alt="{{ profile.name }}" class="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover border-4 border-gray-800 relative shadow-xl" />
         </div>
         {% endif %}
 
-        <h1
-            class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 tracking-tight font-heading fade-in-section">
-            {{ profile.name }}
-        </h1>
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 tracking-tight font-heading fade-in-section">{{ profile.name }}</h1>
 
-        <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            {{ profile.bio|default:"Welcome to my portfolio! Please configure your profile in the admin panel." }}
-        </p>
+        <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">{{ profile.bio|default:"Welcome to my portfolio! Please configure your profile in the admin panel." }}</p>
 
         <div class="flex justify-center space-x-4">
             {% if profile.resume %}
-            <a href="{{ profile.resume.url }}" download
-                class="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-blue-500/25">
+            <a
+                href="{{ profile.resume.url }}"
+                download
+                class="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-blue-500/25"
+            >
                 {% trans "Download Resume" %}
             </a>
             {% endif %}
-            <a href="#contact"
-                class="px-8 py-3 bg-gray-800 hover:bg-gray-700 rounded-full font-semibold transition-all transform hover:scale-105 border border-gray-700">
-                {% trans "Get in Touch" %}
-            </a>
+            <a href="#contact" class="px-8 py-3 bg-gray-800 hover:bg-gray-700 rounded-full font-semibold transition-all transform hover:scale-105 border border-gray-700">{% trans "Get in Touch" %}</a>
         </div>
     </div>
 </section>
@@ -51,18 +41,15 @@
             <span class="border-b-4 border-blue-500 pb-2">{% trans "My Skills" %}</span>
         </h2>
 
-        <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
             {% for skill in skills %}
-            <div
-                class="bg-gray-800/50 backdrop-blur-md p-6 rounded-xl hover:bg-gray-800/70 transition-all border border-white/10 hover:border-blue-500/30 shadow-lg group">
+            <div class="bg-gray-800/50 backdrop-blur-md p-6 rounded-xl hover:bg-gray-800/70 transition-all border border-white/10 hover:border-blue-500/30 shadow-lg group">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-bold text-blue-100">{{ skill.name }}</h3>
                     <span class="text-blue-400 font-mono">{{ skill.proficiency }}%</span>
                 </div>
                 <div class="w-full bg-gray-700/50 rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-500 to-emerald-500 h-2.5 rounded-full transition-all duration-1000"
-                        style="width: {{ skill.proficiency }}%"></div>
+                    <div class="bg-gradient-to-r from-blue-500 to-emerald-500 h-2.5 rounded-full transition-all duration-1000" style="width: {{ skill.proficiency }}%"></div>
                 </div>
             </div>
             {% endfor %}
@@ -79,12 +66,10 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for project in projects %}
-            <div
-                class="group bg-gray-800/50 backdrop-blur-md rounded-xl overflow-hidden shadow-xl transition-all hover:-translate-y-2 border border-white/10 hover:border-emerald-500/30">
+            <div class="group bg-gray-800/50 backdrop-blur-md rounded-xl overflow-hidden shadow-xl transition-all hover:-translate-y-2 border border-white/10 hover:border-emerald-500/30">
                 {% if project.image %}
                 <div class="relative h-48 overflow-hidden">
-                    <img src="{{ project.image.url }}" alt="{{ project.title }}"
-                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-60"></div>
                 </div>
                 {% endif %}
@@ -92,22 +77,18 @@
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
                         <h3 class="text-2xl font-bold text-gray-100">{{ project.title }}</h3>
-                        <span class="text-xs text-gray-500 bg-gray-900 px-2 py-1 rounded">{{
-                            project.created_date|date:"M Y" }}</span>
+                        <span class="text-xs text-gray-500 bg-gray-900 px-2 py-1 rounded">{{ project.created_date|date:"M Y" }}</span>
                     </div>
 
                     <p class="text-gray-400 mb-6 line-clamp-3">{{ project.description }}</p>
 
                     <div class="flex space-x-4">
                         {% if project.code_link %}
-                        <a href="{{ project.code_link }}" target="_blank"
-                            class="flex-1 text-center py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-semibold transition-colors">
+                        <a href="{{ project.code_link }}" target="_blank" class="flex-1 text-center py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-semibold transition-colors">
                             {% trans "Code" %}
                         </a>
-                        {% endif %}
-                        {% if project.demo_link %}
-                        <a href="{{ project.demo_link }}" target="_blank"
-                            class="flex-1 text-center py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-semibold transition-colors">
+                        {% endif %} {% if project.demo_link %}
+                        <a href="{{ project.demo_link }}" target="_blank" class="flex-1 text-center py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-semibold transition-colors">
                             {% trans "Live Demo" %}
                         </a>
                         {% endif %}
@@ -133,8 +114,7 @@
                 <div class="space-y-8 border-l-2 border-gray-700 pl-8 ml-3">
                     {% for exp in experiences %}
                     <div class="relative">
-                        <div
-                            class="absolute -left-[45px] top-0 flex items-center justify-center w-8 h-8 bg-gray-800 border-2 border-blue-500 rounded-full z-10">
+                        <div class="absolute -left-[45px] top-0 flex items-center justify-center w-8 h-8 bg-gray-800 border-2 border-blue-500 rounded-full z-10">
                             {% if exp.icon %}
                             <i class="{{ exp.icon }} text-blue-500 text-sm"></i>
                             {% else %}
@@ -159,9 +139,7 @@
                 <div class="space-y-8 border-l-2 border-gray-700 pl-8 ml-3">
                     {% for edu in educations %}
                     <div class="relative">
-                        <div
-                            class="absolute -left-[39px] top-1 w-5 h-5 bg-gray-800 border-4 border-emerald-500 rounded-full">
-                        </div>
+                        <div class="absolute -left-[39px] top-1 w-5 h-5 bg-gray-800 border-4 border-emerald-500 rounded-full"></div>
                         <h3 class="text-xl font-bold text-gray-100">{{ edu.degree }}</h3>
                         <p class="text-emerald-400 font-medium mb-1">{{ edu.institution }}</p>
                         <p class="text-sm text-gray-500">{{ edu.start_date|date:"Y" }} - {% if edu.end_date %}{{edu.end_date|date:"Y" }}{% else %}{% trans "Present" %}{% endif %}</p>
@@ -170,7 +148,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </section>
 
@@ -185,14 +162,13 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {% for hobby in hobbies %}
             <div
-                class="bg-gray-800/50 backdrop-blur-md p-6 rounded-xl text-center group hover:-translate-y-2 transition-transform duration-300 border border-white/10 hover:border-pink-500/50 shadow-lg">
-                <div
-                    class="w-16 h-16 mx-auto mb-4 bg-gray-700/50 rounded-full flex items-center justify-center group-hover:bg-pink-500/20 transition-colors">
+                class="bg-gray-800/50 backdrop-blur-md p-6 rounded-xl text-center group hover:-translate-y-2 transition-transform duration-300 border border-white/10 hover:border-pink-500/50 shadow-lg"
+            >
+                <div class="w-16 h-16 mx-auto mb-4 bg-gray-700/50 rounded-full flex items-center justify-center group-hover:bg-pink-500/20 transition-colors">
                     {% if hobby.font_awesome_icon %}
-                    <i
-                        class="{{ hobby.font_awesome_icon }} text-3xl text-pink-400 group-hover:text-pink-300 transition-colors"></i>
+                    <i class="{{ hobby.font_awesome_icon }} text-3xl text-pink-400 group-hover:text-pink-300 transition-colors"></i>
                     {% elif hobby.icon %}
-                    <img src="{{ hobby.icon.url }}" alt="{{ hobby.name }}" class="w-10 h-10 object-contain">
+                    <img src="{{ hobby.icon.url }}" alt="{{ hobby.name }}" class="w-10 h-10 object-contain" />
                     {% else %}
                     <i class="fa-solid fa-heart text-3xl text-pink-400 group-hover:text-pink-300 transition-colors"></i>
                     {% endif %}
@@ -219,8 +195,7 @@
                 <div class="text-6xl text-purple-500/20 absolute top-4 left-4 font-serif">"</div>
                 <p class="text-gray-300 mb-6 italic relative z-10">{{ testimonial.quote }}</p>
                 <div class="flex items-center">
-                    <div
-                        class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold text-white mb-0 mr-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold text-white mb-0 mr-3">
                         {{ testimonial.name|slice:":1" }}
                     </div>
                     <div>
@@ -245,8 +220,7 @@
             <span class="border-b-4 border-blue-500 pb-2">{% trans "Get In Touch" %}</span>
         </h2>
 
-        <div
-            class="bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-white/5">
+        <div class="bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-white/5">
             <!-- Contact Info Sidebar -->
             <div class="bg-gradient-to-br from-blue-600 to-emerald-600 p-8 md:w-1/3 text-white">
                 <h3 class="text-2xl font-bold mb-6">{% trans "Contact Info" %}</h3>
@@ -254,19 +228,24 @@
                     {% if contact_info.email %}
                     <p class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                            </path>
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                            ></path>
                         </svg>
                         {{ contact_info.email }}
                     </p>
-                    {% endif %}
-                    {% if contact_info.phone %}
+                    {% endif %} {% if contact_info.phone %}
                     <p class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                            </path>
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                            ></path>
                         </svg>
                         {{ contact_info.phone }}
                     </p>
@@ -277,56 +256,62 @@
             <!-- Contact Form -->
             <div class="p-8 md:w-2/3">
                 <form method="post" class="space-y-6">
-                    {% csrf_token %}
-                    {% if contact_form.non_field_errors %}
-                    <div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">
-                        {{ contact_form.non_field_errors }}
-                    </div>
+                    {% csrf_token %} {% if contact_form.non_field_errors %}
+                    <div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">{{ contact_form.non_field_errors }}</div>
                     {% endif %}
-
 
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Name" %}</label>
-                        <input type="text" name="contact-name" required
-                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        <input
+                            type="text"
+                            name="contact-name"
+                            required
+                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                        />
                         {% if contact_form.name.errors %}
                         <div class="text-red-400 text-xs mt-1">{{ contact_form.name.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
-
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Email" %}</label>
-                        <input type="email" name="contact-email" required
-                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        <input
+                            type="email"
+                            name="contact-email"
+                            required
+                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                        />
                         {% if contact_form.email.errors %}
                         <div class="text-red-400 text-xs mt-1">{{ contact_form.email.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
-
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Subject" %}</label>
-                        <input type="text" name="contact-subject"
-                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        <input
+                            type="text"
+                            name="contact-subject"
+                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                        />
                         {% if contact_form.subject.errors %}
                         <div class="text-red-400 text-xs mt-1">{{ contact_form.subject.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
-
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Message" %}</label>
-                        <textarea name="contact-message" required rows="4"
-                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"></textarea>
+                        <textarea
+                            name="contact-message"
+                            required
+                            rows="4"
+                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                        ></textarea>
                         {% if contact_form.message.errors %}
                         <div class="text-red-400 text-xs mt-1">{{ contact_form.message.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
-
-                    <button type="submit" name="submit_contact"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors transform hover:scale-[1.02]">
+                    <button type="submit" name="submit_contact" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors transform hover:scale-[1.02]">
                         {% trans "Send Message" %}
                     </button>
                 </form>
@@ -340,19 +325,19 @@
     <div class="container mx-auto px-4 max-w-2xl text-center">
         <h2 class="text-2xl font-bold mb-8">{% trans "Worked with me? Leave a testimonial!" %}</h2>
 
-        <form method="post"
-            class="bg-gray-800/80 backdrop-blur-xl p-8 rounded-xl shadow-lg text-left space-y-6 border border-white/10">
-            {% csrf_token %}
-            {% if testimonial_form.non_field_errors %}
-            <div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">
-                {{ testimonial_form.non_field_errors }}
-            </div>
+        <form method="post" class="bg-gray-800/80 backdrop-blur-xl p-8 rounded-xl shadow-lg text-left space-y-6 border border-white/10">
+            {% csrf_token %} {% if testimonial_form.non_field_errors %}
+            <div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">{{ testimonial_form.non_field_errors }}</div>
             {% endif %}
 
             <div>
                 <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Your Name" %}</label>
-                <input type="text" name="testimonial-name" required
-                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors">
+                <input
+                    type="text"
+                    name="testimonial-name"
+                    required
+                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
+                />
                 {% if testimonial_form.name.errors %}
                 <div class="text-red-400 text-xs mt-1">{{ testimonial_form.name.errors|striptags }}</div>
                 {% endif %}
@@ -360,8 +345,11 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Role / Company (Optional)" %}</label>
-                <input type="text" name="testimonial-role_company"
-                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors">
+                <input
+                    type="text"
+                    name="testimonial-role_company"
+                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
+                />
                 {% if testimonial_form.role_company.errors %}
                 <div class="text-red-400 text-xs mt-1">{{ testimonial_form.role_company.errors|striptags }}</div>
                 {% endif %}
@@ -369,19 +357,21 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Your Testimonial" %}</label>
-                <textarea name="testimonial-quote" required rows="3"
-                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"></textarea>
+                <textarea
+                    name="testimonial-quote"
+                    required
+                    rows="3"
+                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
+                ></textarea>
                 {% if testimonial_form.quote.errors %}
                 <div class="text-red-400 text-xs mt-1">{{ testimonial_form.quote.errors|striptags }}</div>
                 {% endif %}
             </div>
 
-            <button type="submit" name="submit_testimonial"
-                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors">
+            <button type="submit" name="submit_testimonial" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors">
                 {% trans "Submit Testimonial" %}
             </button>
-            <p class="text-xs text-center text-gray-500 mt-4">{% trans "* Submissions are reviewed before being
-                published." %}</p>
+            <p class="text-xs text-center text-gray-500 mt-4">{% trans "* Submissions are reviewed before being published." %}</p>
         </form>
     </div>
 </section>

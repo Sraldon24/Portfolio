@@ -1,0 +1,24 @@
+{
+    "name": "portfolio1",
+    "version": "1.0.0",
+    "description": "A modern, bilingual (English/French) portfolio website built with **Django** and **Tailwind CSS**. This application allows you to showcase your projects, skills, and experience while managing content dynamically through a customized Admin interface.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "format": "prettier --write ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Sraldon24/Portfolio.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Sraldon24/Portfolio/issues"
+    },
+    "homepage": "https://github.com/Sraldon24/Portfolio#readme",
+    "devDependencies": {
+        "prettier": "^3.8.1"
+    }
+}

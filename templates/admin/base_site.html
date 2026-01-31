@@ -1,20 +1,6 @@
-{% extends "admin/base.html" %}
-{% load i18n static admin_notifications %}
-
-{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin')
-}}{% endblock %}
-
-{% block branding %}
+{% extends "admin/base.html" %} {% load i18n static admin_notifications %} {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{%
+endblock %} {% block branding %}
 <div id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></div>
-{% if user.is_authenticated %}
-{% get_pending_counts as pending_count %}
-{% if pending_count > 0 %}
-<a href="#"
-    style="color: white; margin-left: 20px; font-weight: bold; background-color: #e74c3c; padding: 2px 6px; border-radius: 4px; text-decoration: none;">
-    🔔 {{ pending_count }}
-</a>
-{% endif %}
-{% endif %}
-{% endblock %}
-
-{% block nav-global %}{% endblock %}
+{% if user.is_authenticated %} {% get_pending_counts as pending_count %} {% if pending_count > 0 %}
+<a href="#" style="color: white; margin-left: 20px; font-weight: bold; background-color: #e74c3c; padding: 2px 6px; border-radius: 4px; text-decoration: none">🔔 {{ pending_count }}</a>
+{% endif %} {% endif %} {% endblock %} {% block nav-global %}{% endblock %}
