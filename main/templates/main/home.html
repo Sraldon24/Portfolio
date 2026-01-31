@@ -55,6 +55,8 @@
     </div>
 </section>
 
+<div class="section-divider opacity-60"></div>
+
 <!-- Skills Section -->
 <section id="skills" class="py-20 bg-gray-800/30" aria-labelledby="skills-heading">
     <div class="container mx-auto px-4">
@@ -75,6 +77,11 @@
                         style="width: {{ skill.proficiency }}%"></div>
                 </div>
             </div>
+            {% empty %}
+            <div
+                class="md:col-span-2 lg:col-span-3 bg-gray-800/60 border border-dashed border-gray-700 rounded-xl p-8 text-center text-gray-400">
+                {% trans "Skills will appear here once they are added from the admin dashboard." %}
+            </div>
             {% endfor %}
             {% empty %}
             <div
@@ -84,6 +91,8 @@
         </div>
     </div>
 </section>
+
+<div class="section-divider opacity-60"></div>
 
 <!-- Projects Section -->
 <section id="projects" class="py-20" aria-labelledby="projects-heading">
@@ -198,6 +207,8 @@
     </div>
 </section>
 
+<div class="section-divider opacity-60"></div>
+
 <!-- Experience & Education -->
 <section class="py-20 bg-gray-800/30" aria-labelledby="experience-heading">
     <div class="container mx-auto px-4">
@@ -225,6 +236,10 @@
                             exp.end_date|date:"M Y" }}{% else %}{% trans "Present" %}{% endif %}</p>
                         <p class="text-gray-400">{{ exp.description }}</p>
                     </div>
+                    {% empty %}
+                    <div class="relative text-gray-400">
+                        {% trans "Highlight your most recent roles to make this section shine." %}
+                    </div>
                     {% endfor %}
                     {% empty %}
                     <div class="relative text-gray-400">
@@ -250,6 +265,10 @@
                         <p class="text-sm text-gray-500">{{ edu.start_date|date:"Y" }} - {% if edu.end_date %}{{
                             edu.end_date|date:"Y" }}{% else %}{% trans "Present" %}{% endif %}</p>
                     </div>
+                    {% empty %}
+                    <div class="relative text-gray-400">
+                        {% trans "Add your education history to complete your story." %}
+                    </div>
                     {% endfor %}
                     {% empty %}
                     <div class="relative text-gray-400">
@@ -260,6 +279,8 @@
         </div>
     </div>
 </section>
+
+<div class="section-divider opacity-60"></div>
 
 <!-- Hobbies Section -->
 <section id="hobbies" class="py-20 bg-gray-900" aria-labelledby="hobbies-heading">
@@ -287,6 +308,11 @@
                 <h3 class="font-bold text-gray-200">{{ hobby.name }}</h3>
                 <p class="text-xs text-gray-500 mt-2">{{ hobby.description }}</p>
             </div>
+            {% empty %}
+            <div
+                class="col-span-2 md:col-span-3 lg:col-span-6 bg-gray-800/60 border border-dashed border-gray-700 rounded-xl p-8 text-center text-gray-400">
+                {% trans "Hobbies will show up here once you add them." %}
+            </div>
             {% endfor %}
             {% empty %}
             <div
@@ -296,6 +322,8 @@
         </div>
     </div>
 </section>
+
+<div class="section-divider opacity-60"></div>
 
 <!-- Approved Testimonials -->
 {% if testimonials %}
@@ -328,6 +356,8 @@
     </div>
 </section>
 {% endif %}
+
+<div class="section-divider opacity-60"></div>
 
 <!-- Contact Section -->
 <section id="contact" class="py-20 bg-gray-800/30" aria-labelledby="contact-heading">
@@ -396,29 +426,46 @@
             <div class="p-8 md:w-2/3">
                 <form method="post" class="space-y-6">
                     {% csrf_token %}
+                    {% if contact_form.non_field_errors %}
+                    <div class="rounded-lg border border-red-500/40 bg-red-900/20 p-3 text-sm text-red-200">
+                        {{ contact_form.non_field_errors|striptags }}
+                    </div>
+                    {% endif %}
 
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Name" %}</label>
                         <input type="text" name="contact-name" required autocomplete="name"
                             class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        {% if contact_form.name.errors %}
+                        <p class="mt-1 text-sm text-red-300">{{ contact_form.name.errors|striptags }}</p>
+                        {% endif %}
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Email" %}</label>
                         <input type="email" name="contact-email" required autocomplete="email"
                             class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        {% if contact_form.email.errors %}
+                        <p class="mt-1 text-sm text-red-300">{{ contact_form.email.errors|striptags }}</p>
+                        {% endif %}
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Subject" %}</label>
                         <input type="text" name="contact-subject" autocomplete="off"
                             class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+                        {% if contact_form.subject.errors %}
+                        <p class="mt-1 text-sm text-red-300">{{ contact_form.subject.errors|striptags }}</p>
+                        {% endif %}
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Message" %}</label>
                         <textarea name="contact-message" required rows="4"
-                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"></textarea>
+                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">{{ contact_form.message.value|default_if_none:'' }}</textarea>
+                        {% if contact_form.message.errors %}
+                        <p class="mt-1 text-sm text-red-300">{{ contact_form.message.errors|striptags }}</p>
+                        {% endif %}
                     </div>
 
                     <button type="submit" name="submit_contact"
@@ -438,21 +485,37 @@
 
         <form method="post" class="bg-gray-800 p-8 rounded-xl shadow-lg text-left space-y-6 border border-gray-700">
             {% csrf_token %}
+            {% if testimonial_form.non_field_errors %}
+            <div class="rounded-lg border border-red-500/40 bg-red-900/20 p-3 text-sm text-red-200">
+                {{ testimonial_form.non_field_errors|striptags }}
+            </div>
+            {% endif %}
             <div>
                 <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Your Name" %}</label>
                 <input type="text" name="testimonial-name" required
+                    value="{{ testimonial_form.name.value|default_if_none:'' }}"
                     class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors">
+                {% if testimonial_form.name.errors %}
+                <p class="mt-1 text-sm text-red-300">{{ testimonial_form.name.errors|striptags }}</p>
+                {% endif %}
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Role / Company (Optional)"
                     %}</label>
                 <input type="text" name="testimonial-role_company"
+                    value="{{ testimonial_form.role_company.value|default_if_none:'' }}"
                     class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors">
+                {% if testimonial_form.role_company.errors %}
+                <p class="mt-1 text-sm text-red-300">{{ testimonial_form.role_company.errors|striptags }}</p>
+                {% endif %}
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Your Testimonial" %}</label>
                 <textarea name="testimonial-quote" required rows="3"
-                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"></textarea>
+                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors">{{ testimonial_form.quote.value|default_if_none:'' }}</textarea>
+                {% if testimonial_form.quote.errors %}
+                <p class="mt-1 text-sm text-red-300">{{ testimonial_form.quote.errors|striptags }}</p>
+                {% endif %}
             </div>
             <button type="submit" name="submit_testimonial"
                 class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">

@@ -7,11 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% trans "Portfolio" %}{% endblock %}</title>
     <meta name="description"
-        content="{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}">
-    <meta name="author" content="Amir Sraldon">
-    <meta property="og:title" content="{% trans 'Portfolio' %} - Amir Sraldon">
+        content="{% if profile and profile.bio %}{{ profile.bio|truncatechars:160 }}{% else %}{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}{% endif %}">
+    <meta name="author"
+        content="{% if profile and profile.name %}{{ profile.name }}{% else %}{% trans 'Portfolio Owner' %}{% endif %}">
+    <meta property="og:title"
+        content="{% if profile and profile.name %}{{ profile.name }}{% else %}{% trans 'Portfolio' %}{% endif %}">
     <meta property="og:description"
-        content="{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}">
+        content="{% if profile and profile.bio %}{{ profile.bio|truncatechars:160 }}{% else %}{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}{% endif %}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
@@ -20,7 +22,8 @@
     <meta property="twitter:image" content="{{ profile.profile_picture.url }}">
     {% endif %}
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="{% trans 'Portfolio' %} - Amir Sraldon">
+    <meta property="twitter:title"
+        content="{% if profile and profile.name %}{{ profile.name }}{% else %}{% trans 'Portfolio' %}{% endif %}">
     <meta property="twitter:description"
         content="{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
