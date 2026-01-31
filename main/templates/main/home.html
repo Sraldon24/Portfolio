@@ -19,15 +19,15 @@
         {% endif %}
 
         <h1 id="about-heading"
-            class="text-5xl md:text-7xl font-bold mb-6 tracking-tight text-gradient">
+            class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 tracking-tight">
             {{ profile.name|default:"Your Name" }}
         </h1>
 
         <div
-            class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-pink-400/40 bg-pink-400/10 text-pink-200 text-sm font-semibold uppercase tracking-widest shadow-lg shadow-pink-500/20 mb-6">
+            class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 text-sm font-semibold uppercase tracking-widest shadow-lg shadow-emerald-500/20 mb-6">
             <span class="relative flex h-2 w-2">
-                <span class="absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75 animate-ping"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-pink-400"></span>
+                <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
             </span>
             {% trans "Open to opportunities" %}
         </div>
@@ -39,16 +39,16 @@
         <div class="flex flex-wrap justify-center gap-4">
             {% if profile.resume %}
             <a href="{{ profile.resume.url }}" download
-                class="btn-glow px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-blue-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
+                class="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-blue-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
                 {% trans "Download Resume" %}
             </a>
             {% endif %}
             <a href="#projects"
-                class="btn-glow px-8 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-emerald-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
+                class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-emerald-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
                 {% trans "View Projects" %}
             </a>
             <a href="#contact"
-                class="btn-glow px-8 py-3 bg-gray-800/80 hover:bg-gray-700 rounded-full font-semibold transition-all transform hover:scale-105 border border-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
+                class="px-8 py-3 bg-gray-800 hover:bg-gray-700 rounded-full font-semibold transition-all transform hover:scale-105 border border-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
                 {% trans "Get in Touch" %}
             </a>
         </div>
@@ -60,14 +60,14 @@
 <!-- Skills Section -->
 <section id="skills" class="py-20 bg-gray-800/30" aria-labelledby="skills-heading">
     <div class="container mx-auto px-4">
-        <h2 id="skills-heading" class="text-3xl md:text-4xl font-bold mb-16 text-center text-gradient">
+        <h2 id="skills-heading" class="text-3xl md:text-4xl font-bold mb-16 text-center">
             <span class="border-b-4 border-blue-500 pb-2">{% trans "My Skills" %}</span>
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for skill in skills %}
             <div
-                class="glass-card card-aurora p-6 rounded-2xl hover-lift transition-all border border-gray-700/50 shadow-lg">
+                class="glass-card p-6 rounded-2xl hover-lift transition-all border border-gray-700/50 shadow-lg">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-bold text-blue-100">{{ skill.name }}</h3>
                     <span class="text-blue-400 font-mono">{{ skill.proficiency }}%</span>
@@ -83,6 +83,11 @@
                 {% trans "Skills will appear here once they are added from the admin dashboard." %}
             </div>
             {% endfor %}
+            {% empty %}
+            <div
+                class="md:col-span-2 lg:col-span-3 bg-gray-800/60 border border-dashed border-gray-700 rounded-xl p-8 text-center text-gray-400">
+                {% trans "Skills will appear here once they are added from the admin dashboard." %}
+            </div>
         </div>
     </div>
 </section>
@@ -92,7 +97,7 @@
 <!-- Projects Section -->
 <section id="projects" class="py-20" aria-labelledby="projects-heading">
     <div class="container mx-auto px-4">
-        <h2 id="projects-heading" class="text-3xl md:text-4xl font-bold mb-16 text-center text-gradient">
+        <h2 id="projects-heading" class="text-3xl md:text-4xl font-bold mb-16 text-center">
             <span class="border-b-4 border-emerald-500 pb-2">{% trans "Featured Projects" %}</span>
         </h2>
 
@@ -100,7 +105,7 @@
         {% with featured_project=projects|first %}
         <div class="mb-12">
             <div
-                class="glass-card card-aurora rounded-3xl overflow-hidden border border-emerald-500/30 hover-lift transition-all grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-0">
+                class="glass-card rounded-3xl overflow-hidden border border-emerald-500/30 hover-lift transition-all grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-0">
                 <div class="relative min-h-[260px]">
                     {% if featured_project.image %}
                     <img src="{{ featured_project.image.url }}" alt="{{ featured_project.title }}"
@@ -143,7 +148,7 @@
             {% for project in projects %}
             {% if not forloop.first %}
             <div
-                class="group glass-card card-aurora rounded-2xl overflow-hidden shadow-xl transition-all hover-lift border border-gray-700/50">
+                class="group glass-card rounded-2xl overflow-hidden shadow-xl transition-all hover-lift border border-gray-700/50">
                 {% if project.image %}
                 <div class="relative h-48 overflow-hidden">
                     <img src="{{ project.image.url }}" alt="{{ project.title|default:'Project preview' }}" loading="lazy"
@@ -186,12 +191,12 @@
                 </div>
             </div>
             {% endif %}
+            {% endfor %}
             {% empty %}
             <div
                 class="md:col-span-2 lg:col-span-3 bg-gray-800/60 border border-dashed border-gray-700 rounded-xl p-8 text-center text-gray-400">
                 {% trans "Projects are coming soon. Add your first project in the admin panel." %}
             </div>
-            {% endfor %}
         </div>
         {% if projects|length == 1 %}
         <div
@@ -210,7 +215,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
             <!-- Experience -->
             <div>
-                <h2 id="experience-heading" class="text-3xl font-bold mb-8 flex items-center text-gradient">
+                <h2 id="experience-heading" class="text-3xl font-bold mb-8 flex items-center">
                     <span class="w-2 h-8 bg-blue-500 mr-4 rounded-full"></span>
                     {% trans "Experience" %}
                 </h2>
@@ -236,12 +241,16 @@
                         {% trans "Highlight your most recent roles to make this section shine." %}
                     </div>
                     {% endfor %}
+                    {% empty %}
+                    <div class="relative text-gray-400">
+                        {% trans "Highlight your most recent roles to make this section shine." %}
+                    </div>
                 </div>
             </div>
 
             <!-- Education -->
             <div aria-labelledby="education-heading">
-                <h2 id="education-heading" class="text-3xl font-bold mb-8 flex items-center text-gradient">
+                <h2 id="education-heading" class="text-3xl font-bold mb-8 flex items-center">
                     <span class="w-2 h-8 bg-emerald-500 mr-4 rounded-full"></span>
                     {% trans "Education" %}
                 </h2>
@@ -261,6 +270,10 @@
                         {% trans "Add your education history to complete your story." %}
                     </div>
                     {% endfor %}
+                    {% empty %}
+                    <div class="relative text-gray-400">
+                        {% trans "Add your education history to complete your story." %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -272,14 +285,14 @@
 <!-- Hobbies Section -->
 <section id="hobbies" class="py-20 bg-gray-900" aria-labelledby="hobbies-heading">
     <div class="container mx-auto px-4">
-        <h2 id="hobbies-heading" class="text-3xl md:text-4xl font-bold mb-16 text-center text-gradient">
+        <h2 id="hobbies-heading" class="text-3xl md:text-4xl font-bold mb-16 text-center">
             <span class="border-b-4 border-pink-500 pb-2">{% trans "My Hobbies" %}</span>
         </h2>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {% for hobby in hobbies %}
             <div
-                class="glass-card card-aurora p-6 rounded-2xl text-center group hover-lift transition-transform duration-300 border border-gray-700/50 hover:border-pink-500/50 shadow-lg">
+                class="glass-card p-6 rounded-2xl text-center group hover-lift transition-transform duration-300 border border-gray-700/50 hover:border-pink-500/50 shadow-lg">
                 <div
                     class="w-16 h-16 mx-auto mb-4 bg-gray-700/50 rounded-full flex items-center justify-center group-hover:bg-pink-500/20 transition-colors">
                     {% if hobby.font_awesome_icon %}
@@ -301,6 +314,11 @@
                 {% trans "Hobbies will show up here once you add them." %}
             </div>
             {% endfor %}
+            {% empty %}
+            <div
+                class="col-span-2 md:col-span-3 lg:col-span-6 bg-gray-800/60 border border-dashed border-gray-700 rounded-xl p-8 text-center text-gray-400">
+                {% trans "Hobbies will show up here once you add them." %}
+            </div>
         </div>
     </div>
 </section>
@@ -311,13 +329,13 @@
 {% if testimonials %}
 <section class="py-20" aria-labelledby="testimonials-heading">
     <div class="container mx-auto px-4">
-        <h2 id="testimonials-heading" class="text-3xl md:text-4xl font-bold mb-16 text-center text-gradient">
+        <h2 id="testimonials-heading" class="text-3xl md:text-4xl font-bold mb-16 text-center">
             <span class="border-b-4 border-purple-500 pb-2">{% trans "Testimonials" %}</span>
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for testimonial in testimonials %}
-            <div class="glass-card card-aurora p-8 rounded-2xl relative border border-gray-700/50">
+            <div class="glass-card p-8 rounded-2xl relative border border-gray-700/50">
                 <div class="text-6xl text-purple-500/20 absolute top-4 left-4 font-serif">"</div>
                 <p class="text-gray-300 mb-6 italic relative z-10">{{ testimonial.quote }}</p>
                 <div class="flex items-center">
@@ -344,11 +362,11 @@
 <!-- Contact Section -->
 <section id="contact" class="py-20 bg-gray-800/30" aria-labelledby="contact-heading">
     <div class="container mx-auto px-4 max-w-4xl">
-        <h2 id="contact-heading" class="text-3xl md:text-4xl font-bold mb-12 text-center text-gradient">
+        <h2 id="contact-heading" class="text-3xl md:text-4xl font-bold mb-12 text-center">
             <span class="border-b-4 border-blue-500 pb-2">{% trans "Get In Touch" %}</span>
         </h2>
 
-        <div class="glass-card card-aurora rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-gray-800/60">
+        <div class="glass-card rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-gray-800/60">
             <!-- Contact Info Sidebar -->
             <div class="bg-gradient-to-br from-blue-600 to-emerald-600 p-8 md:w-1/3 text-white">
                 <h3 class="text-2xl font-bold mb-6">{% trans "Contact Info" %}</h3>
@@ -417,7 +435,6 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Name" %}</label>
                         <input type="text" name="contact-name" required autocomplete="name"
-                            value="{{ contact_form.name.value|default_if_none:'' }}"
                             class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
                         {% if contact_form.name.errors %}
                         <p class="mt-1 text-sm text-red-300">{{ contact_form.name.errors|striptags }}</p>
@@ -427,7 +444,6 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Email" %}</label>
                         <input type="email" name="contact-email" required autocomplete="email"
-                            value="{{ contact_form.email.value|default_if_none:'' }}"
                             class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
                         {% if contact_form.email.errors %}
                         <p class="mt-1 text-sm text-red-300">{{ contact_form.email.errors|striptags }}</p>
@@ -437,7 +453,6 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Subject" %}</label>
                         <input type="text" name="contact-subject" autocomplete="off"
-                            value="{{ contact_form.subject.value|default_if_none:'' }}"
                             class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
                         {% if contact_form.subject.errors %}
                         <p class="mt-1 text-sm text-red-300">{{ contact_form.subject.errors|striptags }}</p>
@@ -454,7 +469,7 @@
                     </div>
 
                     <button type="submit" name="submit_contact"
-                        class="btn-glow w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
                         {% trans "Send Message" %}
                     </button>
                 </form>
@@ -466,7 +481,7 @@
 <!-- Testimonial Submission Modal/Form -->
 <section class="py-20" aria-labelledby="testimonial-submit-heading">
     <div class="container mx-auto px-4 max-w-2xl text-center">
-        <h2 id="testimonial-submit-heading" class="text-2xl font-bold mb-8 text-gradient">{% trans "Worked with me? Leave a testimonial!" %}</h2>
+        <h2 id="testimonial-submit-heading" class="text-2xl font-bold mb-8">{% trans "Worked with me? Leave a testimonial!" %}</h2>
 
         <form method="post" class="bg-gray-800 p-8 rounded-xl shadow-lg text-left space-y-6 border border-gray-700">
             {% csrf_token %}
@@ -503,7 +518,7 @@
                 {% endif %}
             </div>
             <button type="submit" name="submit_testimonial"
-                class="btn-glow w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
+                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
                 {% trans "Submit Testimonial" %}
             </button>
             <p class="text-xs text-center text-gray-500 mt-4">{% trans "* Submissions are reviewed before being
