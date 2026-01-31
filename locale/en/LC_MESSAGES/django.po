@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-14 01:51+0000\n"
+"POT-Creation-Date: 2026-01-27 21:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,123 +16,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: main/templates/main/base.html:8
-msgid "Portfolio"
-msgstr "Portfolio"
-
-#: main/templates/main/base.html:42
-msgid "About"
-msgstr "À propos"
-
-#: main/templates/main/base.html:43
-msgid "Skills"
-msgstr "Compétences"
-
-#: main/templates/main/base.html:44
-msgid "Projects"
-msgstr "Projets"
-
-#: main/templates/main/base.html:45
-msgid "Contact"
-msgstr "Contact"
-
-#: main/templates/main/base.html:82
-msgid "All rights reserved."
-msgstr "Tous droits réservés."
-
-#: main/templates/main/home.html:36
-msgid "Download Resume"
-msgstr "Télécharger le CV"
-
-#: main/templates/main/home.html:41
-msgid "Get in Touch"
-msgstr "Contactez-nous"
-
-#: main/templates/main/home.html:51
-msgid "My Skills"
-msgstr "Mes Compétences"
-
-#: main/templates/main/home.html:76
-msgid "Featured Projects"
-msgstr "Projets en Vedette"
-
-#: main/templates/main/home.html:103
-msgid "Code"
-msgstr "Code"
-
-#: main/templates/main/home.html:109
-msgid "Live Demo"
-msgstr "Démo en Direct"
-
-#: main/templates/main/home.html:128
-msgid "Experience"
-msgstr "Expérience"
-
-#: main/templates/main/home.html:138 main/templates/main/home.html:159
-msgid "Present"
-msgstr "Présent"
-
-#: main/templates/main/home.html:149
-msgid "Education"
-msgstr "Éducation"
-
-#: main/templates/main/home.html:173
-msgid "Testimonials"
-msgstr "Témoignages"
-
-#: main/templates/main/home.html:204
-msgid "Get In Touch"
-msgstr "Contactez-nous"
-
-#: main/templates/main/home.html:210
-msgid "Contact Info"
-msgstr "Info Contact"
-
-#: main/templates/main/home.html:241
-msgid "Name"
-msgstr "Nom"
-
-#: main/templates/main/home.html:247
-msgid "Email"
-msgstr "E-mail"
-
-#: main/templates/main/home.html:253
-msgid "Subject"
-msgstr "Sujet"
-
-#: main/templates/main/home.html:259
-msgid "Message"
-msgstr "Message"
-
-#: main/templates/main/home.html:266
-msgid "Send Message"
-msgstr "Envoyer Message"
-
-#: main/templates/main/home.html:277
-msgid "Worked with me? Leave a testimonial!"
-msgstr "Vous avez travaillé avec moi ? Laissez un témoignage !"
-
-#: main/templates/main/home.html:282
-msgid "Your Name"
-msgstr "Votre Nom"
-
-#: main/templates/main/home.html:287
-msgid "Role / Company (Optional)"
-msgstr "Rôle / Entreprise (Optionnel)"
-
-#: main/templates/main/home.html:292
-msgid "Your Testimonial"
-msgstr "Votre Témoignage"
-
-#: main/templates/main/home.html:298
-msgid "Submit Testimonial"
-msgstr "Envoyer Témoignage"
-
-#: main/templates/main/home.html:300
-msgid "* Submissions are reviewed before being published."
-msgstr "* Les soumissions sont examinées avant d'être publiées."
+#: templates/admin/base_site.html:8
+msgid "Django administration"
+msgstr ""
 
 #: venv/lib/python3.13/site-packages/django/contrib/messages/apps.py:16
 msgid "Messages"
@@ -1378,7 +1266,3 @@ msgstr ""
 #: venv/lib/python3.13/site-packages/django/views/templates/default_urlconf.html:236
 msgid "Connect, get help, or contribute"
 msgstr ""
-
-#: main/templates/main/home.html:184
-msgid "My Hobbies"
-msgstr "Mes Loisirs"
