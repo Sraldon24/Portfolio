@@ -11,3 +11,7 @@ static/
 # Artifacts
 coverage/
 htmlcov/
+main/templates/main/home.html
+*.html
+templates/**/*.html
+main/templates/main/home.html

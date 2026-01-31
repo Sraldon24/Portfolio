@@ -1,4 +1,6 @@
-{% extends 'main/base.html' %} {% load i18n %} {% block content %}
+{% extends 'main/base.html' %}
+{% load i18n %}
+{% block content %}
 
 <!-- Hero Section -->
 <section id="about" class="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -19,9 +21,12 @@
 
         <h1
             class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 tracking-tight font-heading fade-in-section">
-            {{ profile.name }}</h1>
+            {{ profile.name }}
+        </h1>
 
-        <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">{{ profile.bio|default:"Welcome to my portfolio! Please configure your profile in the admin panel." }}</p>
+        <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            {{ profile.bio|default:"Welcome to my portfolio! Please configure your profile in the admin panel." }}
+        </p>
 
         <div class="flex justify-center space-x-4">
             {% if profile.resume %}
@@ -31,7 +36,9 @@
             </a>
             {% endif %}
             <a href="#contact"
-                class="px-8 py-3 bg-gray-800 hover:bg-gray-700 rounded-full font-semibold transition-all transform hover:scale-105 border border-gray-700">{% trans "Get in Touch" %}</a>
+                class="px-8 py-3 bg-gray-800 hover:bg-gray-700 rounded-full font-semibold transition-all transform hover:scale-105 border border-gray-700">
+                {% trans "Get in Touch" %}
+            </a>
         </div>
     </div>
 </section>
@@ -84,7 +91,9 @@
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
                         <h3 class="text-2xl font-bold text-gray-100">{{ project.title }}</h3>
-                        <span class="text-xs text-gray-500 bg-gray-900 px-2 py-1 rounded">{{ project.created_date|date:"M Y" }}</span>
+                        <span class="text-xs text-gray-500 bg-gray-900 px-2 py-1 rounded">
+                            {{ project.created_date|date:"M Y" }}
+                        </span>
                     </div>
 
                     <p class="text-gray-400 mb-6 line-clamp-3">{{ project.description }}</p>
@@ -95,7 +104,8 @@
                             class="flex-1 text-center py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-semibold transition-colors">
                             {% trans "Code" %}
                         </a>
-                        {% endif %} {% if project.demo_link %}
+                        {% endif %}
+                        {% if project.demo_link %}
                         <a href="{{ project.demo_link }}" target="_blank"
                             class="flex-1 text-center py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-semibold transition-colors">
                             {% trans "Live Demo" %}
@@ -109,7 +119,6 @@
     </div>
 </section>
 
-<!-- Experience & Education -->
 <!-- Experience & Education -->
 <section class="py-20 bg-gray-800/30 fade-in-section">
     <div class="container mx-auto px-4">
@@ -133,7 +142,14 @@
                         </div>
                         <h3 class="text-xl font-bold text-gray-100">{{ exp.job_title }}</h3>
                         <p class="text-blue-400 font-medium mb-1">{{ exp.company }}</p>
-                        <p class="text-sm text-gray-500 mb-4">{{ exp.start_date|date:"M Y" }} - {% if exp.end_date %}{{exp.end_date|date:"M Y" }}{% else %}{% trans "Present" %}{% endif %}</p>
+                        <p class="text-sm text-gray-500 mb-4">
+                            {{ exp.start_date|date:"M Y" }} -
+                            {% if exp.end_date %}
+                            {{ exp.end_date|date:"M Y" }}
+                            {% else %}
+                            {% trans "Present" %}
+                            {% endif %}
+                        </p>
                         <p class="text-gray-400">{{ exp.description }}</p>
                     </div>
                     {% endfor %}
@@ -154,7 +170,14 @@
                         </div>
                         <h3 class="text-xl font-bold text-gray-100">{{ edu.degree }}</h3>
                         <p class="text-emerald-400 font-medium mb-1">{{ edu.institution }}</p>
-                        <p class="text-sm text-gray-500">{{ edu.start_date|date:"Y" }} - {% if edu.end_date %}{{edu.end_date|date:"Y" }}{% else %}{% trans "Present" %}{% endif %}</p>
+                        <p class="text-sm text-gray-500">
+                            {{ edu.start_date|date:"Y" }} -
+                            {% if edu.end_date %}
+                            {{ edu.end_date|date:"Y" }}
+                            {% else %}
+                            {% trans "Present" %}
+                            {% endif %}
+                        </p>
                     </div>
                     {% endfor %}
                 </div>
@@ -163,7 +186,6 @@
     </div>
 </section>
 
-<!-- Hobbies Section -->
 <!-- Hobbies Section -->
 <section id="hobbies" class="py-20 bg-gray-900 fade-in-section">
     <div class="container mx-auto px-4">
@@ -227,7 +249,6 @@
 {% endif %}
 
 <!-- Contact Section -->
-<!-- Contact Section -->
 <section id="contact" class="py-20 bg-gray-800/30 fade-in-section">
     <div class="container mx-auto px-4 max-w-4xl">
         <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">
@@ -249,7 +270,8 @@
                         </svg>
                         {{ contact_info.email }}
                     </p>
-                    {% endif %} {% if contact_info.phone %}
+                    {% endif %}
+                    {% if contact_info.phone %}
                     <p class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -265,8 +287,11 @@
             <!-- Contact Form -->
             <div class="p-8 md:w-2/3">
                 <form method="post" class="space-y-6">
-                    {% csrf_token %} {% if contact_form.non_field_errors %}
-                    <div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">{{ contact_form.non_field_errors }}</div>
+                    {% csrf_token %}
+                    {% if contact_form.non_field_errors %}
+                    <div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">
+                        {{ contact_form.non_field_errors }}
+                    </div>
                     {% endif %}
 
                     <div>
@@ -322,8 +347,11 @@
 
         <form method="post"
             class="bg-gray-800/80 backdrop-blur-xl p-8 rounded-xl shadow-lg text-left space-y-6 border border-white/10">
-            {% csrf_token %} {% if testimonial_form.non_field_errors %}
-            <div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">{{ testimonial_form.non_field_errors }}</div>
+            {% csrf_token %}
+            {% if testimonial_form.non_field_errors %}
+            <div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">
+                {{ testimonial_form.non_field_errors }}
+            </div>
             {% endif %}
 
             <div>
@@ -336,8 +364,9 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Role / Company (Optional)"
-                    %}</label>
+                <label class="block text-sm font-medium text-gray-400 mb-1">
+                    {% trans "Role / Company (Optional)" %}
+                </label>
                 <input type="text" name="testimonial-role_company"
                     class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors" />
                 {% if testimonial_form.role_company.errors %}
@@ -358,8 +387,9 @@
                 class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors">
                 {% trans "Submit Testimonial" %}
             </button>
-            <p class="text-xs text-center text-gray-500 mt-4">{% trans "* Submissions are reviewed before being
-                published." %}</p>
+            <p class="text-xs text-center text-gray-500 mt-4">
+                {% trans "* Submissions are reviewed before being published." %}
+            </p>
         </form>
     </div>
 </section>
