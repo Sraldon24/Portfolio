@@ -288,6 +288,10 @@
             <div class="p-8 md:w-2/3">
                 <form method="post" class="space-y-6">
                     {% csrf_token %}
+                    <div class="hidden">
+                        <label for="contact-nickname">Leave this empty:</label>
+                        <input type="text" name="contact-nickname" id="contact-nickname">
+                    </div>
                     {% if contact_form.non_field_errors %}
                     <div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">
                         {{ contact_form.non_field_errors }}
@@ -348,6 +352,10 @@
         <form method="post"
             class="bg-gray-800/80 backdrop-blur-xl p-8 rounded-xl shadow-lg text-left space-y-6 border border-white/10">
             {% csrf_token %}
+            <div class="hidden">
+                <label for="testimonial-nickname">Leave this empty:</label>
+                <input type="text" name="testimonial-nickname" id="testimonial-nickname">
+            </div>
             {% if testimonial_form.non_field_errors %}
             <div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">
                 {{ testimonial_form.non_field_errors }}
