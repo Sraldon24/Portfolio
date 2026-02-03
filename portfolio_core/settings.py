@@ -41,6 +41,14 @@ SERVER_EMAIL = 'portfolio@example.com'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
+# TRUSTED_ORIGINS for CSRF
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://127.0.0.1,http://localhost').split(',')
+
+# Handle Railway dynamic domains or specific production domains if not explicitly set
+if 'railway.app' not in str(ALLOWED_HOSTS):
+     ALLOWED_HOSTS.append('.railway.app')
+     CSRF_TRUSTED_ORIGINS.append('https://*.railway.app')
+
 if not DEBUG:
     # Security settings for production
     SECURE_SSL_REDIRECT = True
