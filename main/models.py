@@ -14,7 +14,13 @@ class SingletonModel(models.Model):
 
     @classmethod
     def load(cls):
+        # FIX: Ensure a default translation exists upon creation
         obj, created = cls.objects.get_or_create(pk=1)
+        if created:
+            obj.set_current_language('en')
+            obj.name = "Your Name"
+            obj.bio = "Welcome to my portfolio."
+            obj.save()
         return obj
 
 class Profile(SingletonModel, TranslatableModel):
@@ -42,6 +48,14 @@ class ContactInfo(SingletonModel):
     # If address is physical and changes by language (rare), we'd need it.
     # Let's assume standard universal contact info for now unless specified.
     
+    @classmethod
+    def load(cls):
+        # FIX: Provide a default email to satisfy the NOT NULL constraint
+        obj, created = cls.objects.get_or_create(pk=1, defaults={
+            'email': 'contact@example.com'
+        })
+        return obj
+
     def __str__(self):
         return "Contact Details"
 
