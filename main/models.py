@@ -14,9 +14,9 @@ class SingletonModel(models.Model):
 
     @classmethod
     def load(cls):
-        # FIX: Ensure a default translation exists upon creation
+        # FIX: Ensure a default translation exists upon creation OR if missing (zombie data)
         obj, created = cls.objects.get_or_create(pk=1)
-        if created:
+        if not obj.has_translation('en'):
             obj.set_current_language('en')
             obj.name = "Your Name"
             obj.bio = "Welcome to my portfolio."
@@ -54,6 +54,10 @@ class ContactInfo(SingletonModel):
         obj, created = cls.objects.get_or_create(pk=1, defaults={
             'email': 'contact@example.com'
         })
+        # Double check: if it existed but was empty
+        if not obj.email:
+            obj.email = 'contact@example.com'
+            obj.save()
         return obj
 
     def __str__(self):
