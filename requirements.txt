@@ -10,3 +10,4 @@ dj-database-url
 psycopg2-binary
 
 
+deep-translator==1.11.4

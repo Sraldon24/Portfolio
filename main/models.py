@@ -1,6 +1,53 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from parler.models import TranslatableModel, TranslatedFields
+from deep_translator import GoogleTranslator
+
+def auto_translate_fields(instance):
+    """
+    Automatically translates fields from English to French if the French translation is missing.
+    """
+    try:
+        # Only trigger if we are saving the English version
+        if instance.get_current_language() != 'en':
+            return
+
+        # Check if French translation exists
+        if instance.has_translation('fr'):
+            # Ideally we check if it's empty, but has_translation usually implies it exists.
+            # Let's check if the fields are actually empty in the FR version.
+            # Using get_translation('fr') might raise if it doesn't exist despite has_translation being true (caching).
+            # So rely on exception handling or just proceed if it's missing.
+            pass
+        else:
+            # Prepare translation
+            translator = GoogleTranslator(source='en', target='fr')
+            
+            # Get English fields
+            en_trans = instance.get_translation('en')
+            
+            # Create French translation
+            instance.set_current_language('fr')
+            
+            # Iterate through translated fields
+            for field in instance._parler_meta.get_translated_fields():
+                value = getattr(en_trans, field, None)
+                if value and isinstance(value, str):
+                    try:
+                        translated_value = translator.translate(value)
+                        setattr(instance, field, translated_value)
+                    except Exception as e:
+                        print(f"Translation failed for field {field}: {e}")
+            
+            # Switch back to English for the main save process to complete normally
+            # The FR translation is saved when instance.save() is called because parler saves all dirty translations
+            instance.set_current_language('en')
+
+    except Exception as e:
+        print(f"Auto-translation error: {e}")
+        # Ensure we don't break the save process
+        instance.set_current_language('en')
+
 
 # Singleton Model Mixin
 class SingletonModel(models.Model):
@@ -24,6 +71,10 @@ class SingletonModel(models.Model):
         return obj
 
 class Profile(SingletonModel, TranslatableModel):
+    def save(self, *args, **kwargs):
+        auto_translate_fields(self)
+        super().save(*args, **kwargs)
+
     translations = TranslatedFields(
         name=models.CharField(max_length=100),
         bio=models.TextField(blank=True),
@@ -64,6 +115,10 @@ class ContactInfo(SingletonModel):
         return "Contact Details"
 
 class Skill(TranslatableModel):
+    def save(self, *args, **kwargs):
+        auto_translate_fields(self)
+        super().save(*args, **kwargs)
+
     translations = TranslatedFields(
         name=models.CharField(max_length=100),
     )
@@ -73,6 +128,10 @@ class Skill(TranslatableModel):
         return self.safe_translation_getter('name', any_language=True)
 
 class Project(TranslatableModel):
+    def save(self, *args, **kwargs):
+        auto_translate_fields(self)
+        super().save(*args, **kwargs)
+
     translations = TranslatedFields(
         title=models.CharField(max_length=200),
         description=models.TextField(blank=True),
@@ -86,6 +145,10 @@ class Project(TranslatableModel):
         return self.safe_translation_getter('title', any_language=True)
 
 class Experience(TranslatableModel):
+    def save(self, *args, **kwargs):
+        auto_translate_fields(self)
+        super().save(*args, **kwargs)
+
     translations = TranslatedFields(
         job_title=models.CharField(max_length=200),
         company=models.CharField(max_length=200),
@@ -112,6 +175,10 @@ class Experience(TranslatableModel):
         return f"{self.safe_translation_getter('job_title', any_language=True)} at {self.safe_translation_getter('company', any_language=True)}"
 
 class Education(TranslatableModel):
+    def save(self, *args, **kwargs):
+        auto_translate_fields(self)
+        super().save(*args, **kwargs)
+
     translations = TranslatedFields(
         degree=models.CharField(max_length=200),
         institution=models.CharField(max_length=200),
@@ -123,6 +190,10 @@ class Education(TranslatableModel):
         return f"{self.safe_translation_getter('degree', any_language=True)} at {self.safe_translation_getter('institution', any_language=True)}"
 
 class Hobby(TranslatableModel):
+    def save(self, *args, **kwargs):
+        auto_translate_fields(self)
+        super().save(*args, **kwargs)
+
     translations = TranslatedFields(
         name=models.CharField(max_length=100),
         description=models.TextField(blank=True),
