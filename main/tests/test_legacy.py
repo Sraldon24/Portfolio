@@ -2,11 +2,11 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import translation
 from django.core.files.uploadedfile import SimpleUploadedFile
-from .models import (
+from main.models import (
     Profile, ContactInfo, Skill, Project, Experience, 
     Education, Hobby, Testimonial, ContactMessage
 )
-from .forms import ContactForm, TestimonialForm
+from main.forms import ContactForm, TestimonialForm
 import datetime
 import sys
 
