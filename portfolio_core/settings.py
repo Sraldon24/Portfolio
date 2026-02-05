@@ -297,16 +297,6 @@ UNFOLD = {
                 "title": _("System"),
                 "separator": True,
                 "items": [
-                    #{
-                    #    "title": _("Users"),
-                    #    "icon": "group",
-                    #    "link": reverse_lazy("admin:auth_user_changelist"),
-                    #},
-                    #{
-                    #    "title": _("Groups"),
-                    #    "icon": "verified_user",
-                    #    "link": reverse_lazy("admin:auth_group_changelist"),
-                    #},
                      {
                         "title": _("Contact Info"),
                         "icon": "contact_phone",
