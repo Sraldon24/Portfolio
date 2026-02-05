@@ -31,7 +31,7 @@
         </h1>
 
         <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            {{ profile.bio|default:"Welcome to my portfolio! Please configure your profile in the admin panel." }}
+            {{ profile.bio|default:"" }}
         </p>
 
         <div class="flex justify-center space-x-4">
@@ -109,7 +109,9 @@
                         </span>
                     </div>
 
+                    {% if project.description %}
                     <p class="text-gray-400 mb-6 line-clamp-3">{{ project.description }}</p>
+                    {% endif %}
 
                     <div class="flex space-x-4">
                         {% if project.code_link %}
@@ -163,7 +165,9 @@
                             {% trans "Present" %}
                             {% endif %}
                         </p>
+                        {% if exp.description %}
                         <p class="text-gray-400">{{ exp.description }}</p>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
@@ -222,7 +226,9 @@
                     {% endif %}
                 </div>
                 <h3 class="font-bold text-gray-200">{{ hobby.name }}</h3>
+                {% if hobby.description %}
                 <p class="text-xs text-gray-500 mt-2">{{ hobby.description }}</p>
+                {% endif %}
             </div>
             {% endfor %}
         </div>

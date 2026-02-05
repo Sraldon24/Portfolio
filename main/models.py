@@ -26,7 +26,7 @@ class SingletonModel(models.Model):
 class Profile(SingletonModel, TranslatableModel):
     translations = TranslatedFields(
         name=models.CharField(max_length=100),
-        bio=models.TextField(),
+        bio=models.TextField(blank=True),
     )
     profile_picture = models.ImageField(upload_to='profile/', blank=True, null=True)
     resume = models.FileField(upload_to='resume/', blank=True)
@@ -75,7 +75,7 @@ class Skill(TranslatableModel):
 class Project(TranslatableModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=200),
-        description=models.TextField(),
+        description=models.TextField(blank=True),
     )
     image = models.ImageField(upload_to='projects/', blank=True, null=True)
     code_link = models.URLField(blank=True)
@@ -89,7 +89,7 @@ class Experience(TranslatableModel):
     translations = TranslatedFields(
         job_title=models.CharField(max_length=200),
         company=models.CharField(max_length=200),
-        description=models.TextField(),
+        description=models.TextField(blank=True),
     )
     start_date = models.DateField(verbose_name="Start Date")
     end_date = models.DateField(null=True, blank=True, verbose_name="End Date (Leave blank for 'Present')")
@@ -125,7 +125,7 @@ class Education(TranslatableModel):
 class Hobby(TranslatableModel):
     translations = TranslatedFields(
         name=models.CharField(max_length=100),
-        description=models.TextField(),
+        description=models.TextField(blank=True),
     )
     icon = models.ImageField(upload_to='hobbies/', blank=True, help_text="Upload custom icon/image (optional if built-in selected)")
     font_awesome_icon = models.CharField(max_length=50, blank=True, default='', choices=[
