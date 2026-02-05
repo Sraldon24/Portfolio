@@ -28,7 +28,7 @@ class Profile(SingletonModel, TranslatableModel):
         name=models.CharField(max_length=100),
         bio=models.TextField(),
     )
-    profile_picture = models.ImageField(upload_to='profile/', blank=True)
+    profile_picture = models.ImageField(upload_to='profile/', blank=True, null=True)
     resume = models.FileField(upload_to='resume/', blank=True)
 
     def __str__(self):
@@ -77,7 +77,7 @@ class Project(TranslatableModel):
         title=models.CharField(max_length=200),
         description=models.TextField(),
     )
-    image = models.ImageField(upload_to='projects/')
+    image = models.ImageField(upload_to='projects/', blank=True, null=True)
     code_link = models.URLField(blank=True)
     demo_link = models.URLField(blank=True, verbose_name="Demo Link (Optional)")
     created_date = models.DateField(verbose_name="Creation Date")
