@@ -268,11 +268,11 @@ UNFOLD = {
                         "icon": "sports_esports",
                         "link": reverse_lazy("admin:main_hobby_changelist"),
                     },
-                     {
-                        "title": _("Hero Slides"),
-                        "icon": "view_carousel",
-                        "link": reverse_lazy("admin:main_heroslide_changelist"),
-                    },
+                    #{
+                    #    "title": _("Hero Slides"),
+                    #    "icon": "view_carousel",
+                    #    "link": reverse_lazy("admin:main_heroslide_changelist"),
+                    #},
                 ],
             },
             {
