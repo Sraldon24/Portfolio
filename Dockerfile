@@ -34,6 +34,8 @@ EXPOSE 8000
 
 # Default command
 # Collect static files during build
+RUN python manage.py collectstatic --noinput
+
 # Run tests during build to ensure code integrity
 RUN python manage.py test main
 
