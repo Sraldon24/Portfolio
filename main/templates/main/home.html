@@ -5,8 +5,31 @@
 <!-- Hero Section -->
 <section id="about" class="min-h-screen flex items-center justify-center relative overflow-hidden">
     <div class="absolute inset-0 z-0">
+        {% if profile.hero_bg_type == 'VIDEO' and profile.hero_video_file %}
+        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
+            <source src="{{ profile.hero_video_file.url }}" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-black" style="opacity: {{ profile.hero_overlay_opacity }};"></div>
+
+        {% elif profile.hero_bg_type == 'IMAGE' and profile.hero_static_image %}
+        <div class="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+            style="background-image: url('{{ profile.hero_static_image.url }}');"></div>
+        <div class="absolute inset-0 bg-black" style="opacity: {{ profile.hero_overlay_opacity }};"></div>
+
+        {% elif profile.hero_bg_type == 'SLIDESHOW' %}
+        <div class="slideshow-container absolute inset-0 w-full h-full">
+            {% for slide in profile.hero_slides.all %}
+            <div class="slide absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-1000 {% if not forloop.first %}opacity-0{% endif %}"
+                style="background-image: url('{{ slide.image.url }}');"></div>
+            {% endfor %}
+        </div>
+        <div class="absolute inset-0 bg-black" style="opacity: {{ profile.hero_overlay_opacity }};"></div>
+
+        {% else %}
+        <!-- Default Gradient -->
         <div class="absolute top-20 left-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
         <div class="absolute bottom-20 right-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        {% endif %}
     </div>
 
     <div class="container mx-auto px-4 z-10 text-center relative">
@@ -420,5 +443,22 @@
         </form>
     </div>
 </section>
+
+</section>
+
+<script>
+    // Slideshow Logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const slides = document.querySelectorAll('.slide');
+        if (slides.length > 1) {
+            let currentSlide = 0;
+            setInterval(() => {
+                slides[currentSlide].classList.add('opacity-0');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.remove('opacity-0');
+            }, 5000); // Change every 5 seconds
+        }
+    });
+</script>
 
 {% endblock %}

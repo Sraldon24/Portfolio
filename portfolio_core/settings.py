@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse_lazy
 import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -64,6 +65,8 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    "unfold",  # Django Unfold
+    "unfold.contrib.filters",  # Optional: for filters
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -141,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 LANGUAGES = [
     ('en', _('English')),
@@ -213,5 +216,104 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+    },
+}
+# Django Unfold Configuration
+UNFOLD = {
+    "SITE_TITLE": "Portfolio Admin",
+    "SITE_HEADER": "Portfolio Administration",
+    "SITE_URL": "/",
+    "DASHBOARD_CALLBACK": "main.views.dashboard_callback", # Optional: if we want widgets later
+    "COLORS": {
+        "primary": {
+            "500": "14 165 233",  # Sky 500
+            "600": "2 132 199",   # Sky 600
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": _("Content"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Profile"),
+                        "icon": "person", 
+                        "link": reverse_lazy("admin:main_profile_changelist"),
+                    },
+                    {
+                        "title": _("Projects"),
+                        "icon": "code",
+                        "link": reverse_lazy("admin:main_project_changelist"),
+                    },
+                    {
+                        "title": _("Skills"),
+                        "icon": "bolt",
+                        "link": reverse_lazy("admin:main_skill_changelist"),
+                    },
+                    {
+                        "title": _("Experience"),
+                        "icon": "work",
+                        "link": reverse_lazy("admin:main_experience_changelist"),
+                    },
+                    {
+                        "title": _("Education"),
+                        "icon": "school",
+                        "link": reverse_lazy("admin:main_education_changelist"),
+                    },
+                    {
+                        "title": _("Hobbies"),
+                        "icon": "sports_esports",
+                        "link": reverse_lazy("admin:main_hobby_changelist"),
+                    },
+                     {
+                        "title": _("Hero Slides"),
+                        "icon": "view_carousel",
+                        "link": reverse_lazy("admin:main_heroslide_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": _("Interactions"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Testimonials"),
+                        "icon": "reviews",
+                        "link": reverse_lazy("admin:main_testimonial_changelist"),
+                        "badge": "main.templatetags.admin_notifications.pending_testimonials_count",
+                    },
+                    {
+                        "title": _("Messages"),
+                        "icon": "mail",
+                        "link": reverse_lazy("admin:main_contactmessage_changelist"),
+                        "badge": "main.templatetags.admin_notifications.total_messages_count",
+                    },
+                ],
+            },
+            {
+                "title": _("System"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Users"),
+                        "icon": "group",
+                        "link": reverse_lazy("admin:auth_user_changelist"),
+                    },
+                    {
+                        "title": _("Groups"),
+                        "icon": "verified_user",
+                        "link": reverse_lazy("admin:auth_group_changelist"),
+                    },
+                     {
+                        "title": _("Contact Info"),
+                        "icon": "contact_phone",
+                        "link": reverse_lazy("admin:main_contactinfo_changelist"),
+                    },
+                ],
+            },
+        ],
     },
 }

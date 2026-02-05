@@ -82,8 +82,32 @@ class Profile(SingletonModel, TranslatableModel):
     profile_picture = models.ImageField(upload_to='profile/', blank=True, null=True)
     resume = models.FileField(upload_to='resume/', blank=True)
 
+    # Background Settings
+    HERO_BG_CHOICES = [
+        ('GRADIENT', 'Gradient (Default)'),
+        ('IMAGE', 'Static Image'),
+        ('VIDEO', 'Video'),
+        ('SLIDESHOW', 'Slideshow'),
+    ]
+    hero_bg_type = models.CharField(max_length=20, choices=HERO_BG_CHOICES, default='GRADIENT', verbose_name="Hero Background Type")
+    hero_static_image = models.ImageField(upload_to='hero/static/', blank=True, null=True, verbose_name="Static Hero Image")
+    hero_video_file = models.FileField(upload_to='hero/video/', blank=True, null=True, verbose_name="Hero Video (MP4/WebM)")
+    hero_overlay_opacity = models.DecimalField(max_digits=3, decimal_places=1, default=0.5, help_text="Overlay opacity (0.0 to 1.0). Higher = darker.")
+
     def __str__(self):
         return self.safe_translation_getter('name', any_language=True) or "Profile"
+
+class HeroSlide(models.Model):
+    profile = models.ForeignKey(Profile, related_name='hero_slides', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='hero/slides/')
+    caption = models.CharField(max_length=100, blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"Slide {self.order} for {self.profile}"
 
 class ContactInfo(SingletonModel):
     email = models.EmailField()

@@ -11,3 +11,4 @@ psycopg2-binary
 
 
 deep-translator==1.11.4
+django-unfold==0.20.0

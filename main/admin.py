@@ -1,7 +1,10 @@
 from django.contrib import admin
 from parler.admin import TranslatableAdmin
 from django.contrib.auth.models import Group, User
-from .models import Profile, ContactInfo, Skill, Project, Experience, Education, Hobby, ContactMessage, Testimonial
+from .models import (
+    Profile, ContactInfo, Skill, Project, Experience,
+    Education, Hobby, ContactMessage, Testimonial, HeroSlide
+)
 
 admin.site.unregister(Group)
 admin.site.unregister(User)
@@ -13,8 +16,23 @@ class SingletonAdminMixin:
             return False
         return super().has_add_permission(request)
 
+class HeroSlideInline(admin.TabularInline):
+    model = HeroSlide
+    extra = 1
+
 @admin.register(Profile)
 class ProfileAdmin(SingletonAdminMixin, TranslatableAdmin):
+    inlines = [HeroSlideInline]
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'bio', 'profile_picture', 'resume'),
+        }),
+        ('Hero Background', {
+            'fields': ('hero_bg_type', 'hero_static_image', 'hero_video_file', 'hero_overlay_opacity'),
+            'classes': ('collapse',),
+        }),
+    )
+
     list_display = ('__str__',)
 
 @admin.register(ContactInfo)
