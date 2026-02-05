@@ -14,6 +14,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     python3-dev \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies
@@ -22,6 +24,10 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # Copy project
 COPY . /app/
+
+# Install node dependencies and build CSS
+RUN npm install
+RUN npm run build:css
 
 # Expose port
 EXPOSE 8000
