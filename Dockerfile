@@ -37,8 +37,8 @@ EXPOSE 8000
 # Run tests during build to ensure code integrity
 RUN python manage.py test main
 
-RUN python manage.py collectstatic --noinput
+
 
 
 # Default command (Production)
-CMD ["sh", "-c", "python manage.py migrate && python manage.py ensure_admin && gunicorn --config gunicorn.conf.py --bind 0.0.0.0:8000 portfolio_core.wsgi:application"]
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && python manage.py ensure_admin && gunicorn --config gunicorn.conf.py --bind 0.0.0.0:8000 portfolio_core.wsgi:application"]
