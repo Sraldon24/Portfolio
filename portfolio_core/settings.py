@@ -223,7 +223,7 @@ UNFOLD = {
     "SITE_TITLE": "Portfolio Admin",
     "SITE_HEADER": "Portfolio Administration",
     "SITE_URL": "/",
-    "DASHBOARD_CALLBACK": "main.views.dashboard_callback", # Optional: if we want widgets later
+
     "COLORS": {
         "primary": {
             "500": "14 165 233",  # Sky 500
