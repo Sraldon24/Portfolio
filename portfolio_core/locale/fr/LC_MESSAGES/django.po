@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-14 01:51+0000\n"
+"POT-Creation-Date: 2026-02-11 16:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,10 +17,59 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-#: portfolio_core/settings.py:117
+
+#: portfolio_core/settings.py:158
 msgid "English"
 msgstr ""
 
-#: portfolio_core/settings.py:118
+#: portfolio_core/settings.py:159
 msgid "French"
+msgstr ""
+
+#: portfolio_core/settings.py:246
+msgid "Content"
+msgstr ""
+
+#: portfolio_core/settings.py:250
+msgid "Profile"
+msgstr ""
+
+#: portfolio_core/settings.py:255
+msgid "Projects"
+msgstr ""
+
+#: portfolio_core/settings.py:260
+msgid "Skills"
+msgstr ""
+
+#: portfolio_core/settings.py:265
+msgid "Experience"
+msgstr ""
+
+#: portfolio_core/settings.py:270
+msgid "Education"
+msgstr ""
+
+#: portfolio_core/settings.py:275
+msgid "Hobbies"
+msgstr ""
+
+#: portfolio_core/settings.py:287
+msgid "Interactions"
+msgstr ""
+
+#: portfolio_core/settings.py:291
+msgid "Testimonials"
+msgstr ""
+
+#: portfolio_core/settings.py:297
+msgid "Messages"
+msgstr ""
+
+#: portfolio_core/settings.py:305
+msgid "System"
+msgstr ""
+
+#: portfolio_core/settings.py:309
+msgid "Contact Info"
 msgstr ""
