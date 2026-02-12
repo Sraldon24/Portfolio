@@ -41,12 +41,14 @@ class ContactInfoAdmin(SingletonAdminMixin, admin.ModelAdmin):
 
 @admin.register(Skill)
 class SkillAdmin(TranslatableAdmin):
+    show_add_link = True
     list_display = ('name', 'proficiency')
     search_fields = ('translations__name',)
     list_filter = ('proficiency',)
 
 @admin.register(Project)
 class ProjectAdmin(TranslatableAdmin):
+    show_add_link = True
     list_display = ('title', 'created_date', 'description_snippet', 'link')
     search_fields = ('translations__title', 'translations__description')
     list_filter = ('created_date',)
@@ -62,6 +64,7 @@ class ProjectAdmin(TranslatableAdmin):
 
 @admin.register(Experience)
 class ExperienceAdmin(TranslatableAdmin):
+    show_add_link = True
     list_display = ('job_title', 'company', 'start_date', 'end_date', 'icon')
     search_fields = ('translations__job_title', 'translations__company')
     list_filter = ('start_date', 'end_date')
@@ -69,6 +72,7 @@ class ExperienceAdmin(TranslatableAdmin):
 
 @admin.register(Education)
 class EducationAdmin(TranslatableAdmin):
+    show_add_link = True
     list_display = ('degree', 'institution', 'start_date', 'end_date')
     search_fields = ('translations__degree', 'translations__institution')
     list_filter = ('start_date', 'end_date')
@@ -76,10 +80,12 @@ class EducationAdmin(TranslatableAdmin):
 
 @admin.register(Hobby)
 class HobbyAdmin(TranslatableAdmin):
+    show_add_link = True
     list_display = ('name', 'font_awesome_icon', 'icon')
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
+    show_add_link = True
     list_display = ('name', 'email', 'subject', 'message_snippet', 'created_at')
     readonly_fields = ('name', 'email', 'subject', 'message', 'created_at')
     search_fields = ('name', 'email', 'subject', 'message')
@@ -91,6 +97,7 @@ class ContactMessageAdmin(admin.ModelAdmin):
 
 @admin.register(Testimonial)
 class TestimonialAdmin(admin.ModelAdmin):
+    show_add_link = True
     list_display = ('name', 'role_company', 'quote_snippet', 'is_approved', 'created_at')
     list_filter = ('is_approved', 'created_at')
     actions = ['approve_testimonials', 'reject_testimonials']
