@@ -25,6 +25,12 @@ This file explains the purpose of each environment variable used in this project
 | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :---------------------------------- |
 | `DATABASE_URL` | The connection string for your database. If not set, the app defaults to a local SQLite file (`db.sqlite3`). In production (Railway, Heroku, etc.), this is usually provided automatically. | `postgres://user:pass@host:5432/db` |
 
+## Cache (Rate Limiting)
+
+| Variable    | Description                                                                                                                                                                                                 | Example                     |
+| :---------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------- |
+| `REDIS_URL` | (Optional) Redis connection URL for rate limiting. django-ratelimit requires a cache with atomic increments; without Redis, LocMemCache is used (correct per-process, but limit applies per worker in production). | `redis://localhost:6379/0`  |
+
 ## Admin User Management
 
 These variables are used by the `ensure_admin` command (which runs automatically on startup) to create or update the superuser.

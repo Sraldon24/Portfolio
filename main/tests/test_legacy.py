@@ -1,4 +1,4 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from django.utils import translation
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -6,7 +6,7 @@ from main.models import (
     Profile, ContactInfo, Skill, Project, Experience, 
     Education, Hobby, Testimonial, ContactMessage
 )
-from main.forms import ContactForm, TestimonialForm
+from main.forms import ContactForm, TestimonialForm, MESSAGE_MAX_LENGTH, QUOTE_MAX_LENGTH
 import datetime
 import sys
 
@@ -97,6 +97,7 @@ class StandardModelTest(TestCase):
         )
         self.assertEqual(str(testim), "Testimonial from Client")
 
+@override_settings(RATELIMIT_ENABLE=False)
 class HomeViewTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -163,4 +164,95 @@ class HomeViewTest(TestCase):
         messages = list(response.context['messages'])
         self.assertTrue(any("error" in str(m) for m in messages))
         self.assertEqual(ContactMessage.objects.count(), 0)
+
+    def test_contact_message_length_limit(self):
+        """Message exceeding max length should be rejected."""
+        data = {
+            'submit_contact': '1',
+            'contact-name': 'User',
+            'contact-email': 'user@example.com',
+            'contact-subject': 'Hi',
+            'contact-message': 'x' * (MESSAGE_MAX_LENGTH + 1),
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ContactMessage.objects.count(), 0)
+        form = response.context['contact_form']
+        self.assertIn('message', form.errors)
+        self.assertIn(str(MESSAGE_MAX_LENGTH), str(form.errors['message']))
+
+    def test_testimonial_quote_length_limit(self):
+        """Testimonial quote exceeding max length should be rejected."""
+        data = {
+            'submit_testimonial': '1',
+            'testimonial-name': 'Client',
+            'testimonial-role_company': '',
+            'testimonial-quote': 'x' * (QUOTE_MAX_LENGTH + 1),
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Testimonial.objects.count(), 0)
+        form = response.context['testimonial_form']
+        self.assertIn('quote', form.errors)
+        self.assertIn(str(QUOTE_MAX_LENGTH), str(form.errors['quote']))
+
+
+@override_settings(RATELIMIT_ENABLE=True)
+class RateLimitTest(TestCase):
+    """Test rate limiting blocks excessive form submissions."""
+
+    def setUp(self):
+        self.client = Client()
+        translation.activate('en')
+        self.url = reverse('home')
+        self.profile = Profile.objects.create(name="Dev", bio="Bio")
+        self.contact = ContactInfo.objects.create(email="dev@example.com")
+        self.skill = Skill.objects.create(name="Django", proficiency=100)
+        self.project = Project.objects.create(
+            title="Portfolio",
+            description="This site",
+            created_date=datetime.date.today(),
+            image=SimpleUploadedFile("img.jpg", b"img", content_type="image/jpeg"),
+        )
+        self.contact_data = {
+            'submit_contact': '1',
+            'contact-name': 'User',
+            'contact-email': 'user@example.com',
+            'contact-subject': 'Hi',
+            'contact-message': 'Test msg',
+        }
+
+    def test_rate_limit_blocks_after_five_submissions(self):
+        """After 5 POST requests, the 6th should be rate limited."""
+        # First 5 should succeed
+        for i in range(5):
+            data = self.contact_data.copy()
+            data['contact-message'] = f'Test msg {i}'
+            response = self.client.post(self.url, data)
+            self.assertRedirects(response, self.url, msg_prefix=f"Request {i+1} should succeed")
+
+        self.assertEqual(ContactMessage.objects.count(), 5)
+
+        # 6th should be rate limited (redirect with error message)
+        response = self.client.post(self.url, self.contact_data, follow=True)
+        self.assertContains(response, 'Too many submissions', status_code=200)
+        self.assertEqual(ContactMessage.objects.count(), 5)  # No 6th message saved
+
+    def test_rate_limit_respects_per_ip(self):
+        """Different IPs have separate limits."""
+        # Exhaust limit for IP 192.168.1.1
+        for i in range(5):
+            data = self.contact_data.copy()
+            data['contact-message'] = f'A msg {i}'
+            self.client.post(self.url, data, REMOTE_ADDR='192.168.1.1')
+
+        # Different IP should still succeed
+        data_b = self.contact_data.copy()
+        data_b['contact-email'] = 'other@example.com'
+        data_b['contact-message'] = 'From different IP'
+        response = self.client.post(
+            self.url, data_b, REMOTE_ADDR='192.168.1.2', follow=True
+        )
+        self.assertNotContains(response, 'Too many submissions', status_code=200)
+        self.assertEqual(ContactMessage.objects.count(), 6)
 

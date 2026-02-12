@@ -1,13 +1,21 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.utils.translation import gettext as _
+from django_ratelimit.decorators import ratelimit
 from .models import Profile, Skill, Project, Experience, Education, Hobby, Testimonial, ContactInfo
 from .forms import ContactForm, TestimonialForm
 
+
+@ratelimit(key='ip', rate='5/h', method='POST', block=False)
 def home(request):
     contact_form = ContactForm(prefix='contact')
     testimonial_form = TestimonialForm(prefix='testimonial')
     
     if request.method == 'POST':
+        if getattr(request, 'limited', False):
+            messages.error(request, _('Too many submissions. Please try again later.'))
+            return redirect('home')
+
         if 'submit_contact' in request.POST:
             contact_form = ContactForm(request.POST, prefix='contact')
             if contact_form.is_valid():

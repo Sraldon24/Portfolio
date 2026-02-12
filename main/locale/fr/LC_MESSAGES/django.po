@@ -1,0 +1,158 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-11 16:46+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: main/forms.py:21
+#, python-format
+msgid "Message must be %(max)s characters or less."
+msgstr "Le message doit contenir au maximum %(max)s caractères."
+
+#: main/forms.py:37
+#, python-format
+msgid "Testimonial must be %(max)s characters or less."
+msgstr "Le témoignage doit contenir au maximum %(max)s caractères."
+
+#: main/templates/main/base.html:8 main/templates/main/base.html:12
+#: main/templates/main/base.html:18
+msgid "Portfolio"
+msgstr ""
+
+#: main/templates/main/base.html:10 main/templates/main/base.html:14
+#: main/templates/main/base.html:20
+msgid "Professional Portfolio displaying projects, skills, and experience."
+msgstr ""
+
+#: main/templates/main/base.html:42
+msgid "About"
+msgstr ""
+
+#: main/templates/main/base.html:43
+msgid "Skills"
+msgstr ""
+
+#: main/templates/main/base.html:44
+msgid "Projects"
+msgstr ""
+
+#: main/templates/main/base.html:45
+msgid "Contact"
+msgstr ""
+
+#: main/templates/main/base.html:168
+msgid "All rights reserved."
+msgstr ""
+
+#: main/templates/main/home.html:64
+msgid "Download Resume"
+msgstr ""
+
+#: main/templates/main/home.html:69
+msgid "Get in Touch"
+msgstr ""
+
+#: main/templates/main/home.html:79
+msgid "My Skills"
+msgstr ""
+
+#: main/templates/main/home.html:105
+msgid "Featured Projects"
+msgstr ""
+
+#: main/templates/main/home.html:143
+msgid "Code"
+msgstr ""
+
+#: main/templates/main/home.html:149
+msgid "Live Demo"
+msgstr ""
+
+#: main/templates/main/home.html:168
+msgid "Experience"
+msgstr ""
+
+#: main/templates/main/home.html:188 main/templates/main/home.html:218
+msgid "Present"
+msgstr ""
+
+#: main/templates/main/home.html:203
+msgid "Education"
+msgstr ""
+
+#: main/templates/main/home.html:233
+msgid "My Hobbies"
+msgstr ""
+
+#: main/templates/main/home.html:266
+msgid "Testimonials"
+msgstr ""
+
+#: main/templates/main/home.html:297
+msgid "Get In Touch"
+msgstr ""
+
+#: main/templates/main/home.html:304
+msgid "Contact Info"
+msgstr ""
+
+#: main/templates/main/home.html:344
+msgid "Name"
+msgstr ""
+
+#: main/templates/main/home.html:353
+msgid "Email"
+msgstr ""
+
+#: main/templates/main/home.html:362
+msgid "Subject"
+msgstr ""
+
+#: main/templates/main/home.html:371
+msgid "Message"
+msgstr ""
+
+#: main/templates/main/home.html:381
+msgid "Send Message"
+msgstr ""
+
+#: main/templates/main/home.html:392
+msgid "Worked with me? Leave a testimonial!"
+msgstr ""
+
+#: main/templates/main/home.html:408
+msgid "Your Name"
+msgstr ""
+
+#: main/templates/main/home.html:418
+msgid "Role / Company (Optional)"
+msgstr ""
+
+#: main/templates/main/home.html:428
+msgid "Your Testimonial"
+msgstr ""
+
+#: main/templates/main/home.html:438
+msgid "Submit Testimonial"
+msgstr ""
+
+#: main/templates/main/home.html:441
+msgid "* Submissions are reviewed before being published."
+msgstr ""
+
+#: main/views.py:16
+msgid "Too many submissions. Please try again later."
+msgstr "Trop de soumissions. Veuillez réessayer plus tard."

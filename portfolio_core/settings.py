@@ -110,6 +110,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'portfolio_core.wsgi.application'
 
 
+# Cache (for rate limiting; requires atomic increments - Redis/Memcached, NOT DatabaseCache)
+# django-ratelimit needs atomic operations; DatabaseCache causes race conditions.
+_REDIS_URL = os.environ.get('REDIS_URL')
+if _REDIS_URL:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': _REDIS_URL,
+        }
+    }
+else:
+    # LocMemCache: correct per-process, no race conditions. Multi-worker = limit per worker.
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        }
+    }
+
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 

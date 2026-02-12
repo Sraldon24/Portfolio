@@ -29,6 +29,7 @@ A modern, bilingual (English/French) portfolio website built with **Django** and
 ### 🔒 Security & SEO
 
 - **Environment Variables**: Sensitive settings (`SECRET_KEY`, `DEBUG`) are externalized via `.env`.
+- **Rate Limiting**: Form submissions (contact, testimonials) are limited to 5 per hour per IP. Set `REDIS_URL` in production for accurate limits across workers.
 - **SEO Optimized**: Meta tags, Open Graph (OG) tags for social media previews, and semantic HTML.
 
 ## Tech Stack
