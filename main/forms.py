@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from parler.forms import TranslatableModelForm
 from .models import ContactMessage, Testimonial
 
 # Length limits for unbounded TextFields (protects against large submission attacks)
@@ -23,7 +24,7 @@ class ContactForm(forms.ModelForm):
         return message
 
 
-class TestimonialForm(forms.ModelForm):
+class TestimonialForm(TranslatableModelForm):
     nickname = forms.CharField(required=False, widget=forms.HiddenInput, label="Leave empty")
 
     class Meta:
@@ -37,4 +38,3 @@ class TestimonialForm(forms.ModelForm):
                 _('Testimonial must be %(max)s characters or less.') % {'max': QUOTE_MAX_LENGTH}
             )
         return quote
-

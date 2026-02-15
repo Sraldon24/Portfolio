@@ -25,11 +25,11 @@ def home(request):
 
                 try:
                     contact_form.save()
-                    messages.success(request, 'Your message has been sent successfully!')
+                    messages.success(request, _('Your message has been sent successfully!'))
                 except Exception as e:
                     # Log the error if possible, but don't crash the user
                     print(f"Error sending message: {e}")
-                    messages.success(request, 'Your message has been sent successfully!') # Fake success to user if email fails but DB saved?
+                    messages.success(request, _('Your message has been sent successfully!')) # Fake success to user if email fails but DB saved?
                     # Actually, if save() fails (signals), the DB transaction might roll back or not.
                     # Signals usually run after save. If signal fails, save is usually done.
                     # But to be safe and friendly:
@@ -38,7 +38,7 @@ def home(request):
                     # If it's pure email error, the contact IS saved in DB.
                 return redirect('home')
             else:
-                messages.error(request, 'There was an error sending your message. Please check the form.')
+                messages.error(request, _('There was an error sending your message. Please check the form.'))
         
         elif 'submit_testimonial' in request.POST:
             testimonial_form = TestimonialForm(request.POST, prefix='testimonial')
@@ -49,13 +49,13 @@ def home(request):
 
                 try:
                     testimonial_form.save()
-                    messages.success(request, 'Thank you! Your testimonial has been submitted for review.')
+                    messages.success(request, _('Thank you! Your testimonial has been submitted for review.'))
                 except Exception as e:
                     print(f"Error saving testimonial: {e}")
-                    messages.success(request, 'Thank you! Your testimonial has been submitted for review.')
+                    messages.success(request, _('Thank you! Your testimonial has been submitted for review.'))
                 return redirect('home')
             else:
-                messages.error(request, 'There was an error submitting your testimonial.')
+                messages.error(request, _('There was an error submitting your testimonial.'))
 
     context = {
         'profile': Profile.load(),

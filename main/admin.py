@@ -96,15 +96,21 @@ class ContactMessageAdmin(admin.ModelAdmin):
     message_snippet.short_description = 'Message'
 
 @admin.register(Testimonial)
-class TestimonialAdmin(admin.ModelAdmin):
+class TestimonialAdmin(TranslatableAdmin):
     show_add_link = True
-    list_display = ('name', 'role_company', 'quote_snippet', 'is_approved', 'created_at')
+    list_display = ('name', 'get_role_company', 'quote_snippet', 'is_approved', 'created_at')
     list_filter = ('is_approved', 'created_at')
     actions = ['approve_testimonials', 'reject_testimonials']
-    search_fields = ('name', 'quote', 'role_company')
+    search_fields = ('name', 'translations__quote', 'translations__role_company')
+
+    def get_role_company(self, obj):
+        val = obj.safe_translation_getter('role_company', any_language=True)
+        return val or ''
+    get_role_company.short_description = 'Role / Company'
 
     def quote_snippet(self, obj):
-        return obj.quote[:50] + '...' if obj.quote else ''
+        val = obj.safe_translation_getter('quote', any_language=True)
+        return val[:50] + '...' if val else ''
     quote_snippet.short_description = 'Quote'
 
     @admin.action(description='Approve selected testimonials')

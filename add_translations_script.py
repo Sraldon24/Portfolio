@@ -4,7 +4,7 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio_core.settings')
 django.setup()
 
-from main.models import Profile, Project, Skill, Experience, Education
+from main.models import Profile, Project, Skill, Experience, Education, Testimonial
 
 def add_translations():
     # Profile
@@ -60,6 +60,32 @@ def add_translations():
         edu.institution = edu.safe_translation_getter('institution', language_code='en')
         edu.save()
     print(f"Translated {educations.count()} educations.")
+    
+    # Testimonials
+    testimonials = Testimonial.objects.all()
+    for testimonial in testimonials:
+        testimonial.set_current_language('fr')
+        # Use existing English content as source if not present?
+        # Ideally the model's save method handles auto-translation if set up correctly,
+        # but here we are forcing it for existing records.
+        # The auto_translate_fields function we saw earlier relies on Google Translator.
+        # We can trigger a save which should call auto_translate_fields if we are saving in 'fr' 
+        # but the logic there checks for 'en' source.
+        # Let's just manually call the same logic or just save() and let the model handle it if we switch to EN then save?
+        # Actually, let's look at the model save override: 
+        # if instance.get_current_language() != 'en': return
+        # So it only auto-translates when saving EN.
+        
+        # So we should iterate, set language to EN, save (to trigger auto translate to FR if missing).
+        # But wait, the auto_translate_fields checks if FR exists.
+        
+        # Strategy: Ensure EN content is there (it is), then save.
+        testimonial.set_current_language('en')
+        testimonial.save() 
+        # The save() method calls auto_translate_fields(self), which checks if FR is missing, 
+        # and if so, translates from EN to FR.
+    
+    print(f"Refreshed {testimonials.count()} testimonials (triggering auto-translation).")
 
 if __name__ == "__main__":
     add_translations()

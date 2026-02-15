@@ -40,92 +40,113 @@ msgstr ""
 msgid "Django administration"
 msgstr ""
 
-#~ msgid "Portfolio"
-#~ msgstr "Portfolio"
+msgid "Portfolio"
+msgstr "Portfolio"
 
-#~ msgid "About"
-#~ msgstr "À propos"
+msgid "About"
+msgstr "À propos"
 
-#~ msgid "Skills"
-#~ msgstr "Compétences"
+msgid "Skills"
+msgstr "Compétences"
 
-#~ msgid "Projects"
-#~ msgstr "Projets"
+msgid "Projects"
+msgstr "Projets"
 
-#~ msgid "Contact"
-#~ msgstr "Contact"
+msgid "Contact"
+msgstr "Contact"
 
-#~ msgid "All rights reserved."
-#~ msgstr "Tous droits réservés."
+msgid "All rights reserved."
+msgstr "Tous droits réservés."
 
-#~ msgid "Download Resume"
-#~ msgstr "Télécharger le CV"
+msgid "Download Resume"
+msgstr "Télécharger le CV"
 
-#~ msgid "Get in Touch"
-#~ msgstr "Contactez-nous"
+msgid "Get in Touch"
+msgstr "Contactez-nous"
 
-#~ msgid "My Skills"
-#~ msgstr "Mes Compétences"
+msgid "My Skills"
+msgstr "Mes Compétences"
 
-#~ msgid "Featured Projects"
-#~ msgstr "Projets en Vedette"
+msgid "Featured Projects"
+msgstr "Projets en Vedette"
 
-#~ msgid "Code"
-#~ msgstr "Code"
+msgid "Code"
+msgstr "Code"
 
-#~ msgid "Live Demo"
-#~ msgstr "Démo en Direct"
+msgid "Live Demo"
+msgstr "Démo en Direct"
 
-#~ msgid "Experience"
-#~ msgstr "Expérience"
+msgid "Experience"
+msgstr "Expérience"
 
-#~ msgid "Present"
-#~ msgstr "Présent"
+msgid "Present"
+msgstr "Présent"
 
-#~ msgid "Education"
-#~ msgstr "Éducation"
+msgid "Education"
+msgstr "Éducation"
 
-#~ msgid "Testimonials"
-#~ msgstr "Témoignages"
+msgid "Testimonials"
+msgstr "Témoignages"
 
-#~ msgid "Get In Touch"
-#~ msgstr "Contactez-nous"
+msgid "Get In Touch"
+msgstr "Contactez-nous"
 
-#~ msgid "Contact Info"
-#~ msgstr "Info Contact"
+msgid "Contact Info"
+msgstr "Info Contact"
 
-#~ msgid "Name"
-#~ msgstr "Nom"
+msgid "Name"
+msgstr "Nom"
 
-#~ msgid "Email"
-#~ msgstr "E-mail"
+msgid "Email"
+msgstr "E-mail"
 
-#~ msgid "Subject"
-#~ msgstr "Sujet"
+msgid "Subject"
+msgstr "Sujet"
 
-#~ msgid "Message"
-#~ msgstr "Message"
+msgid "Message"
+msgstr "Message"
 
-#~ msgid "Send Message"
-#~ msgstr "Envoyer Message"
+msgid "Send Message"
+msgstr "Envoyer Message"
 
-#~ msgid "Worked with me? Leave a testimonial!"
-#~ msgstr "Vous avez travaillé avec moi ? Laissez un témoignage !"
+msgid "Worked with me? Leave a testimonial!"
+msgstr "Vous avez travaillé avec moi ? Laissez un témoignage !"
 
-#~ msgid "Your Name"
-#~ msgstr "Votre Nom"
+msgid "Your Name"
+msgstr "Votre Nom"
 
-#~ msgid "Role / Company (Optional)"
-#~ msgstr "Rôle / Entreprise (Optionnel)"
+msgid "Role / Company (Optional)"
+msgstr "Rôle / Entreprise (Optionnel)"
 
-#~ msgid "Your Testimonial"
-#~ msgstr "Votre Témoignage"
+msgid "Your Testimonial"
+msgstr "Votre Témoignage"
 
-#~ msgid "Submit Testimonial"
-#~ msgstr "Envoyer Témoignage"
+msgid "Submit Testimonial"
+msgstr "Envoyer Témoignage"
 
-#~ msgid "* Submissions are reviewed before being published."
-#~ msgstr "* Les soumissions sont examinées avant d'être publiées."
+msgid "* Submissions are reviewed before being published."
+msgstr "* Les soumissions sont examinées avant d'être publiées."
 
-#~ msgid "My Hobbies"
-#~ msgstr "Mes Loisirs"
+msgid "My Hobbies"
+msgstr "Mes Loisirs"
+
+msgid "Professional Portfolio displaying projects, skills, and experience."
+msgstr "Portfolio professionnel présentant des projets, compétences et expériences."
+
+msgid "Your message has been sent successfully!"
+msgstr "Votre message a été envoyé avec succès !"
+
+msgid "There was an error sending your message. Please check the form."
+msgstr "Une erreur s'est produite lors de l'envoi de votre message. Veuillez vérifier le formulaire."
+
+msgid "Thank you! Your testimonial has been submitted for review."
+msgstr "Merci ! Votre témoignage a été soumis pour examen."
+
+msgid "There was an error submitting your testimonial."
+msgstr "Une erreur s'est produite lors de la soumission de votre témoignage."
+
+msgid "English"
+msgstr "Anglais"
+
+msgid "French"
+msgstr "Français"

@@ -257,12 +257,20 @@ class ContactMessage(models.Model):
     def __str__(self):
         return f"Message from {self.name}: {self.subject}"
 
-class Testimonial(models.Model):
+class Testimonial(TranslatableModel):
     name = models.CharField(max_length=100, verbose_name="Your Name")
-    role_company = models.CharField(max_length=100, blank=True, verbose_name="Role / Company (Optional)")
-    quote = models.TextField(verbose_name="Testimonial")
+    
+    translations = TranslatedFields(
+        role_company = models.CharField(max_length=100, blank=True, verbose_name="Role / Company (Optional)"),
+        quote = models.TextField(verbose_name="Testimonial"),
+    )
+    
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        auto_translate_fields(self)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Testimonial from {self.name}"
