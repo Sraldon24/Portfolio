@@ -16,6 +16,7 @@ env/
 
 # Media
 media/
+!media/resume/AmirGhadimi_Resume.pdf
 
 # Brain/Artifacts
 .gemini/
