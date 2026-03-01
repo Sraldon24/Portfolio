@@ -26,17 +26,18 @@
         <div class="absolute inset-0 bg-black" style="opacity: {{ profile.hero_overlay_opacity }};"></div>
 
         {% else %}
-        <!-- Default Gradient -->
-        <div class="absolute top-20 left-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-20 right-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        <!-- Default: Floating decorative orbs -->
+        <div class="floating-blob w-72 h-72 bg-blue-500/10 top-20 left-20 animate-float"></div>
+        <div class="floating-blob w-96 h-96 bg-emerald-500/10 bottom-20 right-20 animate-float-slow"></div>
+        <div class="floating-blob w-64 h-64 bg-purple-500/8 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-float-slower"></div>
+        <div class="floating-blob w-48 h-48 bg-blue-400/5 bottom-40 left-1/4 animate-float delay-300"></div>
         {% endif %}
     </div>
 
-    <div class="container mx-auto px-4 z-10 text-center relative">
-        <div class="relative w-48 h-48 mx-auto md:mx-0 mb-6 md:mb-0 inline-block">
-            <div
-                class="absolute inset-0 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full blur opacity-75 animate-pulse">
-            </div>
+    <div class="container mx-auto px-4 z-10 text-center relative stagger-reveal">
+        <!-- Profile Picture with Animated Gradient Border -->
+        <div class="relative w-48 h-48 mx-auto mb-6 inline-block">
+            <div class="absolute inset-0 rounded-full profile-border-animated blur opacity-75 animate-glow-pulse"></div>
             {% if profile.profile_picture %}
             <img src="{{ profile.profile_picture.url }}" alt="{{ profile.name }}"
                 class="relative w-full h-full object-cover rounded-full border-4 border-gray-800 shadow-2xl">
@@ -48,19 +49,21 @@
             {% endif %}
         </div>
 
-        <h1
-            class="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 tracking-tight font-heading fade-in-section">
+        <!-- Animated Gradient Text Name -->
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text-animated tracking-tight font-heading">
             {{ profile.name }}
         </h1>
 
-        <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+        <!-- Bio with Typing Cursor -->
+        <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed typing-cursor">
             {{ profile.bio|default:"" }}
         </p>
 
+        <!-- CTA Buttons -->
         <div class="flex justify-center space-x-4">
             {% if profile.resume %}
             <a href="{{ profile.resume.url }}" download
-                class="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-blue-500/25">
+                class="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition-all transform hover:scale-105 shadow-lg shadow-blue-500/25 btn-shine">
                 {% trans "Download Resume" %}
             </a>
             {% endif %}
@@ -72,6 +75,9 @@
     </div>
 </section>
 
+<!-- Section Divider -->
+<div class="section-divider h-1"></div>
+
 <!-- Skills Section -->
 <section id="skills" class="py-20 bg-gray-800/30 fade-in-section">
     <div class="container mx-auto px-4">
@@ -79,24 +85,25 @@
             <span class="border-b-4 border-blue-500 pb-2">{% trans "My Skills" %}</span>
         </h2>
 
-        <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-h-96 overflow-y-auto pr-2 custom-scrollbar stagger-reveal">
             {% for skill in skills %}
-            <div
-                class="bg-gray-800/50 backdrop-blur-md p-6 rounded-xl hover:bg-gray-800/70 transition-all border border-white/10 hover:border-blue-500/30 shadow-lg group">
+            <div class="bg-gray-800/50 backdrop-blur-md p-6 rounded-xl hover:bg-gray-800/70 transition-all border border-white/10 hover:border-blue-500/30 shadow-lg group card-glow">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-bold text-blue-100">{{ skill.name }}</h3>
-                    <span class="text-blue-400 font-mono">{{ skill.proficiency }}%</span>
+                    <span class="text-blue-400 font-mono skill-counter" data-target="{{ skill.proficiency }}">0%</span>
                 </div>
                 <div class="w-full bg-gray-700/50 rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-500 to-emerald-500 h-2.5 rounded-full transition-all duration-1000"
-                        style="width: {{ skill.proficiency|default:0 }}%;"></div>
+                    <div class="skill-bar-fill bg-gradient-to-r from-blue-500 to-emerald-500 h-2.5 rounded-full"
+                        data-width="{{ skill.proficiency|default:0 }}"></div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
 </section>
+
+<!-- Section Divider -->
+<div class="section-divider h-1"></div>
 
 <!-- Projects Section -->
 <section id="projects" class="py-20 fade-in-section">
@@ -105,22 +112,23 @@
             <span class="border-b-4 border-emerald-500 pb-2">{% trans "Featured Projects" %}</span>
         </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-reveal">
             {% for project in projects %}
-            <div
-                class="group bg-gray-800/50 backdrop-blur-md rounded-xl overflow-hidden shadow-xl transition-all hover:-translate-y-2 border border-white/10 hover:border-emerald-500/30">
+            <div class="group bg-gray-800/50 backdrop-blur-md rounded-xl overflow-hidden shadow-xl transition-all hover:-translate-y-2 border border-white/10 hover:border-emerald-500/30 card-glow-emerald gradient-border">
                 <div class="h-48 overflow-hidden relative">
                     {% if project.image %}
                     <img src="{{ project.image.url }}" alt="{{ project.title }}"
-                        class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
+                        class="w-full h-full object-cover transform group-hover:scale-110 group-hover:-translate-y-1 transition-transform duration-500">
                     {% else %}
-                    <div
-                        class="w-full h-full bg-gray-700 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-500">
+                    <div class="w-full h-full bg-gray-700 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-500">
                         <i class="fa-solid fa-code text-4xl text-gray-500"></i>
                     </div>
                     {% endif %}
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60">
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60"></div>
+
+                    <!-- Hover Overlay -->
+                    <div class="project-overlay">
+                        <span class="text-white font-semibold text-sm tracking-wide uppercase">{% trans "View Project" %}</span>
                     </div>
                 </div>
 
@@ -157,6 +165,9 @@
     </div>
 </section>
 
+<!-- Section Divider -->
+<div class="section-divider h-1"></div>
+
 <!-- Experience & Education -->
 <section class="py-20 bg-gray-800/30 fade-in-section">
     <div class="container mx-auto px-4">
@@ -167,11 +178,10 @@
                     <span class="w-2 h-8 bg-blue-500 mr-4 rounded-full"></span>
                     {% trans "Experience" %}
                 </h2>
-                <div class="space-y-8 border-l-2 border-gray-700 pl-8 ml-3">
+                <div class="space-y-8 border-l-2 border-gray-700 pl-8 ml-3 timeline-line">
                     {% for exp in experiences %}
-                    <div class="relative">
-                        <div
-                            class="absolute -left-[45px] top-0 flex items-center justify-center w-8 h-8 bg-gray-800 border-2 border-blue-500 rounded-full z-10">
+                    <div class="relative fade-in-section">
+                        <div class="absolute -left-[45px] top-0 flex items-center justify-center w-8 h-8 bg-gray-800 border-2 border-blue-500 rounded-full z-10 timeline-dot">
                             {% if exp.icon %}
                             <i class="{{ exp.icon }} text-blue-500 text-sm"></i>
                             {% else %}
@@ -202,11 +212,10 @@
                     <span class="w-2 h-8 bg-emerald-500 mr-4 rounded-full"></span>
                     {% trans "Education" %}
                 </h2>
-                <div class="space-y-8 border-l-2 border-gray-700 pl-8 ml-3">
+                <div class="space-y-8 border-l-2 border-gray-700 pl-8 ml-3 timeline-line">
                     {% for edu in educations %}
-                    <div class="relative">
-                        <div
-                            class="absolute -left-[39px] top-1 w-5 h-5 bg-gray-800 border-4 border-emerald-500 rounded-full">
+                    <div class="relative fade-in-section">
+                        <div class="absolute -left-[39px] top-1 w-5 h-5 bg-gray-800 border-4 border-emerald-500 rounded-full timeline-dot">
                         </div>
                         <h3 class="text-xl font-bold text-gray-100">{{ edu.degree }}</h3>
                         <p class="text-emerald-400 font-medium mb-1">{{ edu.institution }}</p>
@@ -226,6 +235,9 @@
     </div>
 </section>
 
+<!-- Section Divider -->
+<div class="section-divider h-1"></div>
+
 <!-- Hobbies Section -->
 <section id="hobbies" class="py-20 bg-gray-900 fade-in-section">
     <div class="container mx-auto px-4">
@@ -233,15 +245,12 @@
             <span class="border-b-4 border-pink-500 pb-2">{% trans "My Hobbies" %}</span>
         </h2>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 stagger-reveal">
             {% for hobby in hobbies %}
-            <div
-                class="bg-gray-800/50 backdrop-blur-md p-6 rounded-xl text-center group hover:-translate-y-2 transition-transform duration-300 border border-white/10 hover:border-pink-500/50 shadow-lg">
-                <div
-                    class="w-16 h-16 mx-auto mb-4 bg-gray-700/50 rounded-full flex items-center justify-center group-hover:bg-pink-500/20 transition-colors">
+            <div class="bg-gray-800/50 backdrop-blur-md p-6 rounded-xl text-center group hover:-translate-y-2 transition-transform duration-300 border border-white/10 hover:border-pink-500/50 shadow-lg hobby-tilt card-glow-pink icon-bounce">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gray-700/50 rounded-full flex items-center justify-center group-hover:bg-pink-500/20 transition-colors">
                     {% if hobby.font_awesome_icon %}
-                    <i
-                        class="{{ hobby.font_awesome_icon }} text-3xl text-pink-400 group-hover:text-pink-300 transition-colors"></i>
+                    <i class="{{ hobby.font_awesome_icon }} text-3xl text-pink-400 group-hover:text-pink-300 transition-colors"></i>
                     {% elif hobby.icon %}
                     <img src="{{ hobby.icon.url }}" alt="{{ hobby.name }}" class="w-10 h-10 object-contain" />
                     {% else %}
@@ -258,6 +267,9 @@
     </div>
 </section>
 
+<!-- Section Divider -->
+<div class="section-divider h-1"></div>
+
 <!-- Approved Testimonials -->
 {% if testimonials %}
 <section class="py-20 fade-in-section">
@@ -266,14 +278,13 @@
             <span class="border-b-4 border-purple-500 pb-2">{% trans "Testimonials" %}</span>
         </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-reveal">
             {% for testimonial in testimonials %}
-            <div class="bg-gray-800/50 backdrop-blur-md p-8 rounded-xl relative border border-white/10">
-                <div class="text-6xl text-purple-500/20 absolute top-4 left-4 font-serif">"</div>
+            <div class="bg-gray-800/50 backdrop-blur-md p-8 rounded-xl relative border border-white/10 hover:border-purple-500/30 transition-all hover:-translate-y-1 card-glow-purple">
+                <div class="text-6xl gradient-quote absolute top-4 left-4 font-serif">"</div>
                 <p class="text-gray-300 mb-6 italic relative z-10">{{ testimonial.quote }}</p>
                 <div class="flex items-center">
-                    <div
-                        class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold text-white mb-0 mr-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold text-white mb-0 mr-3">
                         {{ testimonial.name|slice:":1" }}
                     </div>
                     <div>
@@ -290,6 +301,9 @@
 </section>
 {% endif %}
 
+<!-- Section Divider -->
+<div class="section-divider h-1"></div>
+
 <!-- Contact Section -->
 <section id="contact" class="py-20 bg-gray-800/30 fade-in-section">
     <div class="container mx-auto px-4 max-w-4xl">
@@ -297,8 +311,7 @@
             <span class="border-b-4 border-blue-500 pb-2">{% trans "Get In Touch" %}</span>
         </h2>
 
-        <div
-            class="bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-white/5">
+        <div class="bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-white/5">
             <!-- Contact Info Sidebar -->
             <div class="bg-gradient-to-br from-blue-600 to-emerald-600 p-8 md:w-1/3 text-white">
                 <h3 class="text-2xl font-bold mb-6">{% trans "Contact Info" %}</h3>
@@ -326,7 +339,7 @@
                 </div>
             </div>
 
-            <!-- Contact Form -->
+            <!-- Contact Form with Floating Labels -->
             <div class="p-8 md:w-2/3">
                 <form method="post" class="space-y-6">
                     {% csrf_token %}
@@ -340,44 +353,44 @@
                     </div>
                     {% endif %}
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Name" %}</label>
-                        <input type="text" name="contact-name" required
-                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
+                    <div class="floating-label">
+                        <input type="text" name="contact-name" required placeholder=" "
+                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors peer" />
+                        <label>{% trans "Name" %}</label>
                         {% if contact_form.name.errors %}
                         <div class="text-red-400 text-xs mt-1">{{ contact_form.name.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Email" %}</label>
-                        <input type="email" name="contact-email" required
-                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
+                    <div class="floating-label">
+                        <input type="email" name="contact-email" required placeholder=" "
+                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors peer" />
+                        <label>{% trans "Email" %}</label>
                         {% if contact_form.email.errors %}
                         <div class="text-red-400 text-xs mt-1">{{ contact_form.email.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Subject" %}</label>
-                        <input type="text" name="contact-subject"
-                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
+                    <div class="floating-label">
+                        <input type="text" name="contact-subject" placeholder=" "
+                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors peer" />
+                        <label>{% trans "Subject" %}</label>
                         {% if contact_form.subject.errors %}
                         <div class="text-red-400 text-xs mt-1">{{ contact_form.subject.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Message" %}</label>
-                        <textarea name="contact-message" required rows="4"
-                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"></textarea>
+                    <div class="floating-label">
+                        <textarea name="contact-message" required rows="4" placeholder=" "
+                            class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors peer"></textarea>
+                        <label>{% trans "Message" %}</label>
                         {% if contact_form.message.errors %}
                         <div class="text-red-400 text-xs mt-1">{{ contact_form.message.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
                     <button type="submit" name="submit_contact"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors transform hover:scale-[1.02]">
+                        class="w-full bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-[1.02] btn-shine">
                         {% trans "Send Message" %}
                     </button>
                 </form>
@@ -404,37 +417,35 @@
             </div>
             {% endif %}
 
-            <div>
-                <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Your Name" %}</label>
-                <input type="text" name="testimonial-name" required
-                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors" />
+            <div class="floating-label">
+                <input type="text" name="testimonial-name" required placeholder=" "
+                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors peer" />
+                <label>{% trans "Your Name" %}</label>
                 {% if testimonial_form.name.errors %}
                 <div class="text-red-400 text-xs mt-1">{{ testimonial_form.name.errors|striptags }}</div>
                 {% endif %}
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-400 mb-1">
-                    {% trans "Role / Company (Optional)" %}
-                </label>
-                <input type="text" name="testimonial-role_company"
-                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors" />
+            <div class="floating-label">
+                <input type="text" name="testimonial-role_company" placeholder=" "
+                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors peer" />
+                <label>{% trans "Role / Company (Optional)" %}</label>
                 {% if testimonial_form.role_company.errors %}
                 <div class="text-red-400 text-xs mt-1">{{ testimonial_form.role_company.errors|striptags }}</div>
                 {% endif %}
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-400 mb-1">{% trans "Your Testimonial" %}</label>
-                <textarea name="testimonial-quote" required rows="3"
-                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"></textarea>
+            <div class="floating-label">
+                <textarea name="testimonial-quote" required rows="3" placeholder=" "
+                    class="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-gray-100 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors peer"></textarea>
+                <label>{% trans "Your Testimonial" %}</label>
                 {% if testimonial_form.quote.errors %}
                 <div class="text-red-400 text-xs mt-1">{{ testimonial_form.quote.errors|striptags }}</div>
                 {% endif %}
             </div>
 
             <button type="submit" name="submit_testimonial"
-                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors">
+                class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-[1.02] btn-shine">
                 {% trans "Submit Testimonial" %}
             </button>
             <p class="text-xs text-center text-gray-500 mt-4">
@@ -442,8 +453,6 @@
             </p>
         </form>
     </div>
-</section>
-
 </section>
 
 <script>
@@ -456,7 +465,7 @@
                 slides[currentSlide].classList.add('opacity-0');
                 currentSlide = (currentSlide + 1) % slides.length;
                 slides[currentSlide].classList.remove('opacity-0');
-            }, 5000); // Change every 5 seconds
+            }, 5000);
         }
     });
 </script>
