@@ -25,8 +25,9 @@ class DynamicBackgroundTest(TestCase):
         # Assuming the view passes 'profile' context variable.
         html = render_to_string('main/home.html', {'profile': self.profile})
         
-        self.assertIn("bg-blue-500/10", html)
-        self.assertIn("bg-emerald-500/10", html)
+        # New design uses CRT ambient glow (body::before) instead of floating blobs
+        # Gradient background is the default (no special markup in the section)
+        self.assertIn('id="about"', html)
 
     def test_image_background(self):
         """Test rendering a static image."""
@@ -81,4 +82,4 @@ class DynamicBackgroundTest(TestCase):
         self.assertIn("slideshow-container", html)
         self.assertIn(slide1.image.url, html)
         self.assertIn(slide2.image.url, html)
-        self.assertIn("Slideshow Logic", html)
+        self.assertIn("slideshow-container", html)  # slideshow JS inline, no separate comment
