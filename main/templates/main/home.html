@@ -2,146 +2,195 @@
 {% load i18n %}
 {% block content %}
 
-<!-- ═══ ZONE 1 — BOOT ═══ -->
+<!-- ═══ ZONE 1 — BOOT (Hero) ═══ -->
 <section id="about" class="min-h-screen flex items-center justify-center relative overflow-hidden">
+
+    <!-- Background layer -->
     <div class="absolute inset-0 z-0">
         {% if profile.hero_bg_type == 'VIDEO' and profile.hero_video_file %}
-        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
-            <source src="{{ profile.hero_video_file.url }}" type="video/mp4">
-        </video>
-        <div class="absolute inset-0 bg-crt-bg" style="opacity: {{ profile.hero_overlay_opacity }};"></div>
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
+                <source src="{{ profile.hero_video_file.url }}" type="video/mp4">
+            </video>
+            <div class="absolute inset-0 bg-crt-bg" style="opacity:{{ profile.hero_overlay_opacity }};"></div>
         {% elif profile.hero_bg_type == 'IMAGE' and profile.hero_static_image %}
-        <div class="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat" style="background-image: url('{{ profile.hero_static_image.url }}');"></div>
-        <div class="absolute inset-0 bg-crt-bg" style="opacity: {{ profile.hero_overlay_opacity }};"></div>
+            <div class="absolute inset-0 bg-cover bg-center" style="background-image:url('{{ profile.hero_static_image.url }}');"></div>
+            <div class="absolute inset-0 bg-crt-bg" style="opacity:{{ profile.hero_overlay_opacity }};"></div>
         {% elif profile.hero_bg_type == 'SLIDESHOW' %}
-        <div class="slideshow-container absolute inset-0 w-full h-full">
-            {% for slide in profile.hero_slides.all %}
-            <div class="slide absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-1000 {% if not forloop.first %}opacity-0{% endif %}" style="background-image: url('{{ slide.image.url }}');"></div>
-            {% endfor %}
-        </div>
-        <div class="absolute inset-0 bg-crt-bg" style="opacity: {{ profile.hero_overlay_opacity }};"></div>
+            <div class="slideshow-container absolute inset-0">
+                {% for slide in profile.hero_slides.all %}
+                    <div class="slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000{% if not forloop.first %} opacity-0{% endif %}" style="background-image:url('{{ slide.image.url }}');"></div>
+                {% endfor %}
+            </div>
+            <div class="absolute inset-0 bg-crt-bg" style="opacity:{{ profile.hero_overlay_opacity }};"></div>
         {% endif %}
     </div>
 
-    <div class="container mx-auto px-6 z-10 relative">
+    <!-- Particles canvas -->
+    <canvas id="hero-particles" class="particles-canvas z-[1]" style="position:absolute;inset:0;pointer-events:none;"></canvas>
+
+    <!-- Meteor container -->
+    <div id="hero-meteors" class="absolute inset-0 overflow-hidden pointer-events-none z-[1]"></div>
+
+    <!-- Hero content -->
+    <div class="container mx-auto px-6 z-10 relative pt-24 pb-16">
         <div class="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
+
+            <!-- Left column -->
             <div class="flex-1 max-w-xl">
-                <div class="glass-card rounded-lg p-6 mb-8 font-mono text-sm" id="boot-terminal">
-                    <div class="flex items-center gap-2 mb-4 pb-3 border-b border-crt-amber/20">
-                        <span class="w-3 h-3 rounded-full bg-red-500/60"></span>
-                        <span class="w-3 h-3 rounded-full bg-yellow-500/60"></span>
-                        <span class="w-3 h-3 rounded-full bg-green-500/60"></span>
-                        <span class="ml-2 text-crt-muted text-xs">portfolio.sh</span>
+                <!-- Terminal boot card -->
+                <div class="glass-card rounded-xl p-5 mb-8 font-mono text-sm">
+                    <div class="flex items-center gap-2 pb-3 border-b border-crt-amber/20">
+                        <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500/70"></span>
+                        <span class="ml-2 text-crt-muted text-xs tracking-widest">portfolio.sh</span>
                     </div>
-                    <div id="boot-lines" class="space-y-1"></div>
-                    <span class="animate-blink text-crt-amber">█</span>
+                    <div id="boot-lines" class="space-y-1 mt-3 min-h-[120px]"></div>
+                    <span class="animate-blink text-crt-amber text-base">█</span>
                 </div>
-                <h1 id="hero-name" class="text-4xl md:text-6xl font-mono font-bold text-crt-amber mb-4 opacity-0 translate-y-4 transition-all duration-700">{{ profile.name }}</h1>
-                <p id="hero-bio" class="text-crt-text/80 font-sans text-lg leading-relaxed mb-8 opacity-0 translate-y-4 transition-all duration-700 max-w-lg">{{ profile.bio|default:"" }}</p>
-                <div id="hero-ctas" class="flex flex-wrap gap-4 opacity-0 translate-y-4 transition-all duration-700">
+
+                <!-- Hero name -->
+                <h1 id="hero-name" class="font-mono font-bold text-crt-amber mb-4 opacity-0" style="font-size:clamp(2rem,5vw,3.5rem);transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease;">
+                    {{ profile.name }}
+                </h1>
+
+                <!-- Hero bio -->
+                <p id="hero-bio" class="text-crt-text/80 font-sans text-lg leading-relaxed mb-8 max-w-lg opacity-0" style="transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease;">
+                    {{ profile.bio|default:"" }}
+                </p>
+
+                <!-- CTAs -->
+                <div id="hero-ctas" class="flex flex-wrap gap-4 opacity-0" style="transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease;">
                     {% if profile.resume %}
-                    <a href="{{ profile.resume.url }}" download class="btn-amber rounded-sm">./resume.pdf</a>
+                    <a href="{{ profile.resume.url }}" download class="btn-amber btn-shine rounded-sm">{% trans "./resume.pdf" %}</a>
                     {% endif %}
-                    <a href="#contact" class="btn-terminal rounded-sm">./contact</a>
+                    <a href="#contact" class="btn-terminal rounded-sm">{% trans "./contact" %}</a>
                 </div>
             </div>
+
+            <!-- Right column: profile picture -->
             <div class="flex-shrink-0 flex flex-col items-center">
                 <div class="crt-bezel w-64 h-64 md:w-72 md:h-72">
                     {% if profile.profile_picture %}
-                    <img src="{{ profile.profile_picture.url }}" alt="{{ profile.name }}" class="w-full h-full object-cover">
+                        <img src="{{ profile.profile_picture.url }}" alt="{{ profile.name }}" class="w-full h-full object-cover">
                     {% else %}
-                    <div class="w-full h-full bg-crt-surface flex items-center justify-center">
-                        <i class="fa-solid fa-user text-6xl text-crt-amber/40"></i>
-                    </div>
+                        <div class="w-full h-full bg-crt-surface flex items-center justify-center">
+                            <i class="fa-solid fa-user text-6xl text-crt-amber/40"></i>
+                        </div>
                     {% endif %}
                 </div>
-                <div class="w-48 h-3 mt-2 bg-crt-glow/20 blur-xl rounded-full"></div>
+                <div class="crt-glow-floor"></div>
             </div>
         </div>
     </div>
 </section>
 
-<div class="terminal-divider">// </div>
+<div class="terminal-divider">// ─────────────────────────────────────────── //</div>
 
 <!-- ═══ ZONE 2 — SYSTEM INFO ═══ -->
-<section id="system-info" class="py-24 fade-in-section">
+<section id="system-info" class="py-24 section-alt fade-up">
     <div class="container mx-auto px-6">
-        <p class="section-header">system.info</p>
+        <p class="section-label">{% trans "system.info" %}</p>
+        <h2 class="section-title">{% trans "About" %} <span class="accent">/</span> {% trans "Skills" %}</h2>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="glass-card rounded-lg p-6">
+
+            <!-- About card -->
+            <div class="glass-card rounded-xl p-6">
                 <div class="flex items-center gap-2 mb-4 pb-3 border-b border-crt-amber/20 font-mono text-xs text-crt-muted">
-                    <i class="fa-solid fa-circle-user text-crt-amber"></i> about.txt
+                    <i class="fa-solid fa-circle-user text-crt-amber"></i>
+                    <span>about.txt</span>
                 </div>
                 <p class="font-sans text-crt-text leading-relaxed">{{ profile.bio|default:"" }}</p>
-                <div class="mt-6 space-y-2 font-mono text-sm">
+                <div class="mt-6 space-y-3">
                     {% if contact_info.email %}
-                    <p class="text-crt-muted"><span class="text-crt-amber">></span> email: <span class="text-crt-text">{{ contact_info.email }}</span></p>
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "email:" %}</span>
+                        <span class="whois-val"><a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a></span>
+                    </div>
                     {% endif %}
                     {% if contact_info.github_url %}
-                    <p class="text-crt-muted"><span class="text-crt-amber">></span> github: <a href="{{ contact_info.github_url }}" target="_blank" class="text-crt-amber-light hover:text-crt-amber transition-colors">{{ contact_info.github_url }}</a></p>
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "github:" %}</span>
+                        <span class="whois-val"><a href="{{ contact_info.github_url }}" target="_blank" rel="noopener">{{ contact_info.github_url }}</a></span>
+                    </div>
                     {% endif %}
                     {% if contact_info.linkedin_url %}
-                    <p class="text-crt-muted"><span class="text-crt-amber">></span> linkedin: <a href="{{ contact_info.linkedin_url }}" target="_blank" class="text-crt-amber-light hover:text-crt-amber transition-colors">linkedin</a></p>
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "linkedin:" %}</span>
+                        <span class="whois-val"><a href="{{ contact_info.linkedin_url }}" target="_blank" rel="noopener">{% trans "profile" %}</a></span>
+                    </div>
+                    {% endif %}
+                    {% if contact_info.twitter_url %}
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "twitter:" %}</span>
+                        <span class="whois-val"><a href="{{ contact_info.twitter_url }}" target="_blank" rel="noopener">{% trans "profile" %}</a></span>
+                    </div>
                     {% endif %}
                 </div>
             </div>
-            <div class="glass-card rounded-lg p-6">
+
+            <!-- Skills card -->
+            <div class="glass-card rounded-xl p-6">
                 <div class="flex items-center gap-2 mb-4 pb-3 border-b border-crt-amber/20 font-mono text-xs text-crt-muted">
-                    <i class="fa-solid fa-microchip text-crt-amber"></i> skills.log
+                    <i class="fa-solid fa-microchip text-crt-amber"></i>
+                    <span>skills.log</span>
                 </div>
-                <div class="space-y-3 max-h-80 overflow-y-auto custom-scrollbar pr-2" id="skills-section">
+                <div id="skills-section" class="space-y-2 max-h-72 overflow-y-auto custom-scroll pr-2">
                     {% for skill in skills %}
-                    <div class="skill-row font-mono text-sm">
+                    <div class="skill-row">
                         <div class="flex justify-between items-center mb-1">
-                            <span class="text-crt-text">{{ skill.name }}</span>
-                            <span class="text-crt-amber skill-counter text-xs" data-target="{{ skill.proficiency }}">0%</span>
+                            <span class="font-mono text-sm text-crt-text">{{ skill.name }}</span>
+                            <span class="font-mono text-xs text-crt-amber skill-counter" data-target="{{ skill.proficiency }}">0%</span>
                         </div>
-                        <div class="ascii-bar text-xs" data-width="{{ skill.proficiency|default:0 }}">
-                            <span class="ascii-bar-track">░░░░░░░░░░░░░░░░░░░░</span>
+                        <div class="ascii-bar" data-width="{{ skill.proficiency|default:0 }}">
+                            <span class="ascii-empty">░░░░░░░░░░░░░░░░░░░░</span>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
             </div>
+
         </div>
     </div>
 </section>
 
-<div class="terminal-divider">// </div>
+<div class="terminal-divider">// ─────────────────────────────────────────── //</div>
 
 <!-- ═══ ZONE 3 — PROJECTS ═══ -->
-<section id="projects" class="py-24 fade-in-section">
+<section id="projects" class="py-24 fade-up">
     <div class="container mx-auto px-6">
-        <p class="section-header">projects.list</p>
-        <h2 class="text-3xl md:text-4xl font-mono font-bold text-crt-amber mb-12">{% trans "Featured Projects" %}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-reveal">
+        <p class="section-label">{% trans "projects.list" %}</p>
+        <h2 class="section-title">{% trans "Featured Projects" %}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-group">
             {% for project in projects %}
-            <div class="glass-card rounded-lg overflow-hidden group transition-all hover:-translate-y-1 {% if forloop.first %}bento-featured{% endif %}">
-                <div class="h-44 overflow-hidden relative">
+            <div class="project-card glass-card card-beam rounded-xl overflow-hidden {% if forloop.first %}bento-featured{% endif %}">
+                <div class="h-48 overflow-hidden relative">
                     {% if project.image %}
-                    <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     {% else %}
-                    <div class="w-full h-full bg-crt-surface flex items-center justify-center">
-                        <i class="fa-solid fa-code text-3xl text-crt-amber/30"></i>
-                    </div>
+                        <div class="w-full h-full bg-crt-surface flex items-center justify-center">
+                            <i class="fa-solid fa-code text-4xl text-crt-amber/25"></i>
+                        </div>
                     {% endif %}
-                    <div class="absolute inset-0 bg-gradient-to-t from-crt-bg via-transparent to-transparent opacity-60"></div>
-                    <div class="absolute inset-0 bg-crt-amber/0 group-hover:bg-crt-amber/10 transition-colors duration-300"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-crt-bg via-transparent to-transparent opacity-70"></div>
+                    <div class="project-overlay">
+                        <span class="font-mono text-xs text-crt-amber tracking-widest uppercase">{% trans "View Project" %}</span>
+                    </div>
                 </div>
                 <div class="p-5">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="font-mono font-bold text-crt-text text-lg">{{ project.title }}</h3>
-                        <span class="font-mono text-xs text-crt-muted">[{{ project.created_date|date:"Y" }}]</span>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-mono font-bold text-crt-text text-base leading-tight">{{ project.title }}</h3>
+                        <span class="font-mono text-xs text-crt-muted ml-2 flex-shrink-0">[{{ project.created_date|date:"Y" }}]</span>
                     </div>
                     {% if project.description %}
-                    <p class="font-sans text-crt-text/70 text-sm mb-4 line-clamp-3">{{ project.description }}</p>
+                        <p class="text-crt-text/65 text-sm font-sans mb-4 line-clamp-3">{{ project.description }}</p>
                     {% endif %}
-                    <div class="flex gap-3">
+                    <div class="flex gap-2 mt-auto">
                         {% if project.code_link %}
-                        <a href="{{ project.code_link }}" target="_blank" class="flex-1 text-center py-1.5 font-mono text-xs border border-crt-amber/30 text-crt-muted hover:border-crt-amber hover:text-crt-amber transition-colors">[{% trans "code" %}]</a>
+                            <a href="{{ project.code_link }}" target="_blank" rel="noopener" class="btn-terminal text-xs py-1.5 px-3 flex-1 text-center rounded-sm">[{% trans "code" %}]</a>
                         {% endif %}
                         {% if project.demo_link %}
-                        <a href="{{ project.demo_link }}" target="_blank" class="flex-1 text-center py-1.5 font-mono text-xs bg-crt-amber/10 border border-crt-amber/40 text-crt-amber hover:bg-crt-amber/20 transition-colors">[{% trans "demo" %}]</a>
+                            <a href="{{ project.demo_link }}" target="_blank" rel="noopener" class="btn-amber btn-shine text-xs py-1.5 px-3 flex-1 text-center rounded-sm">[{% trans "demo" %}]</a>
                         {% endif %}
                     </div>
                 </div>
@@ -151,40 +200,49 @@
     </div>
 </section>
 
-<div class="terminal-divider">// </div>
+<div class="terminal-divider">// ─────────────────────────────────────────── //</div>
 
 <!-- ═══ ZONE 4 — CAREER ═══ -->
-<section id="career" class="py-24 bg-crt-surface/30 fade-in-section">
+<section id="career" class="py-24 section-alt fade-up">
     <div class="container mx-auto px-6">
-        <p class="section-header">career.log</p>
-        <h2 class="text-3xl md:text-4xl font-mono font-bold text-crt-amber mb-12">{% trans "Experience" %} <span class="text-crt-muted">&</span> {% trans "Education" %}</h2>
+        <p class="section-label">{% trans "career.log" %}</p>
+        <h2 class="section-title">{% trans "Experience" %} <span class="accent">&amp;</span> {% trans "Education" %}</h2>
+
         <div class="relative max-w-3xl mx-auto">
-            <div class="absolute left-1/2 top-0 w-px bg-gradient-to-b from-crt-amber/60 via-crt-amber/30 to-transparent -translate-x-1/2 timeline-line" style="height: 0%;"></div>
+            <!-- Vertical timeline line -->
+            <div class="absolute left-1/2 top-0 w-px -translate-x-1/2 timeline-line"
+                 style="background:linear-gradient(to bottom,rgba(245,158,11,0.6),rgba(245,158,11,0.15),transparent);height:0%;"></div>
+
             <div class="space-y-10">
+                <!-- Experience entries -->
                 {% for exp in experiences %}
-                <div class="timeline-entry relative flex {% cycle 'flex-row' 'flex-row-reverse' %} items-start gap-8 fade-in-section">
-                    <div class="absolute left-1/2 top-1 -translate-x-1/2 w-4 h-4 rounded-full border-2 border-crt-amber bg-crt-bg z-10 flex items-center justify-center">
+                <div class="timeline-entry relative flex {% cycle 'flex-row' 'flex-row-reverse' %} items-start gap-8">
+                    <!-- Center dot -->
+                    <div class="absolute left-1/2 top-2 -translate-x-1/2 w-4 h-4 rounded-full border-2 border-crt-amber bg-crt-bg z-10 flex items-center justify-center">
                         <span class="text-crt-amber" style="font-size:6px;">●</span>
                     </div>
-                    <div class="w-5/12">
+                    <div class="entry-card w-5/12">
                         <div class="glass-card rounded-lg p-4">
-                            <p class="font-mono text-xs text-crt-muted mb-1">[{{ exp.start_date|date:"Y-m" }}] → [{% if exp.end_date %}{{ exp.end_date|date:"Y-m" }}{% else %}present{% endif %}]</p>
+                            <p class="font-mono text-xs text-crt-muted mb-1">[{{ exp.start_date|date:"Y-m" }}] → [{% if exp.end_date %}{{ exp.end_date|date:"Y-m" }}{% else %}{% trans "Present" %}{% endif %}]</p>
                             <h3 class="font-mono font-bold text-crt-text mb-0.5">{{ exp.job_title }}</h3>
                             <p class="font-mono text-sm text-crt-amber mb-2">{{ exp.company }}</p>
-                            {% if exp.description %}<p class="font-sans text-sm text-crt-text/70">{{ exp.description }}</p>{% endif %}
+                            {% if exp.description %}<p class="font-sans text-sm text-crt-text/65">{{ exp.description }}</p>{% endif %}
                         </div>
                     </div>
                     <div class="w-5/12"></div>
                 </div>
                 {% endfor %}
+
+                <!-- Education entries -->
                 {% for edu in educations %}
-                <div class="timeline-entry relative flex {% cycle 'flex-row-reverse' 'flex-row' %} items-start gap-8 fade-in-section">
-                    <div class="absolute left-1/2 top-1 -translate-x-1/2 w-4 h-4 border-2 border-crt-amber-light bg-crt-bg rotate-45 z-10"></div>
-                    <div class="w-5/12">
+                <div class="timeline-entry relative flex {% cycle 'flex-row-reverse' 'flex-row' %} items-start gap-8">
+                    <!-- Center diamond dot -->
+                    <div class="absolute left-1/2 top-2 -translate-x-1/2 w-4 h-4 border-2 border-crt-amber-light bg-crt-bg rotate-45 z-10"></div>
+                    <div class="entry-card w-5/12">
                         <div class="glass-card rounded-lg p-4">
-                            <p class="font-mono text-xs text-crt-muted mb-1">[{{ edu.start_date|date:"Y" }}] → [{% if edu.end_date %}{{ edu.end_date|date:"Y" }}{% else %}present{% endif %}]</p>
+                            <p class="font-mono text-xs text-crt-muted mb-1">[{{ edu.start_date|date:"Y" }}] → [{% if edu.end_date %}{{ edu.end_date|date:"Y" }}{% else %}{% trans "Present" %}{% endif %}]</p>
                             <h3 class="font-mono font-bold text-crt-text mb-0.5">{{ edu.degree }}</h3>
-                            <p class="font-mono text-sm text-crt-amber-light">{{ edu.institution }}</p>
+                            <p class="font-mono text-sm text-crt-amber">{{ edu.institution }}</p>
                         </div>
                     </div>
                     <div class="w-5/12"></div>
@@ -195,49 +253,51 @@
     </div>
 </section>
 
-<div class="terminal-divider">// </div>
+<div class="terminal-divider">// ─────────────────────────────────────────── //</div>
 
 <!-- ═══ ZONE 5 — HUMAN ═══ -->
-<section id="hobbies" class="py-24 fade-in-section">
+<section id="hobbies" class="py-24 fade-up">
     <div class="container mx-auto px-6">
-        <p class="section-header">human.exe</p>
-        <p class="font-mono text-xs text-crt-muted mb-6">// not just a developer</p>
-        <h2 class="text-3xl md:text-4xl font-mono font-bold text-crt-amber mb-12">{% trans "My Hobbies" %}</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 stagger-reveal">
+        <p class="section-label">{% trans "human.exe" %}</p>
+        <p class="font-mono text-xs text-crt-muted mb-4">{% trans "// not just a developer" %}</p>
+        <h2 class="section-title">{% trans "My Hobbies" %}</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 stagger-group">
             {% for hobby in hobbies %}
-            <div class="glass-card rounded-lg p-5 text-center group hover:-translate-y-1 transition-all duration-300">
-                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-crt-amber/5 border border-crt-amber/20 flex items-center justify-center group-hover:bg-crt-amber/15 group-hover:border-crt-amber/40 transition-all">
+            <div class="glass-card card-beam rounded-xl p-5 text-center group hover:-translate-y-2 transition-all duration-300">
+                <div class="w-14 h-14 mx-auto mb-3 rounded-full border border-crt-amber/20 bg-crt-amber/5 group-hover:bg-crt-amber/15 group-hover:border-crt-amber/40 flex items-center justify-center transition-all duration-300">
                     {% if hobby.font_awesome_icon %}
-                    <i class="{{ hobby.font_awesome_icon }} text-xl text-crt-amber group-hover:text-crt-amber-light transition-colors"></i>
+                        <i class="{{ hobby.font_awesome_icon }} text-xl text-crt-amber group-hover:text-crt-amber-light transition-colors"></i>
                     {% elif hobby.icon %}
-                    <img src="{{ hobby.icon.url }}" alt="{{ hobby.name }}" class="w-7 h-7 object-contain" />
+                        <img src="{{ hobby.icon.url }}" alt="{{ hobby.name }}" class="w-7 h-7 object-contain" />
                     {% else %}
-                    <i class="fa-solid fa-heart text-xl text-crt-amber"></i>
+                        <i class="fa-solid fa-heart text-xl text-crt-amber"></i>
                     {% endif %}
                 </div>
-                <h3 class="font-mono text-xs font-bold text-crt-text">{{ hobby.name }}</h3>
-                {% if hobby.description %}<p class="font-sans text-xs text-crt-muted mt-1">{{ hobby.description }}</p>{% endif %}
+                <h3 class="font-mono text-xs font-bold text-crt-text mt-2">{{ hobby.name }}</h3>
+                {% if hobby.description %}<p class="font-sans text-[11px] text-crt-muted mt-1">{{ hobby.description }}</p>{% endif %}
             </div>
             {% endfor %}
         </div>
     </div>
 </section>
 
-<div class="terminal-divider">// </div>
+<div class="terminal-divider">// ─────────────────────────────────────────── //</div>
 
 <!-- ═══ ZONE 6 — SOCIAL PROOF ═══ -->
 {% if testimonials %}
-<section class="py-24 bg-crt-surface/30 fade-in-section">
+<section class="py-24 section-alt fade-up">
     <div class="container mx-auto px-6">
-        <p class="section-header">reviews.log</p>
-        <h2 class="text-3xl md:text-4xl font-mono font-bold text-crt-amber mb-12">{% trans "Testimonials" %}</h2>
-        <div class="marquee-track pb-4">
+        <p class="section-label">{% trans "reviews.log" %}</p>
+        <h2 class="section-title">{% trans "Testimonials" %}</h2>
+        <div class="marquee-track">
             {% for testimonial in testimonials %}
-            <div class="glass-card rounded-lg p-6 w-80 relative">
-                <div class="text-4xl text-crt-amber/30 font-mono absolute top-3 left-4">"</div>
-                <p class="font-sans text-crt-text/80 text-sm italic mb-4 mt-4 relative z-10">{{ testimonial.quote }}</p>
+            <div class="glass-card rounded-xl w-80 relative p-6 flex-shrink-0">
+                <div class="absolute top-3 left-4 text-5xl text-crt-amber/25 font-mono leading-none">"</div>
+                <p class="font-sans text-sm italic text-crt-text/80 mt-4 mb-4 relative z-10">{{ testimonial.quote }}</p>
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-crt-amber to-crt-glow flex items-center justify-center font-mono font-bold text-crt-bg text-sm">{{ testimonial.name|slice:":1" }}</div>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-crt-amber to-crt-glow flex items-center justify-center font-mono font-bold text-crt-bg text-sm flex-shrink-0">
+                        {{ testimonial.name|slice:":1" }}
+                    </div>
                     <div>
                         <p class="font-mono text-xs font-bold text-crt-text">{{ testimonial.name }}</p>
                         {% if testimonial.role_company %}<p class="font-mono text-xs text-crt-muted">{{ testimonial.role_company }}</p>{% endif %}
@@ -250,137 +310,270 @@
 </section>
 {% endif %}
 
-<section class="py-12 fade-in-section">
+<!-- Testimonial form section (always visible) -->
+<section class="py-12 fade-up">
     <div class="container mx-auto px-6 max-w-2xl">
-        <button id="toggle-testimonial-form" class="btn-terminal rounded-sm w-full font-mono text-sm">leave_testimonial()</button>
-        <div id="testimonial-form-container" class="hidden mt-4">
-            <form method="post" class="glass-card rounded-lg p-6 space-y-4">
+        <button id="toggle-testimonial-form" class="btn-terminal rounded-sm w-full font-mono text-sm">
+            {% trans "leave_testimonial()" %}
+        </button>
+        <div id="testimonial-form-box" class="hidden mt-4">
+            <form method="post" class="glass-card rounded-xl p-6 space-y-4">
                 {% csrf_token %}
-                <div class="hidden"><input type="text" name="testimonial-nickname" id="testimonial-nickname"></div>
+                <!-- Honeypot -->
+                <div class="hidden" aria-hidden="true">
+                    <input type="text" name="testimonial-nickname" id="testimonial-nickname" tabindex="-1" autocomplete="off">
+                </div>
                 {% if testimonial_form.non_field_errors %}
                 <div class="p-3 bg-red-900/30 border border-red-700/50 rounded font-mono text-xs text-red-300">{{ testimonial_form.non_field_errors }}</div>
                 {% endif %}
-                <div class="input-wrapper"><input type="text" name="testimonial-name" required placeholder="{% trans 'Your Name' %}" class="terminal-input rounded-sm" /></div>
-                <div class="input-wrapper"><input type="text" name="testimonial-role_company" placeholder="{% trans 'Role / Company (Optional)' %}" class="terminal-input rounded-sm" /></div>
-                <div class="input-wrapper input-wrapper-textarea"><textarea name="testimonial-quote" required rows="3" placeholder="{% trans 'Your Testimonial' %}" class="terminal-input rounded-sm pt-3"></textarea></div>
-                <button type="submit" name="submit_testimonial" class="btn-amber w-full rounded-sm">submit_testimonial()</button>
+                <div class="input-wrapper">
+                    <input type="text" name="testimonial-name" required placeholder="{% trans 'Your Name' %}" class="terminal-input rounded-sm" />
+                </div>
+                <div class="input-wrapper">
+                    <input type="text" name="testimonial-role_company" placeholder="{% trans 'Role / Company (Optional)' %}" class="terminal-input rounded-sm" />
+                </div>
+                <div class="input-wrapper textarea-wrapper">
+                    <textarea name="testimonial-quote" required rows="3" placeholder="{% trans 'Your Testimonial' %}" class="terminal-input rounded-sm pt-3"></textarea>
+                </div>
+                <button type="submit" name="submit_testimonial" class="btn-amber btn-shine w-full rounded-sm">{% trans "submit_testimonial()" %}</button>
                 <p class="font-mono text-xs text-center text-crt-muted">// {% trans "Submissions are reviewed before being published." %}</p>
             </form>
         </div>
     </div>
 </section>
 
-<div class="terminal-divider">// </div>
+<div class="terminal-divider">// ─────────────────────────────────────────── //</div>
 
 <!-- ═══ ZONE 7 — CONTACT ═══ -->
-<section id="contact" class="py-24 bg-crt-surface/30 fade-in-section">
-    <div class="container mx-auto px-6 max-w-4xl">
-        <p class="section-header">contact.init</p>
-        <h2 class="text-3xl md:text-4xl font-mono font-bold text-crt-amber mb-12">{% trans "Get In Touch" %}</h2>
+<section id="contact" class="py-24 section-alt fade-up">
+    <div class="container mx-auto px-6 max-w-5xl">
+        <p class="section-label">{% trans "contact.init" %}</p>
+        <h2 class="section-title">{% trans "Get In Touch" %}</h2>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="glass-card rounded-lg p-5 font-mono text-sm space-y-3">
-                <p class="text-crt-muted text-xs mb-4 pb-2 border-b border-crt-amber/15">$ whois {% if profile %}{{ profile.name|lower }}{% else %}amir{% endif %}</p>
-                {% if contact_info.email %}<p><span class="text-crt-amber">email:</span> <span class="text-crt-text text-xs break-all">{{ contact_info.email }}</span></p>{% endif %}
-                {% if contact_info.phone %}<p><span class="text-crt-amber">phone:</span> <span class="text-crt-text text-xs">{{ contact_info.phone }}</span></p>{% endif %}
-                {% if contact_info.github_url %}<p><span class="text-crt-amber">github:</span> <a href="{{ contact_info.github_url }}" target="_blank" class="text-crt-amber-light hover:text-crt-amber text-xs transition-colors">link</a></p>{% endif %}
-                {% if contact_info.linkedin_url %}<p><span class="text-crt-amber">linkedin:</span> <a href="{{ contact_info.linkedin_url }}" target="_blank" class="text-crt-amber-light hover:text-crt-amber text-xs transition-colors">link</a></p>{% endif %}
-                {% if contact_info.twitter_url %}<p><span class="text-crt-amber">twitter:</span> <a href="{{ contact_info.twitter_url }}" target="_blank" class="text-crt-amber-light hover:text-crt-amber text-xs transition-colors">link</a></p>{% endif %}
+
+            <!-- Whois sidebar -->
+            <div class="glass-card rounded-xl p-5">
+                <p class="font-mono text-xs text-crt-muted pb-3 mb-4 border-b border-crt-amber/15 tracking-wider">
+                    $ whois {% if profile %}{{ profile.name|lower|slugify }}{% else %}dev{% endif %}
+                </p>
+                <div class="space-y-3">
+                    {% if contact_info.email %}
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "email:" %}</span>
+                        <span class="whois-val"><a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a></span>
+                    </div>
+                    {% endif %}
+                    {% if contact_info.phone %}
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "phone:" %}</span>
+                        <span class="whois-val">{{ contact_info.phone }}</span>
+                    </div>
+                    {% endif %}
+                    {% if contact_info.github_url %}
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "github:" %}</span>
+                        <span class="whois-val"><a href="{{ contact_info.github_url }}" target="_blank" rel="noopener">{% trans "link" %}</a></span>
+                    </div>
+                    {% endif %}
+                    {% if contact_info.linkedin_url %}
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "linkedin:" %}</span>
+                        <span class="whois-val"><a href="{{ contact_info.linkedin_url }}" target="_blank" rel="noopener">{% trans "link" %}</a></span>
+                    </div>
+                    {% endif %}
+                    {% if contact_info.twitter_url %}
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "twitter:" %}</span>
+                        <span class="whois-val"><a href="{{ contact_info.twitter_url }}" target="_blank" rel="noopener">{% trans "link" %}</a></span>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-            <div class="md:col-span-2 glass-card rounded-lg p-6">
+
+            <!-- Contact form -->
+            <div class="md:col-span-2 glass-card rounded-xl p-6">
                 <form method="post" class="space-y-4">
                     {% csrf_token %}
-                    <div class="hidden"><input type="text" name="contact-nickname" id="contact-nickname"></div>
+                    <!-- Honeypot -->
+                    <div class="hidden" aria-hidden="true">
+                        <input type="text" name="contact-nickname" id="contact-nickname" tabindex="-1" autocomplete="off">
+                    </div>
                     {% if contact_form.non_field_errors %}
                     <div class="p-3 bg-red-900/30 border border-red-700/50 rounded font-mono text-xs text-red-300">{{ contact_form.non_field_errors }}</div>
                     {% endif %}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="input-wrapper"><input type="text" name="contact-name" required placeholder="{% trans 'Name' %}" class="terminal-input rounded-sm" /></div>
-                        <div class="input-wrapper"><input type="email" name="contact-email" required placeholder="{% trans 'Email' %}" class="terminal-input rounded-sm" /></div>
+                        <div class="input-wrapper">
+                            <input type="text" name="contact-name" required placeholder="{% trans 'Name' %}" class="terminal-input rounded-sm" />
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="email" name="contact-email" required placeholder="{% trans 'Email' %}" class="terminal-input rounded-sm" />
+                        </div>
                     </div>
-                    <div class="input-wrapper"><input type="text" name="contact-subject" placeholder="{% trans 'Subject' %}" class="terminal-input rounded-sm" /></div>
-                    <div class="input-wrapper input-wrapper-textarea"><textarea name="contact-message" required rows="4" placeholder="{% trans 'Message' %}" class="terminal-input rounded-sm pt-3"></textarea></div>
-                    <button type="submit" name="submit_contact" class="btn-amber w-full rounded-sm">send_message()</button>
+                    <div class="input-wrapper">
+                        <input type="text" name="contact-subject" placeholder="{% trans 'Subject' %}" class="terminal-input rounded-sm" />
+                    </div>
+                    <div class="input-wrapper textarea-wrapper">
+                        <textarea name="contact-message" required rows="4" placeholder="{% trans 'Message' %}" class="terminal-input rounded-sm pt-3"></textarea>
+                    </div>
+                    <button type="submit" name="submit_contact" class="btn-amber btn-shine w-full rounded-sm">{% trans "send_message()" %}</button>
                 </form>
             </div>
+
         </div>
     </div>
 </section>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Boot sequence
-    const bootLines = [
-        { text: 'Initializing portfolio...', delay: 300 },
-        { text: 'Loading profile data... OK', delay: 700 },
-        { text: 'Name: {{ profile.name }}', delay: 1100 },
-        { text: 'Status: Available for work', delay: 1500 },
-        { text: 'Languages: EN / FR', delay: 1900 },
-        { text: 'Portfolio ready.', delay: 2300 },
-    ];
-    const container = document.getElementById('boot-lines');
-    const heroName = document.getElementById('hero-name');
-    const heroBio = document.getElementById('hero-bio');
-    const heroCtas = document.getElementById('hero-ctas');
-    if (container) {
-        bootLines.forEach(({ text, delay }) => {
-            setTimeout(() => {
-                const line = document.createElement('p');
-                line.innerHTML = `<span class="text-crt-amber">></span> <span class="text-crt-text">${text}</span>`;
-                container.appendChild(line);
-            }, delay);
+
+// 1. PARTICLES
+(function initParticles() {
+    const canvas = document.getElementById('hero-particles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const colors = ['rgba(245,158,11,', 'rgba(234,88,12,', 'rgba(251,191,36,'];
+    let particles = [], W, H;
+    function resize() {
+        W = canvas.width = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    for (let i = 0; i < 35; i++) {
+        particles.push({
+            x: Math.random() * (W || 800), y: Math.random() * (H || 600),
+            size: Math.random() * 1.8 + 0.4,
+            vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            op: Math.random() * 0.35 + 0.08,
+            pulse: Math.random() * Math.PI * 2,
         });
-        setTimeout(() => {
-            [heroName, heroBio, heroCtas].forEach((el, i) => {
-                if (el) setTimeout(() => { el.classList.remove('opacity-0', 'translate-y-4'); }, i * 150);
+    }
+    function drawParticles() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => {
+            p.pulse += 0.018;
+            const op = Math.max(0.05, p.op + Math.sin(p.pulse) * 0.08);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color + op + ')';
+            ctx.fill();
+            p.x += p.vx; p.y += p.vy;
+            if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+            if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        });
+        requestAnimationFrame(drawParticles);
+    }
+    drawParticles();
+})();
+
+// 2. METEORS
+(function createMeteors() {
+    const c = document.getElementById('hero-meteors');
+    if (!c) return;
+    for (let i = 0; i < 5; i++) {
+        const m = document.createElement('div');
+        const delay = (Math.random() * 10).toFixed(1);
+        const dur = (Math.random() * 4 + 5).toFixed(1);
+        m.style.cssText = 'position:absolute;top:' + (Math.random()*45) + '%;left:' + (Math.random()*100) + '%;width:2px;height:' + (60+Math.random()*40) + 'px;background:linear-gradient(to bottom,transparent,#f59e0b,transparent);border-radius:9999px;transform:rotate(215deg);animation:meteor ' + dur + 's linear ' + delay + 's infinite;opacity:0.55;pointer-events:none;';
+        c.appendChild(m);
+    }
+})();
+
+// 3. BOOT SEQUENCE
+(function bootSequence() {
+    const lines = document.getElementById('boot-lines');
+    const name = document.getElementById('hero-name');
+    const bio = document.getElementById('hero-bio');
+    const ctas = document.getElementById('hero-ctas');
+    if (!lines) return;
+    const bootData = [
+        { text: '{% trans "Initializing portfolio..." %}', delay: 200 },
+        { text: '{% trans "Loading profile..." %} OK', delay: 700 },
+        { text: '{% trans "Name:" %} {{ profile.name }}', delay: 1200 },
+        { text: '{% trans "Status:" %} {% trans "Available for work" %}', delay: 1700 },
+        { text: '{% trans "Languages:" %} EN / FR', delay: 2100 },
+        { text: '{% trans "Ready." %}', delay: 2500 },
+    ];
+    bootData.forEach(function(item) {
+        setTimeout(function() {
+            const p = document.createElement('p');
+            p.innerHTML = '<span style="color:#f59e0b">></span> <span style="color:#fde68a">' + item.text + '</span>';
+            lines.appendChild(p);
+        }, item.delay);
+    });
+    setTimeout(function() {
+        [name, bio, ctas].forEach(function(el, i) {
+            if (el) setTimeout(function() {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, i * 160);
+        });
+    }, 2800);
+})();
+
+// 4. SLIDESHOW
+const slides = document.querySelectorAll('.slide');
+if (slides.length > 1) {
+    let cur = 0;
+    setInterval(function() {
+        slides[cur].classList.add('opacity-0');
+        cur = (cur + 1) % slides.length;
+        slides[cur].classList.remove('opacity-0');
+    }, 5000);
+}
+
+// 5. ASCII SKILL BARS
+const skillsSection = document.getElementById('skills-section');
+if (skillsSection) {
+    const obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.querySelectorAll('.skill-row').forEach(function(row) {
+                const bar = row.querySelector('.ascii-bar');
+                const counter = row.querySelector('.skill-counter');
+                const w = parseInt(bar.dataset.width, 10) || 0;
+                const total = 20;
+                const filled = Math.round(w / 100 * total);
+                bar.innerHTML = '<span class="ascii-fill">' + '█'.repeat(filled) + '</span><span class="ascii-empty">' + '░'.repeat(total - filled) + '</span>';
+                let cur = 0;
+                const step = Math.max(1, Math.ceil(w / 40));
+                const iv = setInterval(function() {
+                    cur = Math.min(cur + step, w);
+                    if (counter) counter.textContent = cur + '%';
+                    if (cur >= w) clearInterval(iv);
+                }, 28);
             });
-        }, 2600);
-    }
+            obs.unobserve(entry.target);
+        });
+    }, { threshold: 0.15 });
+    obs.observe(skillsSection);
+}
 
-    // Slideshow
-    const slides = document.querySelectorAll('.slide');
-    if (slides.length > 1) {
-        let cur = 0;
-        setInterval(() => {
-            slides[cur].classList.add('opacity-0');
-            cur = (cur + 1) % slides.length;
-            slides[cur].classList.remove('opacity-0');
-        }, 5000);
-    }
+// 6. TESTIMONIAL FORM TOGGLE
+const toggleBtn = document.getElementById('toggle-testimonial-form');
+const formBox = document.getElementById('testimonial-form-box');
+if (toggleBtn && formBox) {
+    toggleBtn.addEventListener('click', function() { formBox.classList.toggle('hidden'); });
+}
 
-    // ASCII skill bars
-    const skillsSection = document.getElementById('skills-section');
-    if (skillsSection) {
-        const skillObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                entry.target.querySelectorAll('.skill-row').forEach(row => {
-                    const bar = row.querySelector('.ascii-bar');
-                    const counter = row.querySelector('.skill-counter');
-                    const width = parseInt(bar.dataset.width, 10);
-                    const total = 20;
-                    const filled = Math.round((width / 100) * total);
-                    bar.innerHTML = `<span class="text-crt-amber">${'█'.repeat(filled)}</span><span class="ascii-bar-track">${'░'.repeat(total - filled)}</span>`;
-                    let current = 0;
-                    const step = Math.ceil(width / 40);
-                    const interval = setInterval(() => {
-                        current = Math.min(current + step, width);
-                        if (counter) counter.textContent = current + '%';
-                        if (current >= width) clearInterval(interval);
-                    }, 30);
-                });
-                skillObserver.unobserve(entry.target);
-            });
-        }, { threshold: 0.2 });
-        skillObserver.observe(skillsSection);
-    }
+// 7. MARQUEE DRAG
+const track = document.querySelector('.marquee-track');
+if (track) {
+    let isDown = false, startX, scrollLeft;
+    track.addEventListener('mousedown', function(e) { isDown = true; startX = e.pageX - track.offsetLeft; scrollLeft = track.scrollLeft; });
+    track.addEventListener('mouseleave', function() { isDown = false; });
+    track.addEventListener('mouseup', function() { isDown = false; });
+    track.addEventListener('mousemove', function(e) {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - track.offsetLeft;
+        track.scrollLeft = scrollLeft - (x - startX);
+    });
+}
 
-    // Testimonial form toggle
-    const toggleBtn = document.getElementById('toggle-testimonial-form');
-    const formContainer = document.getElementById('testimonial-form-container');
-    if (toggleBtn && formContainer) {
-        toggleBtn.addEventListener('click', () => formContainer.classList.toggle('hidden'));
-    }
-});
+}); // end DOMContentLoaded
 </script>
 
 {% endblock %}

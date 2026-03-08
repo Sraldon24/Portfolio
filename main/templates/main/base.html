@@ -7,12 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}{% trans "Portfolio" %}{% endblock %}</title>
     <meta name="description" content="{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}" />
-    <meta name="author" content="Amir Sraldon" />
-    <meta property="og:title" content="{% trans 'Portfolio' %} - Amir Sraldon" />
+    <meta name="author" content="{% if profile %}{{ profile.name }}{% endif %}" />
+    <meta property="og:title" content="{% trans 'Portfolio' %}{% if profile %} - {{ profile.name }}{% endif %}" />
     <meta property="og:description" content="{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ request.build_absolute_uri }}" />
     <meta property="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -24,11 +27,11 @@
     <div id="scroll-progress" class="fixed top-0 left-0 h-0.5 z-[60]" style="width: 0%;"></div>
 
     <!-- Navigation -->
-    <nav id="main-nav" class="fixed w-full z-50 border-b border-crt-amber/20 transition-all duration-300 bg-crt-bg/80 backdrop-blur-sm">
+    <nav id="main-nav" class="fixed w-full z-50 border-b border-crt-amber/15 transition-all duration-300 bg-crt-bg/85 backdrop-blur-md">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
 
             <a href="{% url 'home' %}" class="font-mono text-crt-amber font-bold text-lg tracking-wider hover:text-crt-amber-light transition-colors">
-                {% if profile %}{{ profile.name }}{% else %}Portfolio{% endif %}<span class="animate-blink text-crt-glow">_</span>
+                {% if profile %}{{ profile.name }}{% else %}{% trans "Portfolio" %}{% endif %}<span class="animate-blink text-crt-glow">_</span>
             </a>
 
             <div class="flex items-center gap-6">
@@ -39,50 +42,52 @@
                     <a href="#contact" class="nav-link font-mono text-sm text-crt-muted hover:text-crt-amber transition-colors">{% trans "Contact" %}</a>
                 </div>
 
-                <div class="flex items-center gap-1 font-mono text-sm">
+                <div class="flex items-center gap-1 font-mono text-xs">
                     {% get_current_language as LANGUAGE_CODE %}
                     {% get_available_languages as LANGUAGES %}
                     {% get_language_info_list for LANGUAGES as languages %}
                     {% for language in languages %}
                     <a href="/{{ language.code }}/"
-                        class="px-2 py-1 border transition-colors {% if language.code == LANGUAGE_CODE %}border-crt-amber text-crt-amber bg-crt-amber/10{% else %}border-crt-muted/30 text-crt-muted hover:border-crt-amber hover:text-crt-amber{% endif %}">
-                        {{ language.code|upper }}
+                        class="px-2 py-1 border transition-colors {% if language.code == LANGUAGE_CODE %}border-crt-amber text-crt-amber bg-crt-amber/10{% else %}border-crt-muted/30 text-crt-muted hover:border-crt-amber hover:text-crt-amber{% endif %}"
+                        aria-label="{% trans 'Switch language to' %} {{ language.name_local }}">
+                        [{{ language.code|upper }}]
                     </a>
                     {% endfor %}
                 </div>
-            </div>
 
-            <button id="mobile-menu-btn" class="md:hidden text-crt-amber hover:text-crt-amber-light focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
+                <button id="mobile-menu-btn" class="md:hidden text-crt-amber hover:text-crt-amber-light focus:outline-none" aria-label="{% trans 'Toggle navigation menu' %}">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
 
+        <!-- Mobile Menu -->
         <div id="mobile-menu" class="mobile-menu-enter md:hidden bg-crt-bg/98 backdrop-blur-md border-b border-crt-amber/20 absolute w-full left-0 top-full shadow-xl z-40">
-            <div class="flex flex-col p-6 gap-4">
-                <a href="#system-info" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-2 border-b border-crt-amber/10">{% trans "About" %}</a>
-                <a href="#projects" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-2 border-b border-crt-amber/10">{% trans "Projects" %}</a>
-                <a href="#career" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-2 border-b border-crt-amber/10">{% trans "Career" %}</a>
-                <a href="#contact" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-2">{% trans "Contact" %}</a>
+            <div class="flex flex-col p-6 gap-0">
+                <a href="#system-info" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3 border-b border-crt-amber/10">{% trans "About" %}</a>
+                <a href="#projects" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3 border-b border-crt-amber/10">{% trans "Projects" %}</a>
+                <a href="#career" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3 border-b border-crt-amber/10">{% trans "Career" %}</a>
+                <a href="#contact" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3">{% trans "Contact" %}</a>
             </div>
         </div>
     </nav>
 
-    <main class="pt-16 relative z-10">
+    <main class="relative z-10">
         {% if messages %}
-        <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3">
+        <div id="toast-container" class="fixed bottom-5 right-5 z-[70] flex flex-col gap-3 pointer-events-none">
             {% for message in messages %}
-            <div class="toast-message transition-all duration-500 flex items-center w-full max-w-xs p-4 glass-card text-crt-text mb-2" role="alert">
+            <div class="toast glass-card rounded-lg flex items-start gap-3 w-full max-w-xs p-4 pointer-events-auto" role="alert">
                 {% if message.tags == 'success' %}
-                <i class="fa-solid fa-circle-check text-green-400 mr-3"></i>
+                <i class="fa-solid fa-circle-check text-green-400 mt-0.5 flex-shrink-0"></i>
                 {% elif message.tags == 'error' %}
-                <i class="fa-solid fa-circle-xmark text-red-400 mr-3"></i>
+                <i class="fa-solid fa-circle-xmark text-red-400 mt-0.5 flex-shrink-0"></i>
                 {% else %}
-                <i class="fa-solid fa-circle-info text-crt-amber mr-3"></i>
+                <i class="fa-solid fa-circle-info text-crt-amber mt-0.5 flex-shrink-0"></i>
                 {% endif %}
-                <div class="text-sm font-sans">{{ message }}</div>
-                <button class="ml-auto text-crt-muted hover:text-crt-text" onclick="this.parentElement.remove()">
+                <div class="text-sm font-sans text-crt-text flex-1">{{ message }}</div>
+                <button class="text-crt-muted hover:text-crt-text flex-shrink-0 ml-1" onclick="this.closest('.toast').remove()" aria-label="{% trans 'Dismiss' %}">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
@@ -92,9 +97,12 @@
         </div>
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('.toast-message').forEach((t, i) => {
-                    setTimeout(() => { t.style.transform = 'translateX(0)'; t.style.opacity = '1'; }, 100 * i);
-                    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 500); }, 5000 + 100 * i);
+                document.querySelectorAll('.toast').forEach((t, i) => {
+                    setTimeout(() => t.classList.add('show'), 120 * i + 80);
+                    setTimeout(() => {
+                        t.classList.remove('show');
+                        setTimeout(() => t.remove(), 450);
+                    }, 5200 + 120 * i);
                 });
             });
         </script>
@@ -103,7 +111,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-crt-bg border-t border-crt-amber/15 py-8 mt-20 fade-in-section">
+    <footer class="bg-crt-bg border-t border-crt-amber/15 py-10 mt-0">
         <div class="container mx-auto px-6 text-center">
             <p class="font-mono text-sm text-crt-muted">
                 <span class="text-crt-amber">©</span> {% now "Y" %} {% if profile %}{{ profile.name }}{% endif %} <span class="text-crt-amber/40">—</span> {% trans "All rights reserved." %}
@@ -113,13 +121,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+
+            // Mobile menu toggle
             const menuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
             if (menuBtn && mobileMenu) {
                 menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-                mobileMenu.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => mobileMenu.classList.remove('open')));
+                mobileMenu.querySelectorAll('.mobile-link').forEach(l => {
+                    l.addEventListener('click', () => mobileMenu.classList.remove('open'));
+                });
             }
 
+            // Scroll progress bar + nav solidify
             const scrollProgress = document.getElementById('scroll-progress');
             const mainNav = document.getElementById('main-nav');
             window.addEventListener('scroll', () => {
@@ -128,15 +141,16 @@
                 if (scrollProgress) scrollProgress.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
                 if (mainNav) {
                     if (scrollTop > 50) {
-                        mainNav.classList.add('bg-crt-bg/95', 'shadow-lg');
-                        mainNav.classList.remove('bg-crt-bg/80');
+                        mainNav.classList.add('shadow-lg', 'shadow-black/40');
+                        mainNav.style.background = 'rgba(10,8,0,0.97)';
                     } else {
-                        mainNav.classList.remove('bg-crt-bg/95', 'shadow-lg');
-                        mainNav.classList.add('bg-crt-bg/80');
+                        mainNav.classList.remove('shadow-lg', 'shadow-black/40');
+                        mainNav.style.background = '';
                     }
                 }
             }, { passive: true });
 
+            // Active nav link highlight by section
             const navLinks = document.querySelectorAll('.nav-link');
             const sections = document.querySelectorAll('section[id]');
             const sectionObserver = new IntersectionObserver((entries) => {
@@ -144,24 +158,27 @@
                     if (entry.isIntersecting) {
                         const id = entry.target.getAttribute('id');
                         navLinks.forEach(link => {
-                            const active = link.getAttribute('href') === '#' + id;
-                            link.classList.toggle('text-crt-amber', active);
-                            link.classList.toggle('text-crt-muted', !active);
+                            const isActive = link.getAttribute('href') === '#' + id;
+                            link.classList.toggle('text-crt-amber', isActive);
+                            link.classList.toggle('border-b', isActive);
+                            link.classList.toggle('border-crt-amber/50', isActive);
+                            link.classList.toggle('text-crt-muted', !isActive);
                         });
                     }
                 });
             }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
             sections.forEach(s => sectionObserver.observe(s));
 
+            // IntersectionObserver for fade-up, stagger-group, timeline-line
             const revealObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
+                        entry.target.classList.add('visible');
                         revealObserver.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.1 });
-            document.querySelectorAll('.fade-in-section, .stagger-reveal, .timeline-line').forEach(el => revealObserver.observe(el));
+            }, { threshold: 0.08 });
+            document.querySelectorAll('.fade-up, .stagger-group, .timeline-line').forEach(el => revealObserver.observe(el));
         });
     </script>
 </body>
