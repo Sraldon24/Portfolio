@@ -1,0 +1,35 @@
+# Dependencies
+venv/
+node_modules/
+
+# Build artifacts
+main/static/css/output.css
+staticfiles/
+htmlcov/
+*.pyc
+__pycache__/
+.pytest_cache/
+
+# Lock files
+package-lock.json
+
+# Media uploads
+media/
+
+# Logs & runtime
+*.log
+server.pid
+*.pid
+
+# DB
+db.sqlite3
+
+# Screenshots / reference images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+
+# Parler compiled translations
+locale/**/*.mo
