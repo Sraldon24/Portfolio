@@ -43,7 +43,7 @@
                         <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
                         <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
                         <span class="w-3 h-3 rounded-full bg-green-500/70"></span>
-                        <span class="ml-2 text-crt-muted text-xs tracking-widest">portfolio.sh</span>
+                        <span class="ml-2 text-crt-muted text-xs tracking-widest">{% trans "portfolio.sh" %}</span>
                     </div>
                     <div id="boot-lines" class="space-y-1 mt-3 min-h-[120px]"></div>
                     <span class="animate-blink text-crt-amber text-base">█</span>
@@ -98,7 +98,7 @@
             <div class="glass-card rounded-xl p-6">
                 <div class="flex items-center gap-2 mb-4 pb-3 border-b border-crt-amber/20 font-mono text-xs text-crt-muted">
                     <i class="fa-solid fa-circle-user text-crt-amber"></i>
-                    <span>about.txt</span>
+                    <span>{% trans "about.txt" %}</span>
                 </div>
                 <p class="font-sans text-crt-text leading-relaxed">{{ profile.bio|default:"" }}</p>
                 <div class="mt-6 space-y-3">
@@ -133,7 +133,7 @@
             <div class="glass-card rounded-xl p-6">
                 <div class="flex items-center gap-2 mb-4 pb-3 border-b border-crt-amber/20 font-mono text-xs text-crt-muted">
                     <i class="fa-solid fa-microchip text-crt-amber"></i>
-                    <span>skills.log</span>
+                    <span>{% trans "skills.log" %}</span>
                 </div>
                 <div id="skills-section" class="space-y-2 max-h-72 overflow-y-auto custom-scroll pr-2">
                     {% for skill in skills %}
@@ -355,7 +355,7 @@
             <!-- Whois sidebar -->
             <div class="glass-card rounded-xl p-5">
                 <p class="font-mono text-xs text-crt-muted pb-3 mb-4 border-b border-crt-amber/15 tracking-wider">
-                    $ whois {% if profile %}{{ profile.name|lower|slugify }}{% else %}dev{% endif %}
+                    {% trans "$ whois" %} {% if profile %}{{ profile.name|lower|slugify }}{% else %}dev{% endif %}
                 </p>
                 <div class="space-y-3">
                     {% if contact_info.email %}
@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { text: '{% trans "Loading profile..." %} OK', delay: 700 },
         { text: '{% trans "Name:" %} {{ profile.name }}', delay: 1200 },
         { text: '{% trans "Status:" %} {% trans "Available for work" %}', delay: 1700 },
-        { text: '{% trans "Languages:" %} EN / FR', delay: 2100 },
+        { text: '{% trans "Languages:" %} {% trans "EN / FR" %}', delay: 2100 },
         { text: '{% trans "Ready." %}', delay: 2500 },
     ];
     bootData.forEach(function(item) {
