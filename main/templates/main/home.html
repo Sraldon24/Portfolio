@@ -596,12 +596,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!lines) return;
 
     const seq = [
-        { text: '{% trans "Initializing portfolio..." %}', ok: false, delay: 300 },
-        { text: '{% trans "Loading profile..." %} <span style="color:#4ade80">OK</span>', ok: false, delay: 850 },
-        { text: '{% trans "Name:" %} <span style="color:#fde68a">{{ profile.name }}</span>', ok: false, delay: 1300 },
-        { text: '{% trans "Status:" %} <span style="color:#4ade80">{% trans "Available for work" %}</span>', ok: false, delay: 1700 },
-        { text: '{% trans "Languages:" %} <span style="color:#fbbf24">{% trans "EN / FR" %}</span>', ok: false, delay: 2100 },
-        { text: '{% trans "Ready." %}', ok: false, delay: 2500 },
+        { text: '{% trans "Initializing portfolio..."|escapejs %}', ok: false, delay: 300 },
+        { text: '{% trans "Loading profile..."|escapejs %} <span style="color:#4ade80">OK</span>', ok: false, delay: 850 },
+        { text: '{% trans "Name:"|escapejs %} <span style="color:#fde68a">{{ profile.name|escapejs }}</span>', ok: false, delay: 1300 },
+        { text: '{% trans "Status:"|escapejs %} <span style="color:#4ade80">{% trans "Available for work"|escapejs %}</span>', ok: false, delay: 1700 },
+        { text: '{% trans "Languages:"|escapejs %} <span style="color:#fbbf24">{% trans "EN / FR"|escapejs %}</span>', ok: false, delay: 2100 },
+        { text: '{% trans "Ready."|escapejs %}', ok: false, delay: 2500 },
     ];
 
     seq.forEach(function(item) {
@@ -630,10 +630,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var el = document.getElementById('typed-role');
     if (!el) return;
     var roles = [
-        '{% trans "Software Developer" %}',
-        '{% trans "CS Student" %}',
-        '{% trans "Problem Solver" %}',
-        '{% trans "Full Stack Dev" %}',
+        '{% trans "Software Developer"|escapejs %}',
+        '{% trans "CS Student"|escapejs %}',
+        '{% trans "Problem Solver"|escapejs %}',
+        '{% trans "Full Stack Dev"|escapejs %}',
     ];
     var ri = 0, ci = 0, deleting = false;
     function type() {

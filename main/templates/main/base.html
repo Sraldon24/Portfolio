@@ -311,15 +311,15 @@ const cmdTrigger = document.getElementById('cmd-trigger');
 const cmdBackdrop = document.getElementById('cmd-backdrop');
 
 const CMD_ITEMS = [
-    { icon: 'fa-solid fa-house', label: '{% trans "Home" %}', hint: 'top', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
-    { icon: 'fa-solid fa-user', label: '{% trans "About" %}', hint: '#system-info', action: () => document.getElementById('system-info')?.scrollIntoView({ behavior: 'smooth' }) },
-    { icon: 'fa-solid fa-folder-open', label: '{% trans "Projects" %}', hint: '#projects', action: () => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }) },
-    { icon: 'fa-solid fa-briefcase', label: '{% trans "Career" %}', hint: '#career', action: () => document.getElementById('career')?.scrollIntoView({ behavior: 'smooth' }) },
-    { icon: 'fa-solid fa-person', label: '{% trans "Human" %}', hint: '#human', action: () => document.getElementById('human')?.scrollIntoView({ behavior: 'smooth' }) },
-    { icon: 'fa-solid fa-star', label: '{% trans "Testimonials" %}', hint: '#testimonials', action: () => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' }) },
-    { icon: 'fa-solid fa-envelope', label: '{% trans "Contact" %}', hint: '#contact', action: () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) },
-    { icon: 'fa-solid fa-language', label: '{% trans "Switch to English" %}', hint: '/en/', action: () => { window.location.href = '/en/'; } },
-    { icon: 'fa-solid fa-language', label: '{% trans "Switch to French" %}', hint: '/fr/', action: () => { window.location.href = '/fr/'; } },
+    { icon: 'fa-solid fa-house', label: '{% trans "Home"|escapejs %}', hint: 'top', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-user', label: '{% trans "About"|escapejs %}', hint: '#system-info', action: () => document.getElementById('system-info')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-folder-open', label: '{% trans "Projects"|escapejs %}', hint: '#projects', action: () => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-briefcase', label: '{% trans "Career"|escapejs %}', hint: '#career', action: () => document.getElementById('career')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-person', label: '{% trans "Human"|escapejs %}', hint: '#human', action: () => document.getElementById('human')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-star', label: '{% trans "Testimonials"|escapejs %}', hint: '#testimonials', action: () => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-envelope', label: '{% trans "Contact"|escapejs %}', hint: '#contact', action: () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-language', label: '{% trans "Switch to English"|escapejs %}', hint: '/en/', action: () => { window.location.href = '/en/'; } },
+    { icon: 'fa-solid fa-language', label: '{% trans "Switch to French"|escapejs %}', hint: '/fr/', action: () => { window.location.href = '/fr/'; } },
 ];
 
 let activeIdx = 0;
