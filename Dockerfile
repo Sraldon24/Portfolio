@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-dev \
     nodejs \
     npm \
+    gettext \
     && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies
@@ -28,6 +29,9 @@ COPY . /app/
 # Install node dependencies and build CSS
 RUN npm install
 RUN npm run build:css
+
+# Compile translation .mo files
+RUN python manage.py compilemessages
 
 # Expose port
 EXPOSE 8000
