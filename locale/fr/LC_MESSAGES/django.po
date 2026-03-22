@@ -150,3 +150,201 @@ msgstr "Anglais"
 
 msgid "French"
 msgstr "Français"
+
+msgid "Career"
+msgstr "Carrière"
+
+msgid "Home"
+msgstr "Accueil"
+
+msgid "Human"
+msgstr "Humain"
+
+msgid "Social Proof"
+msgstr "Témoignages"
+
+msgid "Command palette"
+msgstr "Palette de commandes"
+
+msgid "Command input"
+msgstr "Saisie de commande"
+
+msgid "Open command palette"
+msgstr "Ouvrir la palette de commandes"
+
+msgid "Type a command or jump to section..."
+msgstr "Tapez une commande ou sautez à une section..."
+
+msgid "navigate"
+msgstr "naviguer"
+
+msgid "select"
+msgstr "sélectionner"
+
+msgid "close"
+msgstr "fermer"
+
+msgid "CMD+K"
+msgstr "CMD+K"
+
+msgid "Toggle navigation menu"
+msgstr "Basculer le menu de navigation"
+
+msgid "Dismiss"
+msgstr "Fermer"
+
+msgid "Switch language to"
+msgstr "Changer de langue vers"
+
+msgid "Switch to English"
+msgstr "Passer à l'anglais"
+
+msgid "Switch to French"
+msgstr "Passer au français"
+
+msgid "Built with"
+msgstr "Construit avec"
+
+msgid "portfolio.sh"
+msgstr "portfolio.sh"
+
+msgid "ONLINE"
+msgstr "EN LIGNE"
+
+msgid "Available for work"
+msgstr "Disponible pour travailler"
+
+msgid "LOADING SYSTEM..."
+msgstr "CHARGEMENT DU SYSTÈME..."
+
+msgid "./resume.pdf"
+msgstr "./cv.pdf"
+
+msgid "./contact"
+msgstr "./contact"
+
+msgid "system.info"
+msgstr "system.info"
+
+msgid "about.txt"
+msgstr "about.txt"
+
+msgid "skills.log"
+msgstr "skills.log"
+
+msgid "projects.list"
+msgstr "projects.list"
+
+msgid "Featured"
+msgstr "Mis en avant"
+
+msgid "career.log"
+msgstr "career.log"
+
+msgid "human.exe"
+msgstr "human.exe"
+
+msgid "// not just a developer"
+msgstr "// pas seulement un développeur"
+
+msgid "reviews.log"
+msgstr "reviews.log"
+
+msgid "contact.init"
+msgstr "contact.init"
+
+msgid "leave_testimonial()"
+msgstr "laisser_témoignage()"
+
+msgid "submit_testimonial()"
+msgstr "envoyer_témoignage()"
+
+msgid "Submissions are reviewed before being published."
+msgstr "Les soumissions sont examinées avant d'être publiées."
+
+msgid "send_message()"
+msgstr "envoyer_message()"
+
+msgid "send_message.sh"
+msgstr "send_message.sh"
+
+msgid "Connecting to server..."
+msgstr "Connexion au serveur..."
+
+msgid "Connection established"
+msgstr "Connexion établie"
+
+msgid "Encrypting payload..."
+msgstr "Chiffrement du contenu..."
+
+msgid "Payload ready"
+msgstr "Contenu prêt"
+
+msgid "Transmitting message..."
+msgstr "Transmission du message..."
+
+msgid "Initializing portfolio..."
+msgstr "Initialisation du portfolio..."
+
+msgid "Loading profile..."
+msgstr "Chargement du profil..."
+
+msgid "Name:"
+msgstr "Nom :"
+
+msgid "Status:"
+msgstr "Statut :"
+
+msgid "Languages:"
+msgstr "Langues :"
+
+msgid "EN / FR"
+msgstr "EN / FR"
+
+msgid "Ready."
+msgstr "Prêt."
+
+msgid "Software Developer"
+msgstr "Développeur Logiciel"
+
+msgid "CS Student"
+msgstr "Étudiant en Informatique"
+
+msgid "Problem Solver"
+msgstr "Résolveur de Problèmes"
+
+msgid "Full Stack Dev"
+msgstr "Développeur Full Stack"
+
+msgid "View Project"
+msgstr "Voir le projet"
+
+msgid "code"
+msgstr "code"
+
+msgid "demo"
+msgstr "démo"
+
+msgid "link"
+msgstr "lien"
+
+msgid "profile"
+msgstr "profil"
+
+msgid "email:"
+msgstr "email :"
+
+msgid "phone:"
+msgstr "téléphone :"
+
+msgid "github:"
+msgstr "github :"
+
+msgid "linkedin:"
+msgstr "linkedin :"
+
+msgid "twitter:"
+msgstr "twitter :"
+
+msgid "$ whois"
+msgstr "$ whois"

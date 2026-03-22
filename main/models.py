@@ -164,6 +164,7 @@ class Project(TranslatableModel):
     code_link = models.URLField(blank=True)
     demo_link = models.URLField(blank=True, verbose_name="Demo Link (Optional)")
     created_date = models.DateField(verbose_name="Creation Date")
+    tech_stack = models.CharField(max_length=300, blank=True, default='', help_text="Comma-separated tags e.g. Python, Django, Docker")
 
     def __str__(self):
         return self.safe_translation_getter('title', any_language=True)

@@ -23,163 +23,448 @@
 
 <body class="bg-crt-bg text-crt-text font-sans antialiased">
 
-    <!-- Scroll Progress Bar -->
-    <div id="scroll-progress" class="fixed top-0 left-0 h-0.5 z-[60]" style="width: 0%;"></div>
+<!-- Custom cursor -->
+<div class="cursor-dot" id="cursor-dot"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
 
-    <!-- Navigation -->
-    <nav id="main-nav" class="fixed w-full z-50 border-b border-crt-amber/15 transition-all duration-300 bg-crt-bg/85 backdrop-blur-md">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+<!-- Boot Screen -->
+<div id="boot-screen" aria-hidden="true">
+    <div id="boot-lines"></div>
+    <div class="boot-progress-wrap" id="boot-progress-wrap" style="display:none;">
+        <div class="boot-progress-label">{% trans "LOADING SYSTEM..." %}</div>
+        <div class="boot-progress-bar"><div class="boot-progress-fill" id="boot-progress-fill"></div></div>
+    </div>
+</div>
 
-            <a href="{% url 'home' %}" class="font-mono text-crt-amber font-bold text-lg tracking-wider hover:text-crt-amber-light transition-colors">
-                {% if profile %}{{ profile.name }}{% else %}{% trans "Portfolio" %}{% endif %}<span class="animate-blink text-crt-glow">_</span>
-            </a>
+<!-- CMD+K Command Palette -->
+<div id="cmd-palette" role="dialog" aria-label="{% trans 'Command palette' %}" aria-modal="true">
+    <div id="cmd-backdrop"></div>
+    <div id="cmd-box">
+        <div id="cmd-input-row">
+            <span class="cmd-icon">›_</span>
+            <input id="cmd-input" type="text" autocomplete="off" spellcheck="false"
+                   placeholder="{% trans 'Type a command or jump to section...' %}" aria-label="{% trans 'Command input' %}" />
+        </div>
+        <div id="cmd-results" role="listbox"></div>
+        <div id="cmd-footer">
+            <span class="cmd-key"><kbd>↑↓</kbd> {% trans "navigate" %}</span>
+            <span class="cmd-key"><kbd>↵</kbd> {% trans "select" %}</span>
+            <span class="cmd-key"><kbd>Esc</kbd> {% trans "close" %}</span>
+        </div>
+    </div>
+</div>
 
-            <div class="flex items-center gap-6">
-                <div class="hidden md:flex items-center gap-6">
-                    <a href="#system-info" class="nav-link font-mono text-sm text-crt-muted hover:text-crt-amber transition-colors">{% trans "About" %}</a>
-                    <a href="#projects" class="nav-link font-mono text-sm text-crt-muted hover:text-crt-amber transition-colors">{% trans "Projects" %}</a>
-                    <a href="#career" class="nav-link font-mono text-sm text-crt-muted hover:text-crt-amber transition-colors">{% trans "Career" %}</a>
-                    <a href="#contact" class="nav-link font-mono text-sm text-crt-muted hover:text-crt-amber transition-colors">{% trans "Contact" %}</a>
-                </div>
+<!-- Scroll Progress Bar -->
+<div id="scroll-progress" class="fixed top-0 left-0 h-0.5 z-[60]" style="width: 0%;"></div>
 
-                <div class="flex items-center gap-1 font-mono text-xs">
-                    {% get_current_language as LANGUAGE_CODE %}
-                    {% get_available_languages as LANGUAGES %}
-                    {% get_language_info_list for LANGUAGES as languages %}
-                    {% for language in languages %}
-                    <a href="/{{ language.code }}/"
-                        class="px-2 py-1 border transition-colors {% if language.code == LANGUAGE_CODE %}border-crt-amber text-crt-amber bg-crt-amber/10{% else %}border-crt-muted/30 text-crt-muted hover:border-crt-amber hover:text-crt-amber{% endif %}"
-                        aria-label="{% trans 'Switch language to' %} {{ language.name_local }}">
-                        [{{ language.code|upper }}]
-                    </a>
-                    {% endfor %}
-                </div>
+<!-- Navigation -->
+<nav id="main-nav" class="fixed w-full z-50 border-b border-crt-amber/15 transition-all duration-300 bg-crt-bg/85 backdrop-blur-md">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
 
-                <button id="mobile-menu-btn" class="md:hidden text-crt-amber hover:text-crt-amber-light focus:outline-none" aria-label="{% trans 'Toggle navigation menu' %}">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
+        <a href="{% url 'home' %}" class="font-mono text-crt-amber font-bold text-lg tracking-wider hover:text-crt-amber-light transition-colors">
+            {% if profile %}{{ profile.name }}{% else %}{% trans "Portfolio" %}{% endif %}<span class="animate-blink text-crt-glow">_</span>
+        </a>
+
+        <div class="flex items-center gap-5">
+            <!-- Desktop nav links -->
+            <div class="hidden md:flex items-center gap-5">
+                <a href="#system-info" class="nav-link font-mono text-xs text-crt-muted hover:text-crt-amber transition-colors flex items-center">
+                    <span class="nav-dot"></span>{% trans "About" %}
+                </a>
+                <a href="#projects" class="nav-link font-mono text-xs text-crt-muted hover:text-crt-amber transition-colors flex items-center">
+                    <span class="nav-dot"></span>{% trans "Projects" %}
+                </a>
+                <a href="#career" class="nav-link font-mono text-xs text-crt-muted hover:text-crt-amber transition-colors flex items-center">
+                    <span class="nav-dot"></span>{% trans "Career" %}
+                </a>
+                <a href="#contact" class="nav-link font-mono text-xs text-crt-muted hover:text-crt-amber transition-colors flex items-center">
+                    <span class="nav-dot"></span>{% trans "Contact" %}
+                </a>
+                <!-- CMD+K trigger -->
+                <button id="cmd-trigger" class="hidden lg:flex items-center gap-1.5 font-mono text-xs text-crt-muted/60 border border-crt-amber/15 rounded px-2.5 py-1 hover:border-crt-amber/40 hover:text-crt-amber/80 transition-all" aria-label="{% trans 'Open command palette' %}">
+                    <i class="fa-solid fa-terminal text-crt-amber text-xs"></i>
+                    <span>{% trans "CMD+K" %}</span>
                 </button>
             </div>
-        </div>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="mobile-menu-enter md:hidden bg-crt-bg/98 backdrop-blur-md border-b border-crt-amber/20 absolute w-full left-0 top-full shadow-xl z-40">
-            <div class="flex flex-col p-6 gap-0">
-                <a href="#system-info" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3 border-b border-crt-amber/10">{% trans "About" %}</a>
-                <a href="#projects" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3 border-b border-crt-amber/10">{% trans "Projects" %}</a>
-                <a href="#career" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3 border-b border-crt-amber/10">{% trans "Career" %}</a>
-                <a href="#contact" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3">{% trans "Contact" %}</a>
+            <!-- Language switcher -->
+            <div class="flex items-center gap-1 font-mono text-xs">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                <a href="/{{ language.code }}/"
+                    class="px-2 py-1 border transition-colors {% if language.code == LANGUAGE_CODE %}border-crt-amber text-crt-amber bg-crt-amber/10{% else %}border-crt-muted/30 text-crt-muted hover:border-crt-amber hover:text-crt-amber{% endif %}"
+                    aria-label="{% trans 'Switch language to' %} {{ language.name_local }}">
+                    [{{ language.code|upper }}]
+                </a>
+                {% endfor %}
             </div>
+
+            <!-- Mobile menu toggle -->
+            <button id="mobile-menu-btn" class="md:hidden text-crt-amber hover:text-crt-amber-light focus:outline-none" aria-label="{% trans 'Toggle navigation menu' %}">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
         </div>
-    </nav>
+    </div>
 
-    <main class="relative z-10">
-        {% if messages %}
-        <div id="toast-container" class="fixed bottom-5 right-5 z-[70] flex flex-col gap-3 pointer-events-none">
-            {% for message in messages %}
-            <div class="toast glass-card rounded-lg flex items-start gap-3 w-full max-w-xs p-4 pointer-events-auto" role="alert">
-                {% if message.tags == 'success' %}
-                <i class="fa-solid fa-circle-check text-green-400 mt-0.5 flex-shrink-0"></i>
-                {% elif message.tags == 'error' %}
-                <i class="fa-solid fa-circle-xmark text-red-400 mt-0.5 flex-shrink-0"></i>
-                {% else %}
-                <i class="fa-solid fa-circle-info text-crt-amber mt-0.5 flex-shrink-0"></i>
-                {% endif %}
-                <div class="text-sm font-sans text-crt-text flex-1">{{ message }}</div>
-                <button class="text-crt-muted hover:text-crt-text flex-shrink-0 ml-1" onclick="this.closest('.toast').remove()" aria-label="{% trans 'Dismiss' %}">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                    </svg>
-                </button>
-            </div>
-            {% endfor %}
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu-enter md:hidden bg-crt-bg/98 backdrop-blur-md border-b border-crt-amber/20 absolute w-full left-0 top-full shadow-xl z-40">
+        <div class="flex flex-col p-6 gap-0">
+            <a href="#system-info" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3 border-b border-crt-amber/10">{% trans "About" %}</a>
+            <a href="#projects" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3 border-b border-crt-amber/10">{% trans "Projects" %}</a>
+            <a href="#career" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3 border-b border-crt-amber/10">{% trans "Career" %}</a>
+            <a href="#contact" class="mobile-link font-mono text-crt-text hover:text-crt-amber transition-colors py-3">{% trans "Contact" %}</a>
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('.toast').forEach((t, i) => {
-                    setTimeout(() => t.classList.add('show'), 120 * i + 80);
-                    setTimeout(() => {
-                        t.classList.remove('show');
-                        setTimeout(() => t.remove(), 450);
-                    }, 5200 + 120 * i);
-                });
-            });
-        </script>
-        {% endif %}
+    </div>
+</nav>
 
-        {% block content %}{% endblock %}
-    </main>
-
-    <footer class="bg-crt-bg border-t border-crt-amber/15 py-10 mt-0">
-        <div class="container mx-auto px-6 text-center">
-            <p class="font-mono text-sm text-crt-muted">
-                <span class="text-crt-amber">©</span> {% now "Y" %} {% if profile %}{{ profile.name }}{% endif %} <span class="text-crt-amber/40">—</span> {% trans "All rights reserved." %}
-            </p>
+<main class="relative z-10">
+    {% if messages %}
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[70] flex flex-col gap-3 pointer-events-none">
+        {% for message in messages %}
+        <div class="toast glass-card rounded-lg flex items-start gap-3 w-full max-w-xs p-4 pointer-events-auto" role="alert">
+            {% if message.tags == 'success' %}
+            <i class="fa-solid fa-circle-check text-green-400 mt-0.5 flex-shrink-0"></i>
+            {% elif message.tags == 'error' %}
+            <i class="fa-solid fa-circle-xmark text-red-400 mt-0.5 flex-shrink-0"></i>
+            {% else %}
+            <i class="fa-solid fa-circle-info text-crt-amber mt-0.5 flex-shrink-0"></i>
+            {% endif %}
+            <div class="text-sm font-sans text-crt-text flex-1">{{ message }}</div>
+            <button class="text-crt-muted hover:text-crt-text flex-shrink-0 ml-1" onclick="this.closest('.toast').remove()" aria-label="{% trans 'Dismiss' %}">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+            </button>
         </div>
-    </footer>
-
+        {% endfor %}
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // Mobile menu toggle
-            const menuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (menuBtn && mobileMenu) {
-                menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-                mobileMenu.querySelectorAll('.mobile-link').forEach(l => {
-                    l.addEventListener('click', () => mobileMenu.classList.remove('open'));
-                });
-            }
-
-            // Scroll progress bar + nav solidify
-            const scrollProgress = document.getElementById('scroll-progress');
-            const mainNav = document.getElementById('main-nav');
-            window.addEventListener('scroll', () => {
-                const scrollTop = window.scrollY;
-                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-                if (scrollProgress) scrollProgress.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
-                if (mainNav) {
-                    if (scrollTop > 50) {
-                        mainNav.classList.add('shadow-lg', 'shadow-black/40');
-                        mainNav.style.background = 'rgba(10,8,0,0.97)';
-                    } else {
-                        mainNav.classList.remove('shadow-lg', 'shadow-black/40');
-                        mainNav.style.background = '';
-                    }
-                }
-            }, { passive: true });
-
-            // Active nav link highlight by section
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('section[id]');
-            const sectionObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('id');
-                        navLinks.forEach(link => {
-                            const isActive = link.getAttribute('href') === '#' + id;
-                            link.classList.toggle('text-crt-amber', isActive);
-                            link.classList.toggle('border-b', isActive);
-                            link.classList.toggle('border-crt-amber/50', isActive);
-                            link.classList.toggle('text-crt-muted', !isActive);
-                        });
-                    }
-                });
-            }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
-            sections.forEach(s => sectionObserver.observe(s));
-
-            // IntersectionObserver for fade-up, stagger-group, timeline-line
-            const revealObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        revealObserver.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.08 });
-            document.querySelectorAll('.fade-up, .stagger-group, .timeline-line').forEach(el => revealObserver.observe(el));
+            document.querySelectorAll('.toast').forEach((t, i) => {
+                setTimeout(() => t.classList.add('show'), 120 * i + 80);
+                setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 450); }, 5200 + 120 * i);
+            });
         });
     </script>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="bg-crt-bg border-t border-crt-amber/15 py-10 mt-0">
+    <div class="container mx-auto px-6 text-center">
+        <p class="font-mono text-xs text-crt-muted">
+            <span class="text-crt-amber">©</span> {% now "Y" %} {% if profile %}{{ profile.name }}{% endif %}
+            <span class="text-crt-amber/30 mx-2">—</span>
+            {% trans "All rights reserved." %}
+            <span class="text-crt-amber/30 mx-2">—</span>
+            <span class="text-crt-amber/50">{% trans "Built with" %} <span class="text-crt-amber">Django</span></span>
+        </p>
+    </div>
+</footer>
+
+<script>
+(function() {
+'use strict';
+
+// ─── CUSTOM CURSOR ───────────────────────────────────────────────
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx = -200, my = -200, rx = -200, ry = -200;
+let ringAf;
+
+document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+    if (!ringAf) ringAf = requestAnimationFrame(animRing);
+}, { passive: true });
+
+function animRing() {
+    rx += (mx - rx) * 0.15;
+    ry += (my - ry) * 0.15;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    ringAf = Math.abs(rx - mx) > 0.5 || Math.abs(ry - my) > 0.5
+        ? requestAnimationFrame(animRing)
+        : null;
+}
+
+document.querySelectorAll('a, button, [role="button"], .project-card').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+});
+document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
+document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
+
+// ─── WEB AUDIO SOUND ENGINE ──────────────────────────────────────
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+
+function getACtx() {
+    if (!actx) actx = new AudioCtx();
+    return actx;
+}
+
+function playClick() {
+    try {
+        const ctx = getACtx();
+        const buf = ctx.createBuffer(1, ctx.sampleRate * 0.04, ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 8);
+        }
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        src.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+    } catch(e) {}
+}
+
+function playKey() {
+    try {
+        const ctx = getACtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(880 + Math.random() * 440, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.06);
+        gain.gain.setValueAtTime(0.04, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.06);
+    } catch(e) {}
+}
+
+function playBoot() {
+    try {
+        const ctx = getACtx();
+        [0, 0.12, 0.24].forEach((t, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime([440, 554, 659][i], ctx.currentTime + t);
+            gain.gain.setValueAtTime(0.08, ctx.currentTime + t);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.18);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + t);
+            osc.stop(ctx.currentTime + t + 0.2);
+        });
+    } catch(e) {}
+}
+
+document.addEventListener('click', playClick, { passive: true });
+document.querySelectorAll('input, textarea').forEach(el => {
+    el.addEventListener('keydown', playKey, { passive: true });
+});
+
+// ─── BOOT SCREEN ─────────────────────────────────────────────────
+const bootScreen = document.getElementById('boot-screen');
+const bootLines = document.getElementById('boot-lines');
+const progressWrap = document.getElementById('boot-progress-wrap');
+const progressFill = document.getElementById('boot-progress-fill');
+
+// Skip boot on return visits within same session
+const bootDone = sessionStorage.getItem('boot_done');
+
+const BOOT_SEQUENCE = [
+    { text: '██████████████████████████████████████████', cls: 'dim', delay: 0 },
+    { text: '  AMBER/OS v2.4.1 — SYSTEM BOOT', cls: 'head', delay: 80 },
+    { text: '  Build: 2025.03 | Kernel: CRT-7.2-amber', cls: 'dim', delay: 140 },
+    { text: '██████████████████████████████████████████', cls: 'dim', delay: 200 },
+    { text: '', delay: 260 },
+    { text: '[  OK  ] Loaded phosphor display driver', cls: 'ok', delay: 340 },
+    { text: '[  OK  ] Mounted filesystem /dev/portfolio', cls: 'ok', delay: 460 },
+    { text: '[  OK  ] Started CRT scanline renderer', cls: 'ok', delay: 580 },
+    { text: '[  OK  ] Initializing particle subsystem...', cls: 'ok', delay: 700 },
+    { text: '[ WARN ] Legacy CSS detected — applying shim', cls: 'warn', delay: 820 },
+    { text: '[  OK  ] Neural link established', cls: 'ok', delay: 940 },
+    { text: '[  OK  ] Loading project index...', cls: 'ok', delay: 1060 },
+    { text: '[  OK  ] All systems nominal', cls: 'ok', delay: 1200 },
+    { text: '', delay: 1280 },
+    { text: '  Starting portfolio interface...', cls: 'head', delay: 1360 },
+];
+
+function runBoot() {
+    if (bootDone) { bootScreen.style.display = 'none'; return; }
+
+    let maxDelay = 0;
+    BOOT_SEQUENCE.forEach(item => {
+        maxDelay = Math.max(maxDelay, item.delay);
+        setTimeout(() => {
+            const line = document.createElement('div');
+            line.className = 'boot-line' + (item.cls ? ' ' + item.cls : '');
+            line.textContent = item.text;
+            bootLines.appendChild(line);
+            // Fade in
+            requestAnimationFrame(() => { line.style.opacity = '1'; });
+        }, item.delay);
+    });
+
+    // Progress bar
+    setTimeout(() => {
+        progressWrap.style.display = 'block';
+        let pct = 0;
+        const iv = setInterval(() => {
+            pct = Math.min(pct + Math.random() * 8 + 2, 100);
+            progressFill.style.width = pct + '%';
+            if (pct >= 100) {
+                clearInterval(iv);
+                setTimeout(dismissBoot, 280);
+            }
+        }, 60);
+    }, maxDelay + 100);
+}
+
+function dismissBoot() {
+    playBoot();
+    bootScreen.classList.add('fade-out');
+    setTimeout(() => {
+        bootScreen.style.display = 'none';
+        sessionStorage.setItem('boot_done', '1');
+    }, 650);
+}
+
+runBoot();
+
+// ─── CMD+K PALETTE ───────────────────────────────────────────────
+const palette = document.getElementById('cmd-palette');
+const cmdInput = document.getElementById('cmd-input');
+const cmdResults = document.getElementById('cmd-results');
+const cmdTrigger = document.getElementById('cmd-trigger');
+const cmdBackdrop = document.getElementById('cmd-backdrop');
+
+const CMD_ITEMS = [
+    { icon: 'fa-solid fa-house', label: '{% trans "Home" %}', hint: 'top', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-user', label: '{% trans "About" %}', hint: '#system-info', action: () => document.getElementById('system-info')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-folder-open', label: '{% trans "Projects" %}', hint: '#projects', action: () => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-briefcase', label: '{% trans "Career" %}', hint: '#career', action: () => document.getElementById('career')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-person', label: '{% trans "Human" %}', hint: '#human', action: () => document.getElementById('human')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-star', label: '{% trans "Testimonials" %}', hint: '#testimonials', action: () => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-envelope', label: '{% trans "Contact" %}', hint: '#contact', action: () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: 'fa-solid fa-language', label: '{% trans "Switch to English" %}', hint: '/en/', action: () => { window.location.href = '/en/'; } },
+    { icon: 'fa-solid fa-language', label: '{% trans "Switch to French" %}', hint: '/fr/', action: () => { window.location.href = '/fr/'; } },
+];
+
+let activeIdx = 0;
+let filteredItems = CMD_ITEMS;
+
+function renderCmdItems(filter) {
+    filteredItems = filter
+        ? CMD_ITEMS.filter(i => i.label.toLowerCase().includes(filter.toLowerCase()) || i.hint.toLowerCase().includes(filter.toLowerCase()))
+        : CMD_ITEMS;
+    activeIdx = 0;
+    cmdResults.innerHTML = '';
+    filteredItems.forEach((item, i) => {
+        const el = document.createElement('div');
+        el.className = 'cmd-item' + (i === 0 ? ' active' : '');
+        el.setAttribute('role', 'option');
+        el.innerHTML = `<span class="cmd-item-icon"><i class="${item.icon}"></i></span><span class="cmd-item-label">${item.label}</span><span class="cmd-item-hint">${item.hint}</span>`;
+        el.addEventListener('click', () => { item.action(); closePalette(); });
+        cmdResults.appendChild(el);
+    });
+}
+
+function openPalette() {
+    palette.classList.add('open');
+    cmdInput.value = '';
+    renderCmdItems('');
+    cmdInput.focus();
+    document.body.style.overflow = 'hidden';
+}
+
+function closePalette() {
+    palette.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function setActive(i) {
+    const items = cmdResults.querySelectorAll('.cmd-item');
+    items.forEach((el, j) => el.classList.toggle('active', j === i));
+    items[i]?.scrollIntoView({ block: 'nearest' });
+}
+
+if (cmdTrigger) cmdTrigger.addEventListener('click', openPalette);
+if (cmdBackdrop) cmdBackdrop.addEventListener('click', closePalette);
+
+document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); palette.classList.contains('open') ? closePalette() : openPalette(); return; }
+    if (!palette.classList.contains('open')) return;
+    if (e.key === 'Escape') { closePalette(); return; }
+    if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, filteredItems.length - 1); setActive(activeIdx); return; }
+    if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); setActive(activeIdx); return; }
+    if (e.key === 'Enter') { e.preventDefault(); filteredItems[activeIdx]?.action(); closePalette(); return; }
+});
+
+cmdInput.addEventListener('input', () => { renderCmdItems(cmdInput.value); activeIdx = 0; });
+
+// ─── SCROLL PROGRESS + NAV ───────────────────────────────────────
+const scrollProgress = document.getElementById('scroll-progress');
+const mainNav = document.getElementById('main-nav');
+
+window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (scrollProgress) scrollProgress.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+    if (mainNav) {
+        if (scrollTop > 50) {
+            mainNav.style.background = 'rgba(10,8,0,0.97)';
+            mainNav.style.boxShadow = '0 4px 30px rgba(0,0,0,0.5)';
+        } else {
+            mainNav.style.background = '';
+            mainNav.style.boxShadow = '';
+        }
+    }
+}, { passive: true });
+
+// ─── ACTIVE NAV DOT ──────────────────────────────────────────────
+const navLinks = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('section[id]');
+const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach(link => {
+                const isActive = link.getAttribute('href') === '#' + id;
+                link.classList.toggle('active', isActive);
+                link.classList.toggle('text-crt-amber', isActive);
+                link.classList.toggle('text-crt-muted', !isActive);
+            });
+        }
+    });
+}, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+sections.forEach(s => sectionObserver.observe(s));
+
+// ─── MOBILE MENU ─────────────────────────────────────────────────
+const menuBtn = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+    mobileMenu.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => mobileMenu.classList.remove('open')));
+}
+
+// ─── REVEAL ANIMATIONS ───────────────────────────────────────────
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.07 });
+document.querySelectorAll('.fade-up, .fade-in, .stagger-group, .timeline-line').forEach(el => revealObserver.observe(el));
+
+})();
+</script>
 </body>
 </html>
