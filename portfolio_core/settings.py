@@ -24,13 +24,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY", "django-insecure-0*8*_wmsnaf!)*7aj46ivi8#zht37dp2z$a57xl0m7mdb9+$nm"
-)
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True") == "True"
+
+# SECURITY WARNING: keep the secret key used in production secret!
+# In production we REQUIRE the SECRET_KEY env var — never fall back to a public
+# default that anyone reading the repo could use to forge sessions/CSRF tokens.
+if DEBUG:
+    SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-dev-only-do-not-use-in-production")
+else:
+    try:
+        SECRET_KEY = os.environ["SECRET_KEY"]
+    except KeyError as exc:
+        raise RuntimeError(
+            "SECRET_KEY env var must be set when DEBUG=False. Refusing to boot."
+        ) from exc
 
 ADMINS = [("Admin", "sraldon24@gmail.com")]
 # Email Configuration
@@ -124,8 +132,15 @@ if _REDIS_URL:
             "LOCATION": _REDIS_URL,
         }
     }
+elif not DEBUG:
+    # LocMemCache under multiple gunicorn workers = broken rate limiting
+    # (each worker has its own counter). Refuse to boot without shared cache.
+    raise RuntimeError(
+        "REDIS_URL must be set when DEBUG=False. Rate limiting requires a shared "
+        "cache backend — per-process LocMemCache is unsafe under multiple workers."
+    )
 else:
-    # LocMemCache: correct per-process, no race conditions. Multi-worker = limit per worker.
+    # Dev only: LocMemCache is fine for single-process runserver.
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",

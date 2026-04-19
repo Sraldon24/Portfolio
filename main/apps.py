@@ -5,4 +5,5 @@ class MainConfig(AppConfig):
     name = "main"
 
     def ready(self):
-        pass
+        # Wire signal handlers (auto-translate + fragment cache invalidation)
+        from . import signals  # noqa: F401

@@ -71,6 +71,7 @@ class SkillAdmin(TranslatableAdmin):
     list_display = ("name", "proficiency")
     search_fields = ("translations__name",)
     list_filter = ("proficiency",)
+    list_select_related = ("translations",)
 
 
 @admin.register(Project)
@@ -79,6 +80,7 @@ class ProjectAdmin(TranslatableAdmin):
     list_display = ("title", "created_date", "description_snippet", "link")
     search_fields = ("translations__title", "translations__description")
     list_filter = ("created_date",)
+    list_select_related = ("translations",)
 
     def description_snippet(self, obj):
         desc = obj.safe_translation_getter("description", any_language=True)
@@ -99,6 +101,7 @@ class ExperienceAdmin(TranslatableAdmin):
     search_fields = ("translations__job_title", "translations__company")
     list_filter = ("start_date", "end_date")
     ordering = ("-start_date",)
+    list_select_related = ("translations",)
 
 
 @admin.register(Education)
@@ -108,12 +111,14 @@ class EducationAdmin(TranslatableAdmin):
     search_fields = ("translations__degree", "translations__institution")
     list_filter = ("start_date", "end_date")
     ordering = ("-start_date",)
+    list_select_related = ("translations",)
 
 
 @admin.register(Hobby)
 class HobbyAdmin(TranslatableAdmin):
     show_add_link = True
     list_display = ("name", "font_awesome_icon", "icon")
+    list_select_related = ("translations",)
 
 
 @admin.register(ContactMessage)
@@ -135,6 +140,7 @@ class TestimonialAdmin(TranslatableAdmin):
     show_add_link = True
     list_display = ("name", "get_role_company", "quote_snippet", "is_approved", "created_at")
     list_filter = ("is_approved", "created_at")
+    list_select_related = ("translations",)
     actions = ["approve_testimonials", "reject_testimonials"]
     search_fields = ("name", "translations__quote", "translations__role_company")
 

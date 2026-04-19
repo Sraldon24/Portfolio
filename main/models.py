@@ -1,53 +1,63 @@
+import contextlib
+import logging
+import sys
+import threading
+
 from deep_translator import GoogleTranslator
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from parler.models import TranslatableModel, TranslatedFields
 
+logger = logging.getLogger(__name__)
 
-def auto_translate_fields(instance):
+# Background threads racing SQLite during tests cause "database is locked"
+# errors. Skip scheduling when running the test suite.
+_RUNNING_TESTS = "test" in sys.argv or getattr(settings, "TESTING", False)
+
+
+def _do_auto_translate(instance):
     """
-    Automatically translates fields from English to French if the French translation is missing.
+    Core EN->FR translation. Runs off the request thread — NEVER call from save().
+    Only triggers when current language is EN and FR translation is missing.
     """
     try:
-        # Only trigger if we are saving the English version
         if instance.get_current_language() != "en":
             return
-
-        # Check if French translation exists
         if instance.has_translation("fr"):
-            # Ideally we check if it's empty, but has_translation usually implies it exists.
-            # Let's check if the fields are actually empty in the FR version.
-            # Using get_translation('fr') might raise if it doesn't exist despite has_translation being true (caching).
-            # So rely on exception handling or just proceed if it's missing.
-            pass
-        else:
-            # Prepare translation
-            translator = GoogleTranslator(source="en", target="fr")
+            return
 
-            # Get English fields
-            en_trans = instance.get_translation("en")
+        translator = GoogleTranslator(source="en", target="fr")
+        en_trans = instance.get_translation("en")
 
-            # Create French translation
-            instance.set_current_language("fr")
-
-            # Iterate through translated fields
-            for field in instance._parler_meta.get_translated_fields():
-                value = getattr(en_trans, field, None)
-                if value and isinstance(value, str):
-                    try:
-                        translated_value = translator.translate(value)
-                        setattr(instance, field, translated_value)
-                    except Exception as e:
-                        print(f"Translation failed for field {field}: {e}")
-
-            # Switch back to English for the main save process to complete normally
-            # The FR translation is saved when instance.save() is called because parler saves all dirty translations
+        instance.set_current_language("fr")
+        for field in instance._parler_meta.get_translated_fields():
+            value = getattr(en_trans, field, None)
+            if value and isinstance(value, str):
+                try:
+                    translated_value = translator.translate(value)
+                    setattr(instance, field, translated_value)
+                except Exception:
+                    logger.exception("Translation failed for field %s", field)
+        # Persist the FR translation without triggering the auto-translate loop again
+        # (guarded by has_translation("fr") above on re-entry).
+        try:
+            instance.save_translations()
+        except Exception:
+            logger.exception("save_translations failed on %s", instance)
+        instance.set_current_language("en")
+    except Exception:
+        logger.exception("Auto-translation error")
+        with contextlib.suppress(Exception):
             instance.set_current_language("en")
 
-    except Exception as e:
-        print(f"Auto-translation error: {e}")
-        # Ensure we don't break the save process
-        instance.set_current_language("en")
+
+def schedule_auto_translate(instance):
+    """Fire-and-forget background translation so form.save() returns immediately."""
+    if _RUNNING_TESTS:
+        return
+    t = threading.Thread(target=_do_auto_translate, args=(instance,), daemon=True)
+    t.start()
 
 
 # Singleton Model Mixin
@@ -62,7 +72,6 @@ class SingletonModel(models.Model):
 
     @classmethod
     def load(cls):
-        # FIX: Ensure a default translation exists upon creation OR if missing (zombie data)
         obj, created = cls.objects.get_or_create(pk=1)
         if not obj.has_translation("en"):
             obj.set_current_language("en")
@@ -73,10 +82,6 @@ class SingletonModel(models.Model):
 
 
 class Profile(SingletonModel, TranslatableModel):
-    def save(self, *args, **kwargs):
-        auto_translate_fields(self)
-        super().save(*args, **kwargs)
-
     translations = TranslatedFields(
         name=models.CharField(max_length=100),
         bio=models.TextField(blank=True),
@@ -134,18 +139,9 @@ class ContactInfo(SingletonModel):
     linkedin_url = models.URLField(blank=True)
     twitter_url = models.URLField(blank=True)
 
-    # Optional: If address needs translation, we can add it properly
-    # For now, keeping it universal as per standard requirements,
-    # but user mentioned "all text fields". Contact info usually is universal
-    # except maybe labels which are handled by gettext.
-    # If address is physical and changes by language (rare), we'd need it.
-    # Let's assume standard universal contact info for now unless specified.
-
     @classmethod
     def load(cls):
-        # FIX: Provide a default email to satisfy the NOT NULL constraint
         obj, created = cls.objects.get_or_create(pk=1, defaults={"email": "contact@example.com"})
-        # Double check: if it existed but was empty
         if not obj.email:
             obj.email = "contact@example.com"
             obj.save()
@@ -156,24 +152,19 @@ class ContactInfo(SingletonModel):
 
 
 class Skill(TranslatableModel):
-    def save(self, *args, **kwargs):
-        auto_translate_fields(self)
-        super().save(*args, **kwargs)
-
     translations = TranslatedFields(
         name=models.CharField(max_length=100),
     )
     proficiency = models.PositiveIntegerField(help_text="1-100")
+
+    class Meta:
+        ordering = ["-proficiency"]
 
     def __str__(self):
         return self.safe_translation_getter("name", any_language=True)
 
 
 class Project(TranslatableModel):
-    def save(self, *args, **kwargs):
-        auto_translate_fields(self)
-        super().save(*args, **kwargs)
-
     translations = TranslatedFields(
         title=models.CharField(max_length=200),
         description=models.TextField(blank=True),
@@ -181,7 +172,7 @@ class Project(TranslatableModel):
     image = models.ImageField(upload_to="projects/", blank=True, null=True)
     code_link = models.URLField(blank=True)
     demo_link = models.URLField(blank=True, verbose_name="Demo Link (Optional)")
-    created_date = models.DateField(verbose_name="Creation Date")
+    created_date = models.DateField(verbose_name="Creation Date", db_index=True)
     tech_stack = models.CharField(
         max_length=300,
         blank=True,
@@ -189,21 +180,20 @@ class Project(TranslatableModel):
         help_text="Comma-separated tags e.g. Python, Django, Docker",
     )
 
+    class Meta:
+        ordering = ["-created_date"]
+
     def __str__(self):
         return self.safe_translation_getter("title", any_language=True)
 
 
 class Experience(TranslatableModel):
-    def save(self, *args, **kwargs):
-        auto_translate_fields(self)
-        super().save(*args, **kwargs)
-
     translations = TranslatedFields(
         job_title=models.CharField(max_length=200),
         company=models.CharField(max_length=200),
         description=models.TextField(blank=True),
     )
-    start_date = models.DateField(verbose_name="Start Date")
+    start_date = models.DateField(verbose_name="Start Date", db_index=True)
     end_date = models.DateField(
         null=True, blank=True, verbose_name="End Date (Leave blank for 'Present')"
     )
@@ -228,15 +218,14 @@ class Experience(TranslatableModel):
         help_text="Select a built-in icon",
     )
 
+    class Meta:
+        ordering = ["-start_date"]
+
     def __str__(self):
         return f"{self.safe_translation_getter('job_title', any_language=True)} at {self.safe_translation_getter('company', any_language=True)}"
 
 
 class Education(TranslatableModel):
-    def save(self, *args, **kwargs):
-        auto_translate_fields(self)
-        super().save(*args, **kwargs)
-
     translations = TranslatedFields(
         degree=models.CharField(max_length=200),
         institution=models.CharField(max_length=200),
@@ -246,15 +235,14 @@ class Education(TranslatableModel):
         null=True, blank=True, verbose_name="End Date (Leave blank for 'Present')"
     )
 
+    class Meta:
+        ordering = ["-start_date"]
+
     def __str__(self):
         return f"{self.safe_translation_getter('degree', any_language=True)} at {self.safe_translation_getter('institution', any_language=True)}"
 
 
 class Hobby(TranslatableModel):
-    def save(self, *args, **kwargs):
-        auto_translate_fields(self)
-        super().save(*args, **kwargs)
-
     translations = TranslatedFields(
         name=models.CharField(max_length=100),
         description=models.TextField(blank=True),
@@ -300,7 +288,10 @@ class ContactMessage(models.Model):
     email = models.EmailField()
     subject = models.CharField(max_length=200, blank=True)
     message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"Message from {self.name}: {self.subject}"
@@ -316,12 +307,12 @@ class Testimonial(TranslatableModel):
         quote=models.TextField(verbose_name="Testimonial"),
     )
 
-    is_approved = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    is_approved = models.BooleanField(default=False, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
-    def save(self, *args, **kwargs):
-        auto_translate_fields(self)
-        super().save(*args, **kwargs)
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [models.Index(fields=["is_approved", "-created_at"])]
 
     def __str__(self):
         return f"Testimonial from {self.name}"

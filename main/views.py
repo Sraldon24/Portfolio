@@ -22,26 +22,22 @@ def home(request):
             return redirect("home")
 
         if "submit_contact" in request.POST:
+            # Honeypot check FIRST — from raw POST, before form validation
+            # (so nothing is persisted for bot submissions).
+            if request.POST.get("contact-nickname"):
+                return redirect("home")
+
             contact_form = ContactForm(request.POST, prefix="contact")
             if contact_form.is_valid():
-                # Spam check (Honeypot)
-                if contact_form.cleaned_data.get("nickname"):
-                    return redirect("home")  # Silent failure for bots
-
                 try:
                     contact_form.save()
                     messages.success(request, _("Your message has been sent successfully!"))
                 except Exception:
                     logger.exception("Contact form save failed")
-                    messages.success(
-                        request, _("Your message has been sent successfully!")
-                    )  # Form row often saved before email signal fires — keep UX calm
-                    # Actually, if save() fails (signals), the DB transaction might roll back or not.
-                    # Signals usually run after save. If signal fails, save is usually done.
-                    # But to be safe and friendly:
-                    # messages.warning(request, "Message saved, but email notification failed.")
-                    # Let's just say success to not panic them, as long as it's not a critical DB error.
-                    # If it's pure email error, the contact IS saved in DB.
+                    messages.error(
+                        request,
+                        _("Sorry, we couldn't save your message. Please try again in a moment."),
+                    )
                 return redirect("home")
             else:
                 messages.error(
@@ -49,12 +45,12 @@ def home(request):
                 )
 
         elif "submit_testimonial" in request.POST:
+            # Honeypot check FIRST
+            if request.POST.get("testimonial-nickname"):
+                return redirect("home")
+
             testimonial_form = TestimonialForm(request.POST, prefix="testimonial")
             if testimonial_form.is_valid():
-                # Spam check (Honeypot)
-                if testimonial_form.cleaned_data.get("nickname"):
-                    return redirect("home")
-
                 try:
                     testimonial_form.save()
                     messages.success(
@@ -62,8 +58,12 @@ def home(request):
                     )
                 except Exception:
                     logger.exception("Testimonial form save failed")
-                    messages.success(
-                        request, _("Thank you! Your testimonial has been submitted for review.")
+                    messages.error(
+                        request,
+                        _(
+                            "Sorry, we couldn't save your testimonial. "
+                            "Please try again in a moment."
+                        ),
                     )
                 return redirect("home")
             else:
@@ -74,9 +74,7 @@ def home(request):
         "contact_info": ContactInfo.load(),
         "skills": Skill.objects.prefetch_related("translations"),
         "projects": Project.objects.prefetch_related("translations").order_by("-created_date"),
-        "experiences": Experience.objects.prefetch_related("translations").order_by(
-            "-start_date"
-        ),
+        "experiences": Experience.objects.prefetch_related("translations").order_by("-start_date"),
         "educations": Education.objects.prefetch_related("translations").order_by("-start_date"),
         "hobbies": Hobby.objects.prefetch_related("translations"),
         "testimonials": Testimonial.objects.filter(is_approved=True)

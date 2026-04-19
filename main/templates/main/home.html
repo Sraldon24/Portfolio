@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %}
-{% load i18n %}
+{% load i18n cache %}
 {% block content %}
 
 <!-- ═══════════════════════════════════════════════════
@@ -186,6 +186,7 @@
                     <span>{% trans "skills.log" %}</span>
                 </div>
                 <div id="skills-section" class="space-y-1.5 max-h-72 overflow-y-auto custom-scroll pr-2">
+                    {% cache 3600 "home.skills" LANGUAGE_CODE %}
                     {% for skill in skills %}
                     <div class="skill-row">
                         <div class="flex justify-between items-center mb-1">
@@ -197,6 +198,7 @@
                         </div>
                     </div>
                     {% endfor %}
+                    {% endcache %}
                 </div>
                 <!-- Skills log ticker -->
                 <div class="skills-log-ticker" aria-hidden="true">
@@ -222,6 +224,7 @@
         </div>
 
         <div class="bento-grid stagger-group">
+            {% cache 3600 "home.projects" LANGUAGE_CODE %}
             {% for project in projects %}
             <div class="project-card glass-card rounded-xl overflow-hidden {% if forloop.first %}bento-featured{% endif %}">
                 <!-- Image -->
@@ -262,6 +265,7 @@
                 </div>
             </div>
             {% endfor %}
+            {% endcache %}
         </div>
     </div>
 </section>
@@ -286,6 +290,7 @@
             </div>
 
             <div class="space-y-10">
+                {% cache 3600 "home.career" LANGUAGE_CODE %}
                 {% for exp in experiences %}
                 <div class="timeline-entry relative flex {% cycle 'flex-row' 'flex-row-reverse' %} items-start gap-8 fade-up">
                     <div class="absolute left-1/2 top-3 -translate-x-1/2 w-3.5 h-3.5 rounded-full border-2 border-crt-amber bg-crt-bg z-10 flex items-center justify-center box-content">
@@ -321,6 +326,7 @@
                     <div class="w-5/12"></div>
                 </div>
                 {% endfor %}
+                {% endcache %}
             </div>
         </div>
     </div>
@@ -339,6 +345,7 @@
             <h2 class="section-title">{% trans "My Hobbies" %}</h2>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 stagger-group">
+            {% cache 3600 "home.hobbies" LANGUAGE_CODE %}
             {% for hobby in hobbies %}
             <div class="glass-card rounded-xl p-5 text-center group">
                 <div class="w-14 h-14 mx-auto mb-3 rounded-full border border-crt-amber/20 bg-crt-amber/5 group-hover:bg-crt-amber/12 group-hover:border-crt-amber/45 flex items-center justify-center transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]">
@@ -354,6 +361,7 @@
                 {% if hobby.description %}<p class="font-mono text-[10px] text-crt-muted mt-1 leading-snug">{{ hobby.description }}</p>{% endif %}
             </div>
             {% endfor %}
+            {% endcache %}
         </div>
     </div>
 </section>
@@ -394,6 +402,7 @@
         </div>
 
         <div class="marquee-track">
+            {% cache 3600 "home.testimonials" LANGUAGE_CODE %}
             {% for testimonial in testimonials %}
             <div class="glass-card rounded-xl w-80 relative p-6 flex-shrink-0 hover:border-crt-amber/30 transition-colors">
                 <div class="absolute top-2 right-5 text-[4.5rem] text-crt-amber/10 font-sans leading-none select-none pointer-events-none" style="font-family:Inter,serif;font-weight:700;">&ldquo;</div>
@@ -416,6 +425,7 @@
                 </div>
             </div>
             {% endfor %}
+            {% endcache %}
         </div>
     </div>
 </section>
