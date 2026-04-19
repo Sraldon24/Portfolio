@@ -1,0 +1,34 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Hero BG (CRT, animated)</title>
+<link rel="stylesheet" href="_brand.css">
+<style>
+.hbg{width:1920px;height:1080px;position:relative;overflow:hidden}
+.hbg .fx-grid::before{background-size:100px 100px}
+canvas{position:absolute;inset:0;z-index:1}
+.meteors{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden}
+.m{position:absolute;width:220px;height:1px;background:linear-gradient(to right,transparent,rgba(245,158,11,.95),transparent);transform:rotate(-35deg);filter:drop-shadow(0 0 7px rgba(234,88,12,.75));opacity:0;animation:mf 6s linear infinite}
+.m:nth-child(1){top:-40px;right:20%;animation-delay:0s;animation-duration:5.5s}
+.m:nth-child(2){top:-40px;right:48%;animation-delay:1.8s;animation-duration:7s;width:180px}
+.m:nth-child(3){top:-40px;right:68%;animation-delay:3.4s;animation-duration:6.2s;width:260px}
+.m:nth-child(4){top:-40px;right:12%;animation-delay:4.6s;animation-duration:5.8s;width:150px}
+@keyframes mf{0%{transform:translate(0,0) rotate(-35deg);opacity:0}8%{opacity:1}80%{opacity:1}100%{transform:translate(-900px,760px) rotate(-35deg);opacity:0}}
+</style></head>
+<body><div class="asset hbg">
+  <div class="fx-radial"></div><div class="fx-grid"></div>
+  <div class="fx-boot">&gt; BOOT CRT-07 · PHOSPHOR WARMUP <span class="ok">[ OK ]</span> · 1920×1080 @ 60Hz</div>
+  <canvas id="pc"></canvas>
+  <div class="meteors"><div class="m"></div><div class="m"></div><div class="m"></div><div class="m"></div></div>
+  <div class="fx-sweep"></div><div class="fx-bloom"></div><div class="fx-ca"></div><div class="fx-noise"></div><div class="fx-scanlines"></div><div class="fx-barrel"></div><div class="fx-bezel"></div><div class="fx-flicker"></div>
+</div>
+<script>
+const c=document.getElementById('pc');c.width=1920;c.height=1080;const x=c.getContext('2d');
+const pts=[];for(let i=0;i<80;i++)pts.push({x:Math.random()*1920,y:Math.random()*1080,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.8+.5,a:Math.random()*.4+.3});
+function tick(){
+  x.clearRect(0,0,1920,1080);
+  pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>1920)p.vx*=-1;if(p.y<0||p.y>1080)p.vy*=-1;
+    x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle=`rgba(245,158,11,${p.a})`;x.shadowBlur=9;x.shadowColor='rgba(234,88,12,.75)';x.fill();x.shadowBlur=0;});
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);if(d<190){x.beginPath();x.moveTo(pts[i].x,pts[i].y);x.lineTo(pts[j].x,pts[j].y);x.strokeStyle=`rgba(245,158,11,${.2*(1-d/190)})`;x.lineWidth=.6;x.stroke()}}
+  requestAnimationFrame(tick);
+}
+tick();
+</script></body></html>

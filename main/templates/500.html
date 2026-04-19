@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+{% load i18n static %}
+{% block title %}{% trans "500 — Core Dumped" %}{% endblock %}
+{% block content %}
+<section class="min-h-screen flex items-center justify-center py-24 px-6 relative overflow-hidden">
+    <div class="perspective-grid"></div>
+    <div class="noise-overlay z-[3]"></div>
+
+    <div class="relative z-10 text-center max-w-2xl mx-auto">
+        <p class="font-mono text-xs tracking-[0.32em] mb-6" style="color:#ea580c;text-shadow:0 0 12px rgba(234,88,12,0.6);">
+            &#10006; {% trans "CORE_DUMPED" %}
+        </p>
+
+        <h1 class="glitch font-mono font-bold text-crt-amber phosphor leading-none mb-4"
+            data-text="500"
+            style="font-size:clamp(6rem,18vw,15rem);text-shadow:0 0 22px rgba(245,158,11,0.7),0 0 60px rgba(234,88,12,0.35);">
+            500
+        </h1>
+
+        <p class="font-mono text-base text-crt-text mb-2">// {% trans "the server tripped over its own cable" %}</p>
+        <p class="font-mono text-xs text-crt-muted mb-8 leading-relaxed">
+            <span class="text-crt-amber-light">$</span> sudo systemctl restart portfolio.service<br>
+            {% trans "our team has been paged. give it a minute." %}
+        </p>
+
+        <div class="flex flex-wrap gap-3 justify-center mb-10">
+            <a href="javascript:location.reload()" class="btn-amber rounded-sm">
+                <i class="fa-solid fa-arrow-rotate-right mr-2 text-xs"></i>{% trans "retry" %}
+            </a>
+            <a href="{% url 'home' %}" class="btn-terminal rounded-sm">
+                <i class="fa-solid fa-house mr-2 text-xs"></i>{% trans "cd ~/home" %}
+            </a>
+        </div>
+
+        <div class="glass-card rounded-lg p-4 text-left font-mono text-xs leading-relaxed text-crt-amber/60 max-w-xl mx-auto">
+            <div><span class="text-red-400 mr-2">[01]</span><span class="text-crt-muted">at</span> Database.connect <span class="text-crt-muted">(db.py:42)</span></div>
+            <div><span class="text-red-400 mr-2">[02]</span><span class="text-crt-muted">at</span> middleware <span class="text-crt-muted">(error_handler.py:18)</span></div>
+            <div><span class="text-red-400 mr-2">[03]</span><span class="text-crt-muted">ConnectionError:</span> <b class="text-red-400">{% trans "timeout after 30s" %}</b></div>
+        </div>
+    </div>
+</section>
+{% endblock %}

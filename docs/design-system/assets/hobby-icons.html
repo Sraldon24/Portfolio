@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Hobby Icons (CRT)</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#151515;font-family:'JetBrains Mono',monospace;padding:40px;display:grid;grid-template-columns:repeat(6,1fr);gap:28px;max-width:1140px;margin:0 auto}
+.cell{display:flex;flex-direction:column;align-items:center;gap:10px}
+.icn{position:relative;width:128px;height:128px;background:radial-gradient(ellipse at 50% 45%,#2a1a00 0%,#120c00 60%,#050300 100%);border-radius:14px;overflow:hidden;box-shadow:inset 0 0 0 2px rgba(245,158,11,.35),inset 0 0 24px rgba(234,88,12,.25),0 0 14px rgba(234,88,12,.18)}
+.icn::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,.4) 2px,rgba(0,0,0,.4) 4px);mix-blend-mode:multiply;z-index:3;pointer-events:none}
+.icn::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 75% 78% at 50% 50%,transparent 50%,rgba(10,8,0,.6) 88%,rgba(10,8,0,.95) 100%);z-index:4;pointer-events:none}
+.icn svg{position:relative;width:72px;height:72px;top:50%;left:50%;transform:translate(-50%,-50%);stroke:#f59e0b;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 7px rgba(245,158,11,.75)) drop-shadow(0 0 16px rgba(234,88,12,.4));z-index:2}
+.icn .lbl2{position:absolute;top:8px;left:10px;font-size:8px;color:rgba(245,158,11,.55);letter-spacing:.2em;z-index:2}
+.lbl{font-size:10px;color:#fde68a;letter-spacing:.16em;opacity:.75;text-align:center;text-transform:uppercase}
+</style></head>
+<body>
+
+<div class="cell"><div class="icn"><span class="lbl2">01</span><svg viewBox="0 0 24 24"><circle cx="8" cy="17" r="4"/><line x1="10" y1="14" x2="16" y2="4"/><line x1="14" y1="6" x2="19" y2="9"/><circle cx="17" cy="5" r="1"/></svg></div><div class="lbl">Guitar</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">02</span><svg viewBox="0 0 24 24"><rect x="8" y="18" width="8" height="3"/><path d="M 9 18 L 9 13 L 15 13 L 15 18"/><path d="M 10 13 L 10 9 L 14 9 L 14 13"/><circle cx="12" cy="6" r="2.5"/></svg></div><div class="lbl">Chess</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">03</span><svg viewBox="0 0 24 24"><path d="M 4 12 Q 4 8 8 8 L 16 8 Q 20 8 20 12 L 20 14 Q 20 17 17 17 Q 15 17 15 15 L 9 15 Q 9 17 7 17 Q 4 17 4 14 Z"/><line x1="8" y1="11" x2="8" y2="13"/><line x1="7" y1="12" x2="9" y2="12"/><circle cx="15.5" cy="11" r=".8"/><circle cx="17" cy="12.5" r=".8"/></svg></div><div class="lbl">Gaming</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">04</span><svg viewBox="0 0 24 24"><path d="M 3 14 L 10 11 L 6 5 L 9 5 L 15 10 L 21 9 L 21 12 L 15 13 L 10 19 L 8 19 L 9 14 Z"/></svg></div><div class="lbl">Travel</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">05</span><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M 8 7 L 9.5 5 L 14.5 5 L 16 7"/><circle cx="12" cy="13.5" r="4"/><circle cx="12" cy="13.5" r="2"/></svg></div><div class="lbl">Photo</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">06</span><svg viewBox="0 0 24 24"><rect x="10" y="10" width="4" height="4"/><line x1="6" y1="8" x2="6" y2="16"/><line x1="18" y1="8" x2="18" y2="16"/><line x1="3" y1="10" x2="3" y2="14"/><line x1="21" y1="10" x2="21" y2="14"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="18" y2="12"/></svg></div><div class="lbl">Lifting</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">07</span><svg viewBox="0 0 24 24"><path d="M 4 5 L 11 6 L 11 20 L 4 19 Z"/><path d="M 20 5 L 13 6 L 13 20 L 20 19 Z"/><line x1="11" y1="6" x2="13" y2="6"/></svg></div><div class="lbl">Reading</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">08</span><svg viewBox="0 0 24 24"><path d="M 5 10 L 17 10 L 17 16 Q 17 19 14 19 L 8 19 Q 5 19 5 16 Z"/><path d="M 17 12 L 19 12 Q 21 12 21 14 Q 21 16 19 16 L 17 16"/><path d="M 9 7 Q 9 5 10 5"/><path d="M 12 7 Q 12 5 13 5"/></svg></div><div class="lbl">Coffee</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">09</span><svg viewBox="0 0 24 24"><circle cx="5" cy="17" r="3.5"/><circle cx="19" cy="17" r="3.5"/><path d="M 5 17 L 10 8 L 16 8 L 19 17"/><line x1="10" y1="8" x2="14" y2="8"/><circle cx="13" cy="5" r="1.2"/></svg></div><div class="lbl">Cycling</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">10</span><svg viewBox="0 0 24 24"><circle cx="7" cy="17" r="2.5"/><circle cx="17" cy="15" r="2.5"/><line x1="9" y1="17" x2="9" y2="6"/><line x1="19" y1="15" x2="19" y2="4"/><path d="M 9 6 L 19 4"/></svg></div><div class="lbl">Music</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">11</span><svg viewBox="0 0 24 24"><line x1="6" y1="4" x2="6" y2="11"/><line x1="10" y1="4" x2="10" y2="11"/><line x1="8" y1="11" x2="8" y2="20"/><path d="M 4 8 L 12 8"/><line x1="18" y1="4" x2="18" y2="11"/><line x1="18" y1="11" x2="18" y2="20"/><circle cx="18" cy="7" r="2.5"/></svg></div><div class="lbl">Cooking</div></div>
+<div class="cell"><div class="icn"><span class="lbl2">12</span><svg viewBox="0 0 24 24"><path d="M 3 20 L 9 11 L 12 15 L 16 7 L 21 20 Z"/><circle cx="17" cy="5" r="1.5"/></svg></div><div class="lbl">Hiking</div></div>
+
+</body></html>

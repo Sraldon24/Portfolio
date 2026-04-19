@@ -1,3 +1,5 @@
+![Portfolio](main/static/main/images/og-card.png)
+
 # Professional Portfolio
 
 A modern, bilingual (English/French) portfolio website built with **Django** and **Tailwind CSS**. This application allows you to showcase your projects, skills, and experience while managing content dynamically through a customized Admin interface.

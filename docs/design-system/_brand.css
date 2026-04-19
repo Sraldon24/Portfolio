@@ -1,0 +1,68 @@
+/* Brand assets — amber CRT terminal system */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#181818;font-family:'JetBrains Mono',monospace;color:#fde68a;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+
+/* Asset frame */
+.asset{position:relative;background:#0a0800;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(245,158,11,.25)}
+
+/* ─── CORE FX LAYERS ─── */
+.fx-radial{position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(234,88,12,.18) 0%,transparent 70%),radial-gradient(ellipse 55% 45% at 50% 45%,rgba(245,158,11,.09) 0%,transparent 80%)}
+
+/* HEAVY scanlines — aggressive, 2px bands */
+.fx-scanlines{position:absolute;inset:0;pointer-events:none;z-index:14;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,.38) 2px,rgba(0,0,0,.38) 4px);mix-blend-mode:multiply}
+
+/* Slow rolling scanline sweep */
+.fx-sweep{position:absolute;left:0;right:0;height:140px;background:linear-gradient(180deg,transparent,rgba(245,158,11,.08) 48%,rgba(245,158,11,.12) 52%,transparent);pointer-events:none;z-index:13;animation:sweep 9s linear infinite}
+@keyframes sweep{0%{top:-200px}100%{top:130%}}
+
+/* Animated static noise */
+.fx-noise{position:absolute;inset:0;pointer-events:none;z-index:12;opacity:.11;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.3' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px 200px;mix-blend-mode:overlay;animation:nz .35s steps(4) infinite}
+@keyframes nz{0%{transform:translate(0,0)}25%{transform:translate(-2px,1px)}50%{transform:translate(1px,-2px)}75%{transform:translate(-1px,2px)}}
+
+/* Perspective grid */
+.fx-grid{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.fx-grid::before{content:'';position:absolute;bottom:-20%;left:50%;transform:translateX(-50%) perspective(700px) rotateX(65deg);width:220%;height:220%;background-image:linear-gradient(rgba(245,158,11,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(245,158,11,.12) 1px,transparent 1px);background-size:70px 70px;transform-origin:bottom center;animation:gdrift 18s linear infinite}
+@keyframes gdrift{from{background-position:0 0}to{background-position:0 70px}}
+.fx-grid::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(10,8,0,0) 0%,rgba(10,8,0,.93) 72%)}
+
+/* Chromatic aberration edges */
+.fx-ca{position:absolute;inset:0;pointer-events:none;z-index:11;background:linear-gradient(90deg,rgba(255,40,40,.12) 0%,transparent 7%,transparent 93%,rgba(60,120,255,.12) 100%);mix-blend-mode:screen}
+
+/* Barrel / vignette */
+.fx-barrel{position:absolute;inset:0;pointer-events:none;z-index:15;background:radial-gradient(ellipse 72% 75% at 50% 50%,transparent 48%,rgba(10,8,0,.45) 78%,rgba(10,8,0,.95) 100%)}
+
+/* Phosphor bloom */
+.fx-bloom{position:absolute;inset:0;pointer-events:none;z-index:10;background:radial-gradient(ellipse at 50% 50%,rgba(234,88,12,.22) 0%,transparent 55%)}
+
+/* CRT power flicker */
+.fx-flicker{position:absolute;inset:0;pointer-events:none;z-index:16;background:rgba(245,158,11,.015);animation:flk 6s infinite}
+@keyframes flk{0%,92%,100%{opacity:1}93%{opacity:.45}94%{opacity:1}95%{opacity:.62}96%{opacity:1}}
+
+/* Horiz tear bars */
+.fx-tear{position:absolute;left:0;right:0;height:3px;background:rgba(245,158,11,.3);pointer-events:none;z-index:13;mix-blend-mode:screen}
+
+/* Bezel — heavy plastic monitor frame */
+.fx-bezel{position:absolute;inset:0;pointer-events:none;z-index:18;border-radius:inherit;box-shadow:inset 0 0 0 6px #1a0d00,inset 0 0 0 11px rgba(245,158,11,.4),inset 0 0 55px rgba(234,88,12,.32),inset 0 0 120px rgba(234,88,12,.18)}
+
+/* Boot-log chrome header */
+.fx-boot{position:absolute;top:18px;left:0;right:0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(245,158,11,.55);letter-spacing:.28em;z-index:17}
+.fx-boot .ok{color:#4ade80}
+
+/* Typography helpers */
+.phosphor{text-shadow:0 0 10px rgba(245,158,11,.75),0 0 28px rgba(245,158,11,.35),0 0 60px rgba(234,88,12,.25)}
+.phosphor-green{text-shadow:0 0 10px rgba(74,222,128,.7),0 0 24px rgba(74,222,128,.3)}
+.phosphor-red{text-shadow:0 0 10px rgba(248,113,113,.7),0 0 24px rgba(248,113,113,.3)}
+
+/* Ghost trails (wrap behind main text for RGB offset) */
+.ghost-r{position:absolute;top:0;left:0;color:rgba(255,50,50,.4);transform:translate(-4px,1px);pointer-events:none;z-index:-1}
+.ghost-b{position:absolute;top:0;left:0;color:rgba(80,150,255,.35);transform:translate(4px,-1px);pointer-events:none;z-index:-1}
+
+.glass{background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.22);backdrop-filter:blur(14px)}
+.tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:#d97706;border:1px solid rgba(217,119,6,.45);padding:2px 7px;border-radius:3px;background:rgba(245,158,11,.05);letter-spacing:.08em}
+.blink{animation:blink 1.1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Rec dot */
+.rec-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ea580c;box-shadow:0 0 8px rgba(234,88,12,.9);margin-right:8px;vertical-align:1px;animation:rd 1.2s infinite}
+@keyframes rd{0%,49%{opacity:1}50%,100%{opacity:.2}}

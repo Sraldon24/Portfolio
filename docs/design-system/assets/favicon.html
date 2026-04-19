@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Favicon</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#2a2a2a;display:flex;flex-wrap:wrap;gap:40px;padding:40px;align-items:flex-start;font-family:'JetBrains Mono',monospace}
+.fav{background:transparent;display:flex;align-items:center;justify-content:center;position:relative}
+.fav-inner{font-family:'JetBrains Mono',monospace;font-weight:800;color:#f59e0b;display:flex;align-items:center;line-height:1}
+.fav-inner .p{margin-right:.08em}
+.fav-inner .b{display:inline-block;background:#f59e0b;width:.55em;height:.85em}
+.fav.glow .fav-inner{text-shadow:0 0 .15em rgba(245,158,11,.9),0 0 .35em rgba(234,88,12,.6)}
+.fav.glow .fav-inner .b{box-shadow:0 0 .15em rgba(245,158,11,.9),0 0 .35em rgba(234,88,12,.6)}
+.lbl{font-size:10px;color:#fde68a;letter-spacing:.12em;margin-top:6px;text-align:center;opacity:.6}
+.cell{display:flex;flex-direction:column;align-items:center}
+/* checkerboard transparent bg */
+.tbg{background-image:linear-gradient(45deg,#1a1a1a 25%,transparent 25%),linear-gradient(-45deg,#1a1a1a 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#1a1a1a 75%),linear-gradient(-45deg,transparent 75%,#1a1a1a 75%);background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0px}
+.size-512{width:512px;height:512px}.size-512 .fav-inner{font-size:340px}
+.size-192{width:192px;height:192px}.size-192 .fav-inner{font-size:128px}
+.size-180{width:180px;height:180px}.size-180 .fav-inner{font-size:120px}
+.size-32{width:32px;height:32px}.size-32 .fav-inner{font-size:22px}
+.size-16{width:16px;height:16px}.size-16 .fav-inner{font-size:11px}
+</style></head>
+<body>
+  <!-- export each individually -->
+  <div class="cell"><div class="fav size-512 tbg glow" data-export="512"><div class="fav-inner"><span class="p">&gt;</span><span class="b"></span></div></div><div class="lbl">512</div></div>
+  <div class="cell"><div class="fav size-192 tbg glow" data-export="192"><div class="fav-inner"><span class="p">&gt;</span><span class="b"></span></div></div><div class="lbl">192</div></div>
+  <div class="cell"><div class="fav size-180 tbg glow" data-export="180"><div class="fav-inner"><span class="p">&gt;</span><span class="b"></span></div></div><div class="lbl">180</div></div>
+  <div class="cell"><div class="fav size-32 tbg" data-export="32"><div class="fav-inner"><span class="p">&gt;</span><span class="b"></span></div></div><div class="lbl">32</div></div>
+  <div class="cell"><div class="fav size-16 tbg" data-export="16"><div class="fav-inner"><span class="p">&gt;</span><span class="b"></span></div></div><div class="lbl">16</div></div>
+</body></html>

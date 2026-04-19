@@ -678,6 +678,100 @@ html { scrollbar-width: thin; scrollbar-color: #d97706 #0a0800; }
 }
 .project-card:hover .project-image-wrap::after { opacity: 1; }
 
+/* Fallback tiles (no project.image) — gradient variants + amber grid overlay */
+.project-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2a1a00 0%, #0f0900 100%);
+}
+.project-fallback::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245,158,11,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,158,11,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 1;
+}
+.project-fallback i { position: relative; z-index: 2; }
+.project-card:nth-child(5n+1) .project-fallback { background: linear-gradient(135deg,#2a1a00 0%,#0f0900 100%); }
+.project-card:nth-child(5n+2) .project-fallback { background: radial-gradient(ellipse at 30% 30%,#3a2400 0%,#0a0800 70%); }
+.project-card:nth-child(5n+3) .project-fallback { background: linear-gradient(45deg,#1a1200 0%,#2a1a00 50%,#0a0800 100%); }
+.project-card:nth-child(5n+4) .project-fallback { background: radial-gradient(at 70% 40%,#3a2400 0%,#120900 80%); }
+.project-card:nth-child(5n+5) .project-fallback { background: linear-gradient(210deg,#2a1a00 0%,#0a0800 100%); }
+
+/* Project index badge [NN / NN] */
+.project-idx {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.9rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: rgba(245,158,11,0.6);
+  letter-spacing: 0.12em;
+  z-index: 5;
+  background: rgba(10,8,0,0.55);
+  backdrop-filter: blur(4px);
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid rgba(245,158,11,0.18);
+}
+
+/* CRT bezel corner screws — layered over existing .crt-bezel */
+.crt-screw {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(245,158,11,0.65), rgba(245,158,11,0.15));
+  border: 1px solid rgba(245,158,11,0.4);
+  z-index: 6;
+  pointer-events: none;
+}
+.crt-screw.tl { top: 9px; left: 9px; }
+.crt-screw.tr { top: 9px; right: 9px; }
+.crt-screw.bl { bottom: 9px; left: 9px; }
+.crt-screw.br { bottom: 9px; right: 9px; }
+
+/* Scroll hint below hero */
+.scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 2.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: rgba(245,158,11,0.4);
+  letter-spacing: 0.25em;
+  position: relative;
+  z-index: 3;
+}
+.scroll-arrow {
+  font-size: 0.85rem;
+  animation: scroll-arrow-bounce 1.6s ease-in-out infinite;
+}
+@keyframes scroll-arrow-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(4px); opacity: 1; }
+}
+
+/* Tapered 4-stop timeline spine gradient (polish over existing .timeline-line) */
+.timeline-line {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(146,64,14,0.6) 8%,
+    rgba(245,158,11,0.9) 50%,
+    rgba(217,119,6,0.5) 92%,
+    transparent 100%
+  ) !important;
+}
+
 @media (max-width: 900px) {
   .bento-grid { grid-template-columns: repeat(2, 1fr); }
   .bento-featured { grid-column: span 2; }

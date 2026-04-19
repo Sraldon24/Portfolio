@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .p { font: 800 22px 'JetBrains Mono', ui-monospace, monospace; fill: #f59e0b; }
+  </style>
+  <rect width="32" height="32" fill="#0a0800"/>
+  <text x="4" y="24" class="p" style="filter:drop-shadow(0 0 1px #f59e0b)">&gt;</text>
+  <rect x="18" y="10" width="9" height="14" fill="#f59e0b" style="filter:drop-shadow(0 0 2px #ea580c)"/>
+</svg>

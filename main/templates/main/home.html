@@ -98,6 +98,10 @@
             <!-- RIGHT — CRT photo frame -->
             <div class="hero-right flex-shrink-0 flex flex-col items-center">
                 <div class="crt-bezel w-64 h-64 md:w-72 md:h-72 scanlines relative">
+                    <span class="crt-screw tl"></span>
+                    <span class="crt-screw tr"></span>
+                    <span class="crt-screw bl"></span>
+                    <span class="crt-screw br"></span>
                     <span class="crt-corner tl"></span>
                     <span class="crt-corner tr"></span>
                     <span class="crt-corner bl"></span>
@@ -117,6 +121,12 @@
                     <span>{% trans "Available for work" %}</span>
                 </div>
             </div>
+        </div>
+
+        <!-- Scroll hint -->
+        <div class="scroll-hint" aria-hidden="true">
+            <span>{% trans "SCROLL" %}</span>
+            <span class="scroll-arrow">▼</span>
         </div>
     </div>
 </section>
@@ -210,11 +220,12 @@
             <div class="project-card glass-card rounded-xl overflow-hidden {% if forloop.first %}bento-featured{% endif %}">
                 <!-- Image -->
                 <div class="project-image-wrap h-48 {% if forloop.first %}md:h-60{% endif %}">
+                    <span class="project-idx">[{{ forloop.counter|stringformat:"02d" }} / {{ projects|length|stringformat:"02d" }}]</span>
                     {% if project.image %}
                         <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
                     {% else %}
-                        <div class="w-full h-full bg-gradient-to-br from-crt-surface to-crt-bg flex items-center justify-center">
-                            <i class="fa-solid fa-code text-5xl text-crt-amber/20"></i>
+                        <div class="project-fallback">
+                            <i class="fa-solid fa-code text-crt-amber/25" style="font-size:{% if forloop.first %}6rem{% else %}4rem{% endif %};"></i>
                         </div>
                     {% endif %}
                     <div class="project-overlay" style="z-index:2;">
@@ -334,7 +345,7 @@
                     {% endif %}
                 </div>
                 <h3 class="font-mono text-xs font-bold text-crt-text mt-2">{{ hobby.name }}</h3>
-                {% if hobby.description %}<p class="font-sans text-[11px] text-crt-muted mt-1 leading-snug">{{ hobby.description }}</p>{% endif %}
+                {% if hobby.description %}<p class="font-mono text-[10px] text-crt-muted mt-1 leading-snug">{{ hobby.description }}</p>{% endif %}
             </div>
             {% endfor %}
         </div>

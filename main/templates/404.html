@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+{% load i18n static %}
+{% block title %}{% trans "404 — Segmentation Fault" %}{% endblock %}
+{% block content %}
+<section class="min-h-screen flex items-center justify-center py-24 px-6 relative overflow-hidden">
+    <div class="perspective-grid"></div>
+    <div class="noise-overlay z-[3]"></div>
+
+    <div class="relative z-10 text-center max-w-2xl mx-auto">
+        <p class="font-mono text-xs text-red-400 tracking-[0.32em] mb-6" style="text-shadow:0 0 12px rgba(248,113,113,0.6);">
+            &#9888; {% trans "SEGMENTATION_FAULT" %}
+        </p>
+
+        <h1 class="glitch font-mono font-bold text-crt-amber phosphor leading-none mb-4"
+            data-text="404"
+            style="font-size:clamp(6rem,18vw,15rem);text-shadow:0 0 22px rgba(245,158,11,0.7),0 0 60px rgba(234,88,12,0.35);">
+            404
+        </h1>
+
+        <p class="font-mono text-base text-crt-text mb-2">// {% trans "file not found in this directory" %}</p>
+        <p class="font-mono text-xs text-crt-muted mb-8 leading-relaxed">
+            <span class="text-crt-amber-light">$</span> {% trans "ls: cannot access that route" %}<br>
+            {% trans "the page you requested wandered off the filesystem." %}
+        </p>
+
+        <div class="flex flex-wrap gap-3 justify-center mb-10">
+            <a href="{% url 'home' %}" class="btn-amber rounded-sm">
+                <i class="fa-solid fa-play mr-2 text-xs"></i>{% trans "cd ~/home" %}
+            </a>
+            <a href="javascript:history.back()" class="btn-terminal rounded-sm">
+                <i class="fa-solid fa-left-long mr-2 text-xs"></i>{% trans "return" %}
+            </a>
+        </div>
+
+        <div class="glass-card rounded-lg p-4 text-left font-mono text-xs leading-relaxed text-crt-amber/60 max-w-xl mx-auto">
+            <div><span class="text-red-400 mr-2">[01]</span><span class="text-crt-muted">at</span> Router.match <span class="text-crt-muted">(urls.py:142)</span></div>
+            <div><span class="text-red-400 mr-2">[02]</span><span class="text-crt-muted">at</span> request.resolve <span class="text-crt-muted">(handler.py:87)</span></div>
+            <div><span class="text-red-400 mr-2">[03]</span><span class="text-crt-muted">at</span> <b class="text-crt-text">{{ request.path }}</b> <span class="text-crt-muted">&rarr; {% trans "no matching view" %}</span></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
