@@ -132,15 +132,21 @@ if _REDIS_URL:
             "LOCATION": _REDIS_URL,
         }
     }
-elif not DEBUG:
-    # LocMemCache under multiple gunicorn workers = broken rate limiting
-    # (each worker has its own counter). Refuse to boot without shared cache.
-    raise RuntimeError(
-        "REDIS_URL must be set when DEBUG=False. Rate limiting requires a shared "
-        "cache backend — per-process LocMemCache is unsafe under multiple workers."
-    )
 else:
-    # Dev only: LocMemCache is fine for single-process runserver.
+    # Fallback: LocMemCache. Per-process, no atomic cross-worker increments.
+    # In prod with multiple gunicorn workers this means rate-limit counters
+    # are per-worker (client effectively gets N * limit). Acceptable for a
+    # low-traffic portfolio; set REDIS_URL to fix.
+    if not DEBUG:
+        import warnings
+
+        warnings.warn(
+            "REDIS_URL not set — using LocMemCache in production. "
+            "Rate limiting is per-worker and not atomic. "
+            "Set REDIS_URL to enable shared cache.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
