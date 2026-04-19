@@ -194,7 +194,7 @@
                             <span class="font-mono text-xs text-crt-amber skill-counter" data-target="{{ skill.proficiency }}">0%</span>
                         </div>
                         <div class="ascii-bar" data-width="{{ skill.proficiency|default:0 }}">
-                            <span class="ascii-empty">░░░░░░░░░░░░░░░░░░░░</span>
+                            <span class="ascii-empty">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</span>
                         </div>
                     </div>
                     {% endfor %}
@@ -787,7 +787,7 @@ if (skillsSection) {
                 var bar = row.querySelector('.ascii-bar');
                 var counter = row.querySelector('.skill-counter');
                 var w = parseInt(bar.dataset.width, 10) || 0;
-                var total = 20, filled = Math.round(w / 100 * total);
+                var total = 30, filled = Math.round(w / 100 * total);
                 bar.innerHTML = '<span class="ascii-fill">' + '█'.repeat(filled) + '</span><span class="ascii-empty">' + '░'.repeat(total - filled) + '</span>';
                 var cur2 = 0, step = Math.max(1, Math.ceil(w / 40));
                 var iv = setInterval(function() {
