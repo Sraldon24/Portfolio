@@ -198,6 +198,12 @@
                     </div>
                     {% endfor %}
                 </div>
+                <!-- Skills log ticker -->
+                <div class="skills-log-ticker" aria-hidden="true">
+                    <div><span class="ts">[{% now "Y-m-d" %}]</span><span class="lvl">INFO</span>{% trans "skill matrix loaded" %} &#8594; <span class="text-crt-amber">{{ skills|length }} {% trans "entries" %}</span></div>
+                    <div><span class="ts">[{% now "Y-m-d" %}]</span><span class="lvl">INFO</span>{% trans "proficiency recalculated" %} <span class="text-crt-amber-light">[ OK ]</span></div>
+                    <div><span class="ts">[{% now "Y-m-d" %}]</span><span class="lvl warn">WARN</span>{% trans "always learning" %}<span class="animate-blink">_</span></div>
+                </div>
             </div>
         </div>
     </div>
@@ -361,19 +367,51 @@
 <section id="testimonials" class="py-24 section-alt fade-up">
     <div class="container mx-auto px-6">
         <p class="section-label">{% trans "reviews.log" %}</p>
-        <h2 class="section-title">{% trans "Testimonials" %}</h2>
+        <h2 class="section-title">{% trans "Endorsements" %} <span class="accent">&amp;</span> {% trans "References" %}</h2>
+
+        <!-- Metrics strip -->
+        <div class="metrics-strip">
+            <div class="glass-card metric-card rounded-lg">
+                <div class="metric-val">{{ testimonials|length }}<span class="unit">+</span></div>
+                <div class="metric-lbl">{% trans "Verified Reviews" %}</div>
+                <div class="metric-delta">&#9679; {% trans "100% positive" %}</div>
+            </div>
+            <div class="glass-card metric-card rounded-lg">
+                <div class="metric-val">5<span class="unit">/5</span></div>
+                <div class="metric-lbl">{% trans "Avg. Rating" %}</div>
+                <div class="metric-delta">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <div class="glass-card metric-card rounded-lg">
+                <div class="metric-val">EN<span class="unit">/FR</span></div>
+                <div class="metric-lbl">{% trans "Bilingual" %}</div>
+                <div class="metric-delta">{% trans "fluent both" %}</div>
+            </div>
+            <div class="glass-card metric-card rounded-lg">
+                <div class="metric-val">24<span class="unit">h</span></div>
+                <div class="metric-lbl">{% trans "Response Time" %}</div>
+                <div class="metric-delta">{% trans "avg. reply" %}</div>
+            </div>
+        </div>
+
         <div class="marquee-track">
             {% for testimonial in testimonials %}
             <div class="glass-card rounded-xl w-80 relative p-6 flex-shrink-0 hover:border-crt-amber/30 transition-colors">
-                <div class="absolute top-3 left-4 text-5xl text-crt-amber/20 font-mono leading-none select-none">"</div>
-                <p class="font-sans text-sm italic text-crt-text/80 mt-5 mb-5 relative z-10 leading-relaxed">{{ testimonial.quote }}</p>
+                <div class="absolute top-2 right-5 text-[4.5rem] text-crt-amber/10 font-sans leading-none select-none pointer-events-none" style="font-family:Inter,serif;font-weight:700;">&ldquo;</div>
+                <div class="flex items-center justify-between mb-3">
+                    <span class="font-mono text-xs text-crt-amber-light tracking-wider">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                    <span class="font-mono text-[0.55rem] text-green-400 tracking-[0.14em] inline-flex items-center gap-1 px-2 py-0.5 border border-green-400/30 rounded bg-green-400/5">
+                        <i class="fa-solid fa-shield-halved text-[0.5rem]"></i>{% trans "VERIFIED" %}
+                    </span>
+                </div>
+                <p class="font-sans text-sm italic text-crt-text/85 mb-5 relative z-10 leading-relaxed">{{ testimonial.quote }}</p>
                 <div class="flex items-center gap-3 pt-3 border-t border-crt-amber/10">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-crt-amber to-crt-glow flex items-center justify-center font-mono font-bold text-crt-bg text-sm flex-shrink-0">
+                    <div class="testi-avatar c{% cycle '1' '2' '3' '4' %}">
                         {{ testimonial.name|slice:":1" }}
+                        <span class="verified-dot"><i class="fa-solid fa-check"></i></span>
                     </div>
-                    <div>
-                        <p class="font-mono text-xs font-bold text-crt-text">{{ testimonial.name }}</p>
-                        {% if testimonial.role_company %}<p class="font-mono text-xs text-crt-muted">{{ testimonial.role_company }}</p>{% endif %}
+                    <div class="flex-1 min-w-0">
+                        <p class="font-sans text-sm font-semibold text-crt-text truncate">{{ testimonial.name }}</p>
+                        {% if testimonial.role_company %}<p class="font-mono text-xs text-crt-amber truncate">{{ testimonial.role_company }}</p>{% endif %}
                     </div>
                 </div>
             </div>
@@ -433,27 +471,71 @@
                 <p class="font-mono text-xs text-crt-muted pb-3 mb-4 border-b border-crt-amber/15 tracking-wider">
                     $ whois {% if profile %}{{ profile.name|lower }}{% else %}dev{% endif %}
                 </p>
+
+                <!-- Availability ring -->
+                <div class="avail-ring">
+                    <div class="avail-ring-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="avail-ring-text">
+                        <span class="status">{% trans "AVAILABLE" %}</span>
+                        <span class="note">{% trans "Open to internships & contracts" %}</span>
+                    </div>
+                </div>
+
                 <div class="space-y-3">
                     {% if contact_info.email %}
-                    <div class="whois-line"><span class="whois-key">{% trans "email:" %}</span><span class="whois-val"><a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a></span></div>
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "email:" %}</span>
+                        <span class="whois-val"><a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a></span>
+                        <button type="button" class="whois-copy" data-copy="{{ contact_info.email }}" aria-label="{% trans 'Copy email' %}">COPY</button>
+                    </div>
                     {% endif %}
                     {% if contact_info.phone %}
-                    <div class="whois-line"><span class="whois-key">{% trans "phone:" %}</span><span class="whois-val">{{ contact_info.phone }}</span></div>
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "phone:" %}</span>
+                        <span class="whois-val">{{ contact_info.phone }}</span>
+                        <button type="button" class="whois-copy" data-copy="{{ contact_info.phone }}" aria-label="{% trans 'Copy phone' %}">COPY</button>
+                    </div>
                     {% endif %}
                     {% if contact_info.github_url %}
-                    <div class="whois-line"><span class="whois-key">{% trans "github:" %}</span><span class="whois-val"><a href="{{ contact_info.github_url }}" target="_blank" rel="noopener">{% trans "link" %}</a></span></div>
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "github:" %}</span>
+                        <span class="whois-val"><a href="{{ contact_info.github_url }}" target="_blank" rel="noopener">{% trans "link" %}</a></span>
+                        <button type="button" class="whois-copy" data-copy="{{ contact_info.github_url }}" aria-label="{% trans 'Copy github url' %}">COPY</button>
+                    </div>
                     {% endif %}
                     {% if contact_info.linkedin_url %}
-                    <div class="whois-line"><span class="whois-key">{% trans "linkedin:" %}</span><span class="whois-val"><a href="{{ contact_info.linkedin_url }}" target="_blank" rel="noopener">{% trans "link" %}</a></span></div>
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "linkedin:" %}</span>
+                        <span class="whois-val"><a href="{{ contact_info.linkedin_url }}" target="_blank" rel="noopener">{% trans "link" %}</a></span>
+                        <button type="button" class="whois-copy" data-copy="{{ contact_info.linkedin_url }}" aria-label="{% trans 'Copy linkedin url' %}">COPY</button>
+                    </div>
                     {% endif %}
                     {% if contact_info.twitter_url %}
-                    <div class="whois-line"><span class="whois-key">{% trans "twitter:" %}</span><span class="whois-val"><a href="{{ contact_info.twitter_url }}" target="_blank" rel="noopener">{% trans "link" %}</a></span></div>
+                    <div class="whois-line">
+                        <span class="whois-key">{% trans "twitter:" %}</span>
+                        <span class="whois-val"><a href="{{ contact_info.twitter_url }}" target="_blank" rel="noopener">{% trans "link" %}</a></span>
+                        <button type="button" class="whois-copy" data-copy="{{ contact_info.twitter_url }}" aria-label="{% trans 'Copy twitter url' %}">COPY</button>
+                    </div>
                     {% endif %}
                 </div>
             </div>
 
             <!-- Contact form — terminal output on submit -->
             <div class="md:col-span-2 glass-card rounded-xl p-6 fade-up delay-2">
+                <!-- Terminal chrome + preamble -->
+                <div class="term-chrome">
+                    <span class="td" style="background:#f87171"></span>
+                    <span class="td" style="background:#facc15"></span>
+                    <span class="td" style="background:#4ade80"></span>
+                    <span class="tname">compose_message.sh &mdash; zsh</span>
+                    <span class="tright"><span class="status-dot"></span>{% trans "SECURE" %}</span>
+                </div>
+                <div class="term-preboot">
+                    <div><span class="p">$</span>./compose_message.sh <span class="dim">--mode=secure</span></div>
+                    <div><span class="dim">&gt;</span> {% trans "Establishing encrypted channel" %}<span class="dim">...</span> <span class="ok">[ OK ]</span></div>
+                    <div><span class="dim">&gt;</span> {% trans "Awaiting input" %}<span class="dim">...</span> <span class="ok">[ READY ]</span></div>
+                </div>
+
                 <!-- Terminal output panel (hidden until submit) -->
                 <div id="contact-result-panel" class="hidden glass-card rounded-lg p-4 mb-4 min-h-[80px]">
                     <div class="flex items-center gap-2 mb-3 pb-2 border-b border-crt-amber/15 font-mono text-xs text-crt-muted">

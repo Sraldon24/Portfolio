@@ -422,6 +422,23 @@ if (menuBtn && mobileMenu) {
     mobileMenu.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => mobileMenu.classList.remove('open')));
 }
 
+// ─── CLIPBOARD COPY BUTTONS (whois + contact) ────────────────────
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.whois-copy');
+    if (!btn) return;
+    const val = btn.getAttribute('data-copy');
+    if (!val || !navigator.clipboard) return;
+    navigator.clipboard.writeText(val).then(function() {
+        const orig = btn.textContent;
+        btn.textContent = '✓ COPIED';
+        btn.classList.add('copied');
+        setTimeout(function() {
+            btn.textContent = orig;
+            btn.classList.remove('copied');
+        }, 1500);
+    }).catch(function() {});
+});
+
 // ─── REVEAL ANIMATIONS ───────────────────────────────────────────
 const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
