@@ -1,0 +1,40 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = [
+    "migrations",
+    "locale",
+    ".venv",
+    "venv",
+    "node_modules",
+    "staticfiles",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "DJ",   # flake8-django
+    "UP",   # pyupgrade
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+]
+ignore = [
+    "E501",   # line length handled by formatter
+    "B008",   # function calls in defaults (Django idiom)
+    "DJ001",  # allow null=True on CharField where admin UX wants it
+    "DJ012",  # Django model member order — don't reshuffle parler-integrated models
+]
+
+[tool.ruff.lint.per-file-ignores]
+"settings.py" = ["F403", "F405"]
+"*/settings.py" = ["F403", "F405"]
+"add_translations_script.py" = ["E402"]  # django.setup() must run before model imports
+"reproduce_issue.py" = ["E402"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

@@ -12,9 +12,10 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
-from django.utils.translation import gettext_lazy as _
-from django.urls import reverse_lazy
+
 import dj_database_url
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,31 +25,35 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-0*8*_wmsnaf!)*7aj46ivi8#zht37dp2z$a57xl0m7mdb9+$nm')
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "django-insecure-0*8*_wmsnaf!)*7aj46ivi8#zht37dp2z$a57xl0m7mdb9+$nm"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ADMINS = [('Admin', 'sraldon24@gmail.com')]
+ADMINS = [("Admin", "sraldon24@gmail.com")]
 # Email Configuration
-EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'portfolio@example.com')
-SERVER_EMAIL = 'portfolio@example.com'
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "portfolio@example.com")
+SERVER_EMAIL = "portfolio@example.com"
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 # TRUSTED_ORIGINS for CSRF
-CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://127.0.0.1,http://localhost').split(',')
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    "CSRF_TRUSTED_ORIGINS", "http://127.0.0.1,http://localhost"
+).split(",")
 
 # Handle Railway dynamic domains or specific production domains if not explicitly set
-if 'railway.app' not in str(ALLOWED_HOSTS):
-     ALLOWED_HOSTS.append('.railway.app')
-     CSRF_TRUSTED_ORIGINS.append('https://*.railway.app')
+if "railway.app" not in str(ALLOWED_HOSTS):
+    ALLOWED_HOSTS.append(".railway.app")
+    CSRF_TRUSTED_ORIGINS.append("https://*.railway.app")
 
 if not DEBUG:
     # Security settings for production
@@ -58,8 +63,7 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Application definition
@@ -67,64 +71,64 @@ if not DEBUG:
 INSTALLED_APPS = [
     "unfold",  # Django Unfold
     "unfold.contrib.filters",  # Optional: for filters
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'parler',
-    'main',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "parler",
+    "main",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'portfolio_core.urls'
+ROOT_URLCONF = "portfolio_core.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.i18n',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.i18n",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'portfolio_core.wsgi.application'
+WSGI_APPLICATION = "portfolio_core.wsgi.application"
 
 
 # Cache (for rate limiting; requires atomic increments - Redis/Memcached, NOT DatabaseCache)
 # django-ratelimit needs atomic operations; DatabaseCache causes race conditions.
-_REDIS_URL = os.environ.get('REDIS_URL')
+_REDIS_URL = os.environ.get("REDIS_URL")
 if _REDIS_URL:
     CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-            'LOCATION': _REDIS_URL,
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": _REDIS_URL,
         }
     }
 else:
     # LocMemCache: correct per-process, no race conditions. Multi-worker = limit per worker.
     CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         }
     }
 
@@ -133,9 +137,8 @@ else:
 
 # Database
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
-        conn_max_age=600
+    "default": dj_database_url.config(
+        default="sqlite:///" + str(BASE_DIR / "db.sqlite3"), conn_max_age=600
     )
 }
 
@@ -145,16 +148,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -162,29 +165,33 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = "en"
 
 LANGUAGES = [
-    ('en', _('English')),
-    ('fr', _('French')),
+    ("en", _("English")),
+    ("fr", _("French")),
 ]
 
 PARLER_LANGUAGES = {
     None: (
-        {'code': 'en',},
-        {'code': 'fr',},
+        {
+            "code": "en",
+        },
+        {
+            "code": "fr",
+        },
     ),
-    'default': {
-        'fallbacks': ['en'],
-        'hide_untranslated': False,
-    }
+    "default": {
+        "fallbacks": ["en"],
+        "hide_untranslated": False,
+    },
 }
 
 LOCALE_PATHS = [
-    BASE_DIR / 'locale',
+    BASE_DIR / "locale",
 ]
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -194,8 +201,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STORAGES = {
     "default": {
@@ -206,33 +213,32 @@ STORAGES = {
     },
 }
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': True,
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
         },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': True,
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": True,
         },
     },
 }
@@ -241,11 +247,10 @@ UNFOLD = {
     "SITE_TITLE": "Portfolio Admin",
     "SITE_HEADER": "Portfolio Administration",
     "SITE_URL": "/",
-
     "COLORS": {
         "primary": {
             "500": "14 165 233",  # Sky 500
-            "600": "2 132 199",   # Sky 600
+            "600": "2 132 199",  # Sky 600
         },
     },
     "SIDEBAR": {
@@ -258,7 +263,7 @@ UNFOLD = {
                 "items": [
                     {
                         "title": _("Profile"),
-                        "icon": "person", 
+                        "icon": "person",
                         "link": reverse_lazy("admin:main_profile_changelist"),
                     },
                     {
@@ -286,11 +291,11 @@ UNFOLD = {
                         "icon": "sports_esports",
                         "link": reverse_lazy("admin:main_hobby_changelist"),
                     },
-                    #{
+                    # {
                     #    "title": _("Hero Slides"),
                     #    "icon": "view_carousel",
                     #    "link": reverse_lazy("admin:main_heroslide_changelist"),
-                    #},
+                    # },
                 ],
             },
             {
@@ -315,7 +320,7 @@ UNFOLD = {
                 "title": _("System"),
                 "separator": True,
                 "items": [
-                     {
+                    {
                         "title": _("Contact Info"),
                         "icon": "contact_phone",
                         "link": reverse_lazy("admin:main_contactinfo_changelist"),

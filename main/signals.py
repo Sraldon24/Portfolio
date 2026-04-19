@@ -26,4 +26,3 @@ def notify_new_testimonial(sender, instance, created, **kwargs):
     if created:
         # Intentionally do nothing to avoid any email sending / configuration issues.
         return
-

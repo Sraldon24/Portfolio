@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+
 import os
 import sys
 
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio_core.settings')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "portfolio_core.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -18,15 +19,16 @@ def main():
     execute_from_command_line(sys.argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Load .env file if it exists
     import os
-    if os.path.exists('.env'):
-        with open('.env') as f:
+
+    if os.path.exists(".env"):
+        with open(".env") as f:
             for line in f:
                 line = line.strip()
-                if line and not line.startswith('#') and '=' in line:
-                    key, value = line.split('=', 1)
+                if line and not line.startswith("#") and "=" in line:
+                    key, value = line.split("=", 1)
                     os.environ.setdefault(key, value)
-    
+
     main()

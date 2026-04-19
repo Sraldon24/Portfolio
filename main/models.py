@@ -1,7 +1,8 @@
-from django.db import models
-from django.core.exceptions import ValidationError
-from parler.models import TranslatableModel, TranslatedFields
 from deep_translator import GoogleTranslator
+from django.core.exceptions import ValidationError
+from django.db import models
+from parler.models import TranslatableModel, TranslatedFields
+
 
 def auto_translate_fields(instance):
     """
@@ -9,11 +10,11 @@ def auto_translate_fields(instance):
     """
     try:
         # Only trigger if we are saving the English version
-        if instance.get_current_language() != 'en':
+        if instance.get_current_language() != "en":
             return
 
         # Check if French translation exists
-        if instance.has_translation('fr'):
+        if instance.has_translation("fr"):
             # Ideally we check if it's empty, but has_translation usually implies it exists.
             # Let's check if the fields are actually empty in the FR version.
             # Using get_translation('fr') might raise if it doesn't exist despite has_translation being true (caching).
@@ -21,14 +22,14 @@ def auto_translate_fields(instance):
             pass
         else:
             # Prepare translation
-            translator = GoogleTranslator(source='en', target='fr')
-            
+            translator = GoogleTranslator(source="en", target="fr")
+
             # Get English fields
-            en_trans = instance.get_translation('en')
-            
+            en_trans = instance.get_translation("en")
+
             # Create French translation
-            instance.set_current_language('fr')
-            
+            instance.set_current_language("fr")
+
             # Iterate through translated fields
             for field in instance._parler_meta.get_translated_fields():
                 value = getattr(en_trans, field, None)
@@ -38,15 +39,15 @@ def auto_translate_fields(instance):
                         setattr(instance, field, translated_value)
                     except Exception as e:
                         print(f"Translation failed for field {field}: {e}")
-            
+
             # Switch back to English for the main save process to complete normally
             # The FR translation is saved when instance.save() is called because parler saves all dirty translations
-            instance.set_current_language('en')
+            instance.set_current_language("en")
 
     except Exception as e:
         print(f"Auto-translation error: {e}")
         # Ensure we don't break the save process
-        instance.set_current_language('en')
+        instance.set_current_language("en")
 
 
 # Singleton Model Mixin
@@ -57,18 +58,19 @@ class SingletonModel(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk and self.__class__.objects.exists():
             raise ValidationError(f"There can be only one {self.__class__.__name__} instance")
-        return super(SingletonModel, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     @classmethod
     def load(cls):
         # FIX: Ensure a default translation exists upon creation OR if missing (zombie data)
         obj, created = cls.objects.get_or_create(pk=1)
-        if not obj.has_translation('en'):
-            obj.set_current_language('en')
+        if not obj.has_translation("en"):
+            obj.set_current_language("en")
             obj.name = "Your Name"
             obj.bio = "Welcome to my portfolio."
             obj.save()
         return obj
+
 
 class Profile(SingletonModel, TranslatableModel):
     def save(self, *args, **kwargs):
@@ -79,35 +81,51 @@ class Profile(SingletonModel, TranslatableModel):
         name=models.CharField(max_length=100),
         bio=models.TextField(blank=True),
     )
-    profile_picture = models.ImageField(upload_to='profile/', blank=True, null=True)
-    resume = models.FileField(upload_to='resume/', blank=True)
+    profile_picture = models.ImageField(upload_to="profile/", blank=True, null=True)
+    resume = models.FileField(upload_to="resume/", blank=True)
 
     # Background Settings
     HERO_BG_CHOICES = [
-        ('GRADIENT', 'Gradient (Default)'),
-        ('IMAGE', 'Static Image'),
-        ('VIDEO', 'Video'),
-        ('SLIDESHOW', 'Slideshow'),
+        ("GRADIENT", "Gradient (Default)"),
+        ("IMAGE", "Static Image"),
+        ("VIDEO", "Video"),
+        ("SLIDESHOW", "Slideshow"),
     ]
-    hero_bg_type = models.CharField(max_length=20, choices=HERO_BG_CHOICES, default='GRADIENT', verbose_name="Hero Background Type")
-    hero_static_image = models.ImageField(upload_to='hero/static/', blank=True, null=True, verbose_name="Static Hero Image")
-    hero_video_file = models.FileField(upload_to='hero/video/', blank=True, null=True, verbose_name="Hero Video (MP4/WebM)")
-    hero_overlay_opacity = models.DecimalField(max_digits=3, decimal_places=1, default=0.5, help_text="Overlay opacity (0.0 to 1.0). Higher = darker.")
+    hero_bg_type = models.CharField(
+        max_length=20,
+        choices=HERO_BG_CHOICES,
+        default="GRADIENT",
+        verbose_name="Hero Background Type",
+    )
+    hero_static_image = models.ImageField(
+        upload_to="hero/static/", blank=True, null=True, verbose_name="Static Hero Image"
+    )
+    hero_video_file = models.FileField(
+        upload_to="hero/video/", blank=True, null=True, verbose_name="Hero Video (MP4/WebM)"
+    )
+    hero_overlay_opacity = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=0.5,
+        help_text="Overlay opacity (0.0 to 1.0). Higher = darker.",
+    )
 
     def __str__(self):
-        return self.safe_translation_getter('name', any_language=True) or "Profile"
+        return self.safe_translation_getter("name", any_language=True) or "Profile"
+
 
 class HeroSlide(models.Model):
-    profile = models.ForeignKey(Profile, related_name='hero_slides', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='hero/slides/')
+    profile = models.ForeignKey(Profile, related_name="hero_slides", on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="hero/slides/")
     caption = models.CharField(max_length=100, blank=True)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ['order']
+        ordering = ["order"]
 
     def __str__(self):
         return f"Slide {self.order} for {self.profile}"
+
 
 class ContactInfo(SingletonModel):
     email = models.EmailField()
@@ -115,28 +133,27 @@ class ContactInfo(SingletonModel):
     github_url = models.URLField(blank=True)
     linkedin_url = models.URLField(blank=True)
     twitter_url = models.URLField(blank=True)
-    
+
     # Optional: If address needs translation, we can add it properly
-    # For now, keeping it universal as per standard requirements, 
-    # but user mentioned "all text fields". Contact info usually is universal 
+    # For now, keeping it universal as per standard requirements,
+    # but user mentioned "all text fields". Contact info usually is universal
     # except maybe labels which are handled by gettext.
     # If address is physical and changes by language (rare), we'd need it.
     # Let's assume standard universal contact info for now unless specified.
-    
+
     @classmethod
     def load(cls):
         # FIX: Provide a default email to satisfy the NOT NULL constraint
-        obj, created = cls.objects.get_or_create(pk=1, defaults={
-            'email': 'contact@example.com'
-        })
+        obj, created = cls.objects.get_or_create(pk=1, defaults={"email": "contact@example.com"})
         # Double check: if it existed but was empty
         if not obj.email:
-            obj.email = 'contact@example.com'
+            obj.email = "contact@example.com"
             obj.save()
         return obj
 
     def __str__(self):
         return "Contact Details"
+
 
 class Skill(TranslatableModel):
     def save(self, *args, **kwargs):
@@ -149,7 +166,8 @@ class Skill(TranslatableModel):
     proficiency = models.PositiveIntegerField(help_text="1-100")
 
     def __str__(self):
-        return self.safe_translation_getter('name', any_language=True)
+        return self.safe_translation_getter("name", any_language=True)
+
 
 class Project(TranslatableModel):
     def save(self, *args, **kwargs):
@@ -160,14 +178,20 @@ class Project(TranslatableModel):
         title=models.CharField(max_length=200),
         description=models.TextField(blank=True),
     )
-    image = models.ImageField(upload_to='projects/', blank=True, null=True)
+    image = models.ImageField(upload_to="projects/", blank=True, null=True)
     code_link = models.URLField(blank=True)
     demo_link = models.URLField(blank=True, verbose_name="Demo Link (Optional)")
     created_date = models.DateField(verbose_name="Creation Date")
-    tech_stack = models.CharField(max_length=300, blank=True, default='', help_text="Comma-separated tags e.g. Python, Django, Docker")
+    tech_stack = models.CharField(
+        max_length=300,
+        blank=True,
+        default="",
+        help_text="Comma-separated tags e.g. Python, Django, Docker",
+    )
 
     def __str__(self):
-        return self.safe_translation_getter('title', any_language=True)
+        return self.safe_translation_getter("title", any_language=True)
+
 
 class Experience(TranslatableModel):
     def save(self, *args, **kwargs):
@@ -180,24 +204,33 @@ class Experience(TranslatableModel):
         description=models.TextField(blank=True),
     )
     start_date = models.DateField(verbose_name="Start Date")
-    end_date = models.DateField(null=True, blank=True, verbose_name="End Date (Leave blank for 'Present')")
-    icon = models.CharField(max_length=50, blank=True, default='', choices=[
-        ('fa-solid fa-briefcase', 'Briefcase'),
-        ('fa-solid fa-building', 'Building'),
-        ('fa-solid fa-laptop-code', 'Laptop Code'),
-        ('fa-solid fa-code', 'Code'),
-        ('fa-solid fa-microchip', 'Microchip'),
-        ('fa-solid fa-server', 'Server'),
-        ('fa-solid fa-database', 'Database'),
-        ('fa-solid fa-desktop', 'Desktop'),
-        ('fa-solid fa-user-tie', 'User Tie'),
-        ('fa-solid fa-handshake', 'Handshake'),
-        ('fa-solid fa-chart-line', 'Chart Line'),
-        ('fa-solid fa-pen-nib', 'Pen Nib'),
-    ], help_text="Select a built-in icon")
+    end_date = models.DateField(
+        null=True, blank=True, verbose_name="End Date (Leave blank for 'Present')"
+    )
+    icon = models.CharField(
+        max_length=50,
+        blank=True,
+        default="",
+        choices=[
+            ("fa-solid fa-briefcase", "Briefcase"),
+            ("fa-solid fa-building", "Building"),
+            ("fa-solid fa-laptop-code", "Laptop Code"),
+            ("fa-solid fa-code", "Code"),
+            ("fa-solid fa-microchip", "Microchip"),
+            ("fa-solid fa-server", "Server"),
+            ("fa-solid fa-database", "Database"),
+            ("fa-solid fa-desktop", "Desktop"),
+            ("fa-solid fa-user-tie", "User Tie"),
+            ("fa-solid fa-handshake", "Handshake"),
+            ("fa-solid fa-chart-line", "Chart Line"),
+            ("fa-solid fa-pen-nib", "Pen Nib"),
+        ],
+        help_text="Select a built-in icon",
+    )
 
     def __str__(self):
         return f"{self.safe_translation_getter('job_title', any_language=True)} at {self.safe_translation_getter('company', any_language=True)}"
+
 
 class Education(TranslatableModel):
     def save(self, *args, **kwargs):
@@ -209,10 +242,13 @@ class Education(TranslatableModel):
         institution=models.CharField(max_length=200),
     )
     start_date = models.DateField(verbose_name="Start Date")
-    end_date = models.DateField(null=True, blank=True, verbose_name="End Date (Leave blank for 'Present')")
+    end_date = models.DateField(
+        null=True, blank=True, verbose_name="End Date (Leave blank for 'Present')"
+    )
 
     def __str__(self):
         return f"{self.safe_translation_getter('degree', any_language=True)} at {self.safe_translation_getter('institution', any_language=True)}"
+
 
 class Hobby(TranslatableModel):
     def save(self, *args, **kwargs):
@@ -223,30 +259,41 @@ class Hobby(TranslatableModel):
         name=models.CharField(max_length=100),
         description=models.TextField(blank=True),
     )
-    icon = models.ImageField(upload_to='hobbies/', blank=True, help_text="Upload custom icon/image (optional if built-in selected)")
-    font_awesome_icon = models.CharField(max_length=50, blank=True, default='', choices=[
-        ('fa-solid fa-gamepad', 'Gamepad'),
-        ('fa-solid fa-music', 'Music'),
-        ('fa-solid fa-book', 'Book'),
-        ('fa-solid fa-camera', 'Camera'),
-        ('fa-solid fa-plane', 'Plane'),
-        ('fa-solid fa-bicycle', 'Bicycle'),
-        ('fa-solid fa-palette', 'Palette'),
-        ('fa-solid fa-utensils', 'Utensils'),
-        ('fa-solid fa-film', 'Film'),
-        ('fa-solid fa-basketball', 'Basketball'),
-        ('fa-solid fa-futbol', 'Soccer'),
-        ('fa-solid fa-dumbbell', 'Dumbbell'),
-        ('fa-solid fa-campground', 'Camping'),
-        ('fa-solid fa-code', 'Code'),
-        ('fa-solid fa-chess', 'Chess'),
-        ('fa-solid fa-guitar', 'Guitar'),
-        ('fa-solid fa-running', 'Running'),
-        ('fa-solid fa-swimmer', 'Swimming'),
-    ], help_text="Select a built-in icon (overrides custom image if set)")
+    icon = models.ImageField(
+        upload_to="hobbies/",
+        blank=True,
+        help_text="Upload custom icon/image (optional if built-in selected)",
+    )
+    font_awesome_icon = models.CharField(
+        max_length=50,
+        blank=True,
+        default="",
+        choices=[
+            ("fa-solid fa-gamepad", "Gamepad"),
+            ("fa-solid fa-music", "Music"),
+            ("fa-solid fa-book", "Book"),
+            ("fa-solid fa-camera", "Camera"),
+            ("fa-solid fa-plane", "Plane"),
+            ("fa-solid fa-bicycle", "Bicycle"),
+            ("fa-solid fa-palette", "Palette"),
+            ("fa-solid fa-utensils", "Utensils"),
+            ("fa-solid fa-film", "Film"),
+            ("fa-solid fa-basketball", "Basketball"),
+            ("fa-solid fa-futbol", "Soccer"),
+            ("fa-solid fa-dumbbell", "Dumbbell"),
+            ("fa-solid fa-campground", "Camping"),
+            ("fa-solid fa-code", "Code"),
+            ("fa-solid fa-chess", "Chess"),
+            ("fa-solid fa-guitar", "Guitar"),
+            ("fa-solid fa-running", "Running"),
+            ("fa-solid fa-swimmer", "Swimming"),
+        ],
+        help_text="Select a built-in icon (overrides custom image if set)",
+    )
 
     def __str__(self):
-        return self.safe_translation_getter('name', any_language=True)
+        return self.safe_translation_getter("name", any_language=True)
+
 
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
@@ -258,14 +305,17 @@ class ContactMessage(models.Model):
     def __str__(self):
         return f"Message from {self.name}: {self.subject}"
 
+
 class Testimonial(TranslatableModel):
     name = models.CharField(max_length=100, verbose_name="Your Name")
-    
+
     translations = TranslatedFields(
-        role_company = models.CharField(max_length=100, blank=True, verbose_name="Role / Company (Optional)"),
-        quote = models.TextField(verbose_name="Testimonial"),
+        role_company=models.CharField(
+            max_length=100, blank=True, verbose_name="Role / Company (Optional)"
+        ),
+        quote=models.TextField(verbose_name="Testimonial"),
     )
-    
+
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

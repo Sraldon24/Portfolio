@@ -1,26 +1,36 @@
-from django.test import TestCase, Client, override_settings
+import datetime
+
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils import translation
-from django.core.files.uploadedfile import SimpleUploadedFile
+
+from main.forms import MESSAGE_MAX_LENGTH, QUOTE_MAX_LENGTH
 from main.models import (
-    Profile, ContactInfo, Skill, Project, Experience, 
-    Education, Hobby, Testimonial, ContactMessage
+    ContactInfo,
+    ContactMessage,
+    Education,
+    Experience,
+    Hobby,
+    Profile,
+    Project,
+    Skill,
+    Testimonial,
 )
-from main.forms import ContactForm, TestimonialForm, MESSAGE_MAX_LENGTH, QUOTE_MAX_LENGTH
-import datetime
-import sys
+
 
 class ProfileModelTest(TestCase):
     def test_singleton_profile(self):
         # Create first profile
         profile1 = Profile.objects.create(name="Test Profile", bio="Bio")
         self.assertEqual(profile1.pk, 1)
-        
-        # Try to create second profile (should fail or return same instance depending on implementation, 
+
+        # Try to create second profile (should fail or return same instance depending on implementation,
         # but our SingletonModel implementation in models.py raises ValidationError on save if exists)
         # However, looking at the code: if not self.pk and self.__class__.objects.exists(): raise ValidationError
-        
+
         from django.core.exceptions import ValidationError
+
         profile2 = Profile(name="Second Profile", bio="Bio 2")
         with self.assertRaises(ValidationError):
             profile2.save()
@@ -29,12 +39,14 @@ class ProfileModelTest(TestCase):
         profile = Profile.objects.create(name="Test Name", bio="Test Bio")
         self.assertEqual(str(profile), "Test Name")
 
+
 class ContactInfoModelTest(TestCase):
     def test_singleton_contact_info(self):
         contact1 = ContactInfo.objects.create(email="test@example.com")
         self.assertEqual(contact1.pk, 1)
-        
+
         from django.core.exceptions import ValidationError
+
         contact2 = ContactInfo(email="other@example.com")
         with self.assertRaises(ValidationError):
             contact2.save()
@@ -43,17 +55,18 @@ class ContactInfoModelTest(TestCase):
         contact = ContactInfo.objects.create(email="test@example.com")
         self.assertEqual(str(contact), "Contact Details")
 
+
 class TranslatableModelTest(TestCase):
     def test_skill_creation(self):
         skill = Skill.objects.create(name="Python", proficiency=90)
         self.assertEqual(str(skill), "Python")
-        
+
     def test_project_creation(self):
         project = Project.objects.create(
             title="My Project",
             description="Description",
             created_date=datetime.date.today(),
-            image=SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
+            image=SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg"),
         )
         self.assertEqual(str(project), "My Project")
 
@@ -62,15 +75,13 @@ class TranslatableModelTest(TestCase):
             job_title="Developer",
             company="Tech Corp",
             description="Worked hard",
-            start_date=datetime.date(2020, 1, 1)
+            start_date=datetime.date(2020, 1, 1),
         )
         self.assertEqual(str(exp), "Developer at Tech Corp")
 
     def test_education_creation(self):
         edu = Education.objects.create(
-            degree="BS CS",
-            institution="University",
-            start_date=datetime.date(2016, 9, 1)
+            degree="BS CS", institution="University", start_date=datetime.date(2016, 9, 1)
         )
         self.assertEqual(str(edu), "BS CS at University")
 
@@ -78,123 +89,114 @@ class TranslatableModelTest(TestCase):
         hobby = Hobby.objects.create(name="Reading", description="Books")
         self.assertEqual(str(hobby), "Reading")
 
+
 class StandardModelTest(TestCase):
     def test_contact_message_creation(self):
         msg = ContactMessage.objects.create(
-            name="Sender",
-            email="sender@example.com",
-            subject="Hello",
-            message="World"
+            name="Sender", email="sender@example.com", subject="Hello", message="World"
         )
         self.assertIn("Message from Sender", str(msg))
         self.assertIn("Hello", str(msg))
 
     def test_testimonial_creation(self):
-        testim = Testimonial.objects.create(
-            name="Client",
-            quote="Great work",
-            is_approved=True
-        )
+        testim = Testimonial.objects.create(name="Client", quote="Great work", is_approved=True)
         self.assertEqual(str(testim), "Testimonial from Client")
+
 
 @override_settings(RATELIMIT_ENABLE=False)
 class HomeViewTest(TestCase):
     def setUp(self):
         self.client = Client()
-        translation.activate('en')
-        self.url = reverse('home')
+        translation.activate("en")
+        self.url = reverse("home")
         # Setup require data for the view
         self.profile = Profile.objects.create(name="Dev", bio="Bio")
         self.contact = ContactInfo.objects.create(email="dev@example.com")
         self.skill = Skill.objects.create(name="Django", proficiency=100)
         self.project = Project.objects.create(
-            title="Portfolio", 
-            description="This site", 
+            title="Portfolio",
+            description="This site",
             created_date=datetime.date.today(),
-            image=SimpleUploadedFile("img.jpg", b"img", content_type="image/jpeg")
+            image=SimpleUploadedFile("img.jpg", b"img", content_type="image/jpeg"),
         )
 
     def test_home_view_get(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'main/home.html')
+        self.assertTemplateUsed(response, "main/home.html")
         self.assertContains(response, "Dev")
         self.assertContains(response, "Django")
         self.assertContains(response, "Portfolio")
 
     def test_contact_form_submission(self):
         data = {
-            'submit_contact': '1',
-            'contact-name': 'User',
-            'contact-email': 'user@example.com',
-            'contact-subject': 'Hi',
-            'contact-message': 'Test msg'
+            "submit_contact": "1",
+            "contact-name": "User",
+            "contact-email": "user@example.com",
+            "contact-subject": "Hi",
+            "contact-message": "Test msg",
         }
         response = self.client.post(self.url, data)
         # Should redirect back to home on success
         self.assertRedirects(response, self.url)
-        
+
         # Verify message created
         self.assertEqual(ContactMessage.objects.count(), 1)
-        self.assertEqual(ContactMessage.objects.first().name, 'User')
+        self.assertEqual(ContactMessage.objects.first().name, "User")
 
     def test_testimonial_form_submission(self):
         data = {
-            'submit_testimonial': '1',
-            'testimonial-name': 'Happy Client',
-            'testimonial-role_company': 'CEO',
-            'testimonial-quote': 'Awesome!'
+            "submit_testimonial": "1",
+            "testimonial-name": "Happy Client",
+            "testimonial-role_company": "CEO",
+            "testimonial-quote": "Awesome!",
         }
         response = self.client.post(self.url, data)
         self.assertRedirects(response, self.url)
-        
+
         self.assertEqual(Testimonial.objects.count(), 1)
-        self.assertEqual(Testimonial.objects.first().name, 'Happy Client')
+        self.assertEqual(Testimonial.objects.first().name, "Happy Client")
 
     def test_invalid_contact_form(self):
         # Missing required email
-        data = {
-            'submit_contact': '1',
-            'contact-name': 'User',
-            'contact-message': 'Test'
-        }
+        data = {"submit_contact": "1", "contact-name": "User", "contact-message": "Test"}
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 200) # Re-renders page with errors
+        self.assertEqual(response.status_code, 200)  # Re-renders page with errors
         # Since we use django messages, we check for error message
-        messages = list(response.context['messages'])
+        messages = list(response.context["messages"])
         self.assertTrue(any("error" in str(m) for m in messages))
         self.assertEqual(ContactMessage.objects.count(), 0)
 
     def test_contact_message_length_limit(self):
         """Message exceeding max length should be rejected."""
         data = {
-            'submit_contact': '1',
-            'contact-name': 'User',
-            'contact-email': 'user@example.com',
-            'contact-subject': 'Hi',
-            'contact-message': 'x' * (MESSAGE_MAX_LENGTH + 1),
+            "submit_contact": "1",
+            "contact-name": "User",
+            "contact-email": "user@example.com",
+            "contact-subject": "Hi",
+            "contact-message": "x" * (MESSAGE_MAX_LENGTH + 1),
         }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ContactMessage.objects.count(), 0)
-        form = response.context['contact_form']
-        self.assertIn('message', form.errors)
-        self.assertIn(str(MESSAGE_MAX_LENGTH), str(form.errors['message']))
+        form = response.context["contact_form"]
+        self.assertIn("message", form.errors)
+        self.assertIn(str(MESSAGE_MAX_LENGTH), str(form.errors["message"]))
 
     def test_testimonial_quote_length_limit(self):
         """Testimonial quote exceeding max length should be rejected."""
         data = {
-            'submit_testimonial': '1',
-            'testimonial-name': 'Client',
-            'testimonial-role_company': '',
-            'testimonial-quote': 'x' * (QUOTE_MAX_LENGTH + 1),
+            "submit_testimonial": "1",
+            "testimonial-name": "Client",
+            "testimonial-role_company": "",
+            "testimonial-quote": "x" * (QUOTE_MAX_LENGTH + 1),
         }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Testimonial.objects.count(), 0)
-        form = response.context['testimonial_form']
-        self.assertIn('quote', form.errors)
-        self.assertIn(str(QUOTE_MAX_LENGTH), str(form.errors['quote']))
+        form = response.context["testimonial_form"]
+        self.assertIn("quote", form.errors)
+        self.assertIn(str(QUOTE_MAX_LENGTH), str(form.errors["quote"]))
 
 
 @override_settings(RATELIMIT_ENABLE=True)
@@ -203,8 +205,8 @@ class RateLimitTest(TestCase):
 
     def setUp(self):
         self.client = Client()
-        translation.activate('en')
-        self.url = reverse('home')
+        translation.activate("en")
+        self.url = reverse("home")
         self.profile = Profile.objects.create(name="Dev", bio="Bio")
         self.contact = ContactInfo.objects.create(email="dev@example.com")
         self.skill = Skill.objects.create(name="Django", proficiency=100)
@@ -215,11 +217,11 @@ class RateLimitTest(TestCase):
             image=SimpleUploadedFile("img.jpg", b"img", content_type="image/jpeg"),
         )
         self.contact_data = {
-            'submit_contact': '1',
-            'contact-name': 'User',
-            'contact-email': 'user@example.com',
-            'contact-subject': 'Hi',
-            'contact-message': 'Test msg',
+            "submit_contact": "1",
+            "contact-name": "User",
+            "contact-email": "user@example.com",
+            "contact-subject": "Hi",
+            "contact-message": "Test msg",
         }
 
     def test_rate_limit_blocks_after_five_submissions(self):
@@ -227,15 +229,15 @@ class RateLimitTest(TestCase):
         # First 5 should succeed
         for i in range(5):
             data = self.contact_data.copy()
-            data['contact-message'] = f'Test msg {i}'
+            data["contact-message"] = f"Test msg {i}"
             response = self.client.post(self.url, data)
-            self.assertRedirects(response, self.url, msg_prefix=f"Request {i+1} should succeed")
+            self.assertRedirects(response, self.url, msg_prefix=f"Request {i + 1} should succeed")
 
         self.assertEqual(ContactMessage.objects.count(), 5)
 
         # 6th should be rate limited (redirect with error message)
         response = self.client.post(self.url, self.contact_data, follow=True)
-        self.assertContains(response, 'Too many submissions', status_code=200)
+        self.assertContains(response, "Too many submissions", status_code=200)
         self.assertEqual(ContactMessage.objects.count(), 5)  # No 6th message saved
 
     def test_rate_limit_respects_per_ip(self):
@@ -243,16 +245,13 @@ class RateLimitTest(TestCase):
         # Exhaust limit for IP 192.168.1.1
         for i in range(5):
             data = self.contact_data.copy()
-            data['contact-message'] = f'A msg {i}'
-            self.client.post(self.url, data, REMOTE_ADDR='192.168.1.1')
+            data["contact-message"] = f"A msg {i}"
+            self.client.post(self.url, data, REMOTE_ADDR="192.168.1.1")
 
         # Different IP should still succeed
         data_b = self.contact_data.copy()
-        data_b['contact-email'] = 'other@example.com'
-        data_b['contact-message'] = 'From different IP'
-        response = self.client.post(
-            self.url, data_b, REMOTE_ADDR='192.168.1.2', follow=True
-        )
-        self.assertNotContains(response, 'Too many submissions', status_code=200)
+        data_b["contact-email"] = "other@example.com"
+        data_b["contact-message"] = "From different IP"
+        response = self.client.post(self.url, data_b, REMOTE_ADDR="192.168.1.2", follow=True)
+        self.assertNotContains(response, "Too many submissions", status_code=200)
         self.assertEqual(ContactMessage.objects.count(), 6)
-

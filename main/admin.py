@@ -1,122 +1,159 @@
 from django.contrib import admin
-from parler.admin import TranslatableAdmin
 from django.contrib.auth.models import Group, User
+from parler.admin import TranslatableAdmin
+
 from .models import (
-    Profile, ContactInfo, Skill, Project, Experience,
-    Education, Hobby, ContactMessage, Testimonial, HeroSlide
+    ContactInfo,
+    ContactMessage,
+    Education,
+    Experience,
+    HeroSlide,
+    Hobby,
+    Profile,
+    Project,
+    Skill,
+    Testimonial,
 )
 
 admin.site.unregister(Group)
 admin.site.unregister(User)
 
+
 class SingletonAdminMixin:
     """Mixin to prevent adding more than one instance of a Singleton model."""
+
     def has_add_permission(self, request):
         if self.model.objects.exists():
             return False
         return super().has_add_permission(request)
 
+
 class HeroSlideInline(admin.TabularInline):
     model = HeroSlide
     extra = 1
+
 
 @admin.register(Profile)
 class ProfileAdmin(SingletonAdminMixin, TranslatableAdmin):
     inlines = [HeroSlideInline]
     fieldsets = (
-        (None, {
-            'fields': ('name', 'bio', 'profile_picture', 'resume'),
-        }),
-        ('Hero Background', {
-            'fields': ('hero_bg_type', 'hero_static_image', 'hero_video_file', 'hero_overlay_opacity'),
-            'classes': ('collapse',),
-        }),
+        (
+            None,
+            {
+                "fields": ("name", "bio", "profile_picture", "resume"),
+            },
+        ),
+        (
+            "Hero Background",
+            {
+                "fields": (
+                    "hero_bg_type",
+                    "hero_static_image",
+                    "hero_video_file",
+                    "hero_overlay_opacity",
+                ),
+                "classes": ("collapse",),
+            },
+        ),
     )
 
-    list_display = ('__str__',)
+    list_display = ("__str__",)
+
 
 @admin.register(ContactInfo)
 class ContactInfoAdmin(SingletonAdminMixin, admin.ModelAdmin):
-    list_display = ('__str__', 'email')
+    list_display = ("__str__", "email")
+
 
 @admin.register(Skill)
 class SkillAdmin(TranslatableAdmin):
     show_add_link = True
-    list_display = ('name', 'proficiency')
-    search_fields = ('translations__name',)
-    list_filter = ('proficiency',)
+    list_display = ("name", "proficiency")
+    search_fields = ("translations__name",)
+    list_filter = ("proficiency",)
+
 
 @admin.register(Project)
 class ProjectAdmin(TranslatableAdmin):
     show_add_link = True
-    list_display = ('title', 'created_date', 'description_snippet', 'link')
-    search_fields = ('translations__title', 'translations__description')
-    list_filter = ('created_date',)
+    list_display = ("title", "created_date", "description_snippet", "link")
+    search_fields = ("translations__title", "translations__description")
+    list_filter = ("created_date",)
 
     def description_snippet(self, obj):
-        desc = obj.safe_translation_getter('description', any_language=True)
-        return desc[:50] + '...' if desc else ''
-    description_snippet.short_description = 'Description'
+        desc = obj.safe_translation_getter("description", any_language=True)
+        return desc[:50] + "..." if desc else ""
+
+    description_snippet.short_description = "Description"
 
     def link(self, obj):
-        return obj.demo_link or obj.code_link or '-'
-    link.short_description = 'Link'
+        return obj.demo_link or obj.code_link or "-"
+
+    link.short_description = "Link"
+
 
 @admin.register(Experience)
 class ExperienceAdmin(TranslatableAdmin):
     show_add_link = True
-    list_display = ('job_title', 'company', 'start_date', 'end_date', 'icon')
-    search_fields = ('translations__job_title', 'translations__company')
-    list_filter = ('start_date', 'end_date')
-    ordering = ('-start_date',)
+    list_display = ("job_title", "company", "start_date", "end_date", "icon")
+    search_fields = ("translations__job_title", "translations__company")
+    list_filter = ("start_date", "end_date")
+    ordering = ("-start_date",)
+
 
 @admin.register(Education)
 class EducationAdmin(TranslatableAdmin):
     show_add_link = True
-    list_display = ('degree', 'institution', 'start_date', 'end_date')
-    search_fields = ('translations__degree', 'translations__institution')
-    list_filter = ('start_date', 'end_date')
-    ordering = ('-start_date',)
+    list_display = ("degree", "institution", "start_date", "end_date")
+    search_fields = ("translations__degree", "translations__institution")
+    list_filter = ("start_date", "end_date")
+    ordering = ("-start_date",)
+
 
 @admin.register(Hobby)
 class HobbyAdmin(TranslatableAdmin):
     show_add_link = True
-    list_display = ('name', 'font_awesome_icon', 'icon')
+    list_display = ("name", "font_awesome_icon", "icon")
+
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
     show_add_link = True
-    list_display = ('name', 'email', 'subject', 'message_snippet', 'created_at')
-    readonly_fields = ('name', 'email', 'subject', 'message', 'created_at')
-    search_fields = ('name', 'email', 'subject', 'message')
-    list_filter = ('created_at',)
+    list_display = ("name", "email", "subject", "message_snippet", "created_at")
+    readonly_fields = ("name", "email", "subject", "message", "created_at")
+    search_fields = ("name", "email", "subject", "message")
+    list_filter = ("created_at",)
 
     def message_snippet(self, obj):
-        return obj.message[:50] + '...' if obj.message else ''
-    message_snippet.short_description = 'Message'
+        return obj.message[:50] + "..." if obj.message else ""
+
+    message_snippet.short_description = "Message"
+
 
 @admin.register(Testimonial)
 class TestimonialAdmin(TranslatableAdmin):
     show_add_link = True
-    list_display = ('name', 'get_role_company', 'quote_snippet', 'is_approved', 'created_at')
-    list_filter = ('is_approved', 'created_at')
-    actions = ['approve_testimonials', 'reject_testimonials']
-    search_fields = ('name', 'translations__quote', 'translations__role_company')
+    list_display = ("name", "get_role_company", "quote_snippet", "is_approved", "created_at")
+    list_filter = ("is_approved", "created_at")
+    actions = ["approve_testimonials", "reject_testimonials"]
+    search_fields = ("name", "translations__quote", "translations__role_company")
 
     def get_role_company(self, obj):
-        val = obj.safe_translation_getter('role_company', any_language=True)
-        return val or ''
-    get_role_company.short_description = 'Role / Company'
+        val = obj.safe_translation_getter("role_company", any_language=True)
+        return val or ""
+
+    get_role_company.short_description = "Role / Company"
 
     def quote_snippet(self, obj):
-        val = obj.safe_translation_getter('quote', any_language=True)
-        return val[:50] + '...' if val else ''
-    quote_snippet.short_description = 'Quote'
+        val = obj.safe_translation_getter("quote", any_language=True)
+        return val[:50] + "..." if val else ""
 
-    @admin.action(description='Approve selected testimonials')
+    quote_snippet.short_description = "Quote"
+
+    @admin.action(description="Approve selected testimonials")
     def approve_testimonials(self, request, queryset):
         queryset.update(is_approved=True)
 
-    @admin.action(description='Reject selected testimonials')
+    @admin.action(description="Reject selected testimonials")
     def reject_testimonials(self, request, queryset):
         queryset.update(is_approved=False)

@@ -1,14 +1,18 @@
 from django import template
-from main.models import Testimonial, ContactMessage
+
+from main.models import ContactMessage, Testimonial
 
 register = template.Library()
+
 
 # Functions used by Unfold (settings.py)
 def pending_testimonials_count(request):
     return Testimonial.objects.filter(is_approved=False).count()
 
+
 def total_messages_count(request):
     return ContactMessage.objects.count()
+
 
 # Template tag used by admin/base_site.html
 @register.simple_tag
