@@ -107,7 +107,7 @@
                     <span class="crt-corner bl"></span>
                     <span class="crt-corner br"></span>
                     {% if profile.profile_picture %}
-                        <img src="{{ profile.profile_picture.url }}" alt="{{ profile.name }}" class="w-full h-full object-cover">
+                        <img src="{{ profile.profile_picture.url }}" alt="{{ profile.name }}" class="w-full h-full object-cover" loading="eager" fetchpriority="high">
                     {% else %}
                         <div class="w-full h-full bg-crt-surface flex items-center justify-center">
                             <i class="fa-solid fa-user text-6xl text-crt-amber/30"></i>
@@ -228,7 +228,7 @@
                 <div class="project-image-wrap h-48 {% if forloop.first %}md:h-60{% endif %}">
                     <span class="project-idx">[{{ forloop.counter|stringformat:"02d" }} / {{ projects|length|stringformat:"02d" }}]</span>
                     {% if project.image %}
-                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover">
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                     {% else %}
                         <div class="project-fallback">
                             <i class="fa-solid fa-code text-crt-amber/25" style="font-size:{% if forloop.first %}6rem{% else %}4rem{% endif %};"></i>
@@ -345,7 +345,7 @@
                     {% if hobby.font_awesome_icon %}
                         <i class="{{ hobby.font_awesome_icon }} text-xl text-crt-amber group-hover:text-crt-amber-light transition-colors"></i>
                     {% elif hobby.icon %}
-                        <img src="{{ hobby.icon.url }}" alt="{{ hobby.name }}" class="w-7 h-7 object-contain" />
+                        <img src="{{ hobby.icon.url }}" alt="{{ hobby.name }}" class="w-7 h-7 object-contain" loading="lazy" decoding="async" />
                     {% else %}
                         <i class="fa-solid fa-heart text-xl text-crt-amber"></i>
                     {% endif %}
@@ -598,6 +598,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const COLORS = ['rgba(245,158,11,', 'rgba(234,88,12,', 'rgba(251,191,36,'];
     const NUM = 48, CONNECT_DIST = 130;
     let W, H, particles = [];
+    let isVisible = true;
+    let isTabVisible = !document.hidden;
 
     function resize() {
         W = canvas.width = canvas.offsetWidth || canvas.parentElement.offsetWidth;
@@ -605,6 +607,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     resize();
     new ResizeObserver(resize).observe(canvas.parentElement);
+
+    // Pause when hero scrolls off-screen or tab is hidden (saves CPU)
+    const vizObs = new IntersectionObserver(function(entries) {
+        isVisible = entries[0].isIntersecting;
+    }, { threshold: 0 });
+    vizObs.observe(canvas.parentElement);
+    document.addEventListener('visibilitychange', function() {
+        isTabVisible = !document.hidden;
+    });
 
     for (let i = 0; i < NUM; i++) {
         particles.push({
@@ -620,6 +631,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function draw() {
+        if (!isVisible || !isTabVisible) { requestAnimationFrame(draw); return; }
         ctx.clearRect(0, 0, W, H);
         for (let i = 0; i < particles.length; i++) {
             const p = particles[i];

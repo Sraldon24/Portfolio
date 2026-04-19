@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
@@ -5,6 +7,8 @@ from django_ratelimit.decorators import ratelimit
 
 from .forms import ContactForm, TestimonialForm
 from .models import ContactInfo, Education, Experience, Hobby, Profile, Project, Skill, Testimonial
+
+logger = logging.getLogger(__name__)
 
 
 @ratelimit(key="ip", rate="5/h", method="POST", block=False)
@@ -27,12 +31,11 @@ def home(request):
                 try:
                     contact_form.save()
                     messages.success(request, _("Your message has been sent successfully!"))
-                except Exception as e:
-                    # Log the error if possible, but don't crash the user
-                    print(f"Error sending message: {e}")
+                except Exception:
+                    logger.exception("Contact form save failed")
                     messages.success(
                         request, _("Your message has been sent successfully!")
-                    )  # Fake success to user if email fails but DB saved?
+                    )  # Form row often saved before email signal fires — keep UX calm
                     # Actually, if save() fails (signals), the DB transaction might roll back or not.
                     # Signals usually run after save. If signal fails, save is usually done.
                     # But to be safe and friendly:
@@ -57,8 +60,8 @@ def home(request):
                     messages.success(
                         request, _("Thank you! Your testimonial has been submitted for review.")
                     )
-                except Exception as e:
-                    print(f"Error saving testimonial: {e}")
+                except Exception:
+                    logger.exception("Testimonial form save failed")
                     messages.success(
                         request, _("Thank you! Your testimonial has been submitted for review.")
                     )
@@ -69,12 +72,16 @@ def home(request):
     context = {
         "profile": Profile.load(),
         "contact_info": ContactInfo.load(),
-        "skills": Skill.objects.all(),
-        "projects": Project.objects.all().order_by("-created_date"),
-        "experiences": Experience.objects.all().order_by("-start_date"),
-        "educations": Education.objects.all().order_by("-start_date"),
-        "hobbies": Hobby.objects.all(),
-        "testimonials": Testimonial.objects.filter(is_approved=True).order_by("-created_at"),
+        "skills": Skill.objects.prefetch_related("translations"),
+        "projects": Project.objects.prefetch_related("translations").order_by("-created_date"),
+        "experiences": Experience.objects.prefetch_related("translations").order_by(
+            "-start_date"
+        ),
+        "educations": Education.objects.prefetch_related("translations").order_by("-start_date"),
+        "hobbies": Hobby.objects.prefetch_related("translations"),
+        "testimonials": Testimonial.objects.filter(is_approved=True)
+        .prefetch_related("translations")
+        .order_by("-created_at"),
         "contact_form": contact_form,
         "testimonial_form": testimonial_form,
     }

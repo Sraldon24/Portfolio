@@ -917,7 +917,7 @@ html { scrollbar-width: thin; scrollbar-color: #d97706 #0a0800; }
 }
 
 /* ─── Whois copy-to-clipboard button ─── */
-.whois-line { display: flex; align-items: center; gap: 0.5rem; }
+/* (.whois-line base rule defined earlier; this only adds the copy pill) */
 .whois-copy {
   margin-left: auto;
   font-family: 'JetBrains Mono', monospace;
@@ -997,7 +997,7 @@ html { scrollbar-width: thin; scrollbar-color: #d97706 #0a0800; }
 /* ═══════════════════════════════════════════
    CONTACT / WHOIS
 ═══════════════════════════════════════════ */
-.whois-line { display: flex; gap: 0.75rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; align-items: baseline; }
+.whois-line { display: flex; gap: 0.75rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; align-items: center; }
 .whois-key { color: #f59e0b; min-width: 70px; flex-shrink: 0; }
 .whois-val { color: #fde68a; word-break: break-all; }
 .whois-val a { color: #fbbf24; text-decoration: none; transition: color 0.2s; }
