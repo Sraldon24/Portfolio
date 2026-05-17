@@ -87,7 +87,8 @@ class SiteSettingsAdmin(SingletonAdminMixin, TranslatableAdmin):
 class SkillAdmin(TranslatableAdmin):
     show_add_link = True
     list_display = ("name", "category", "order")
-    list_editable = ("order",)
+    # NOTE: no list_editable — it suppresses the action "Go" button in Unfold.
+    # Edit `order` on each skill's change page instead.
     search_fields = ("translations__name",)
     list_filter = ("category",)
     ordering = ("category", "order")
