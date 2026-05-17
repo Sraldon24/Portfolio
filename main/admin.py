@@ -11,7 +11,10 @@ from .models import (
     Hobby,
     Profile,
     Project,
+    Recognition,
+    SiteSettings,
     Skill,
+    TechTag,
     Testimonial,
 )
 
@@ -65,13 +68,39 @@ class ContactInfoAdmin(SingletonAdminMixin, admin.ModelAdmin):
     list_display = ("__str__", "email")
 
 
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(SingletonAdminMixin, TranslatableAdmin):
+    list_display = ("__str__",)
+    fieldsets = (
+        (
+            "Hero",
+            {"fields": ("availability_text", "hero_tagline", "resume_file")},
+        ),
+        (
+            "SEO / Open Graph",
+            {"fields": ("og_title", "meta_description")},
+        ),
+    )
+
+
 @admin.register(Skill)
 class SkillAdmin(TranslatableAdmin):
     show_add_link = True
-    list_display = ("name", "proficiency")
+    list_display = ("name", "category", "order")
+    list_editable = ("order",)
     search_fields = ("translations__name",)
-    list_filter = ("proficiency",)
+    list_filter = ("category",)
+    ordering = ("category", "order")
     list_select_related = ("translations",)
+    fields = ("name", "category", "order")
+
+
+@admin.register(TechTag)
+class TechTagAdmin(admin.ModelAdmin):
+    show_add_link = True
+    list_display = ("name",)
+    search_fields = ("name",)
+    ordering = ("name",)
 
 
 @admin.register(Project)
@@ -81,6 +110,19 @@ class ProjectAdmin(TranslatableAdmin):
     search_fields = ("translations__title", "translations__description")
     list_filter = ("created_date",)
     list_select_related = ("translations",)
+    filter_horizontal = ("tech_tags",)
+    fields = (
+        "title",
+        "role",
+        "description",
+        "image",
+        "code_link",
+        "demo_link",
+        "created_date",
+        "start_date",
+        "end_date",
+        "tech_tags",
+    )
 
     def description_snippet(self, obj):
         desc = obj.safe_translation_getter("description", any_language=True)
@@ -97,11 +139,23 @@ class ProjectAdmin(TranslatableAdmin):
 @admin.register(Experience)
 class ExperienceAdmin(TranslatableAdmin):
     show_add_link = True
-    list_display = ("job_title", "company", "start_date", "end_date", "icon")
+    list_display = ("job_title", "company", "role_type", "start_date", "end_date", "is_current")
     search_fields = ("translations__job_title", "translations__company")
-    list_filter = ("start_date", "end_date")
+    list_filter = ("role_type", "is_current", "start_date")
     ordering = ("-start_date",)
     list_select_related = ("translations",)
+    filter_horizontal = ("tech_used",)
+    fields = (
+        "job_title",
+        "company",
+        "role_type",
+        "description",
+        "start_date",
+        "end_date",
+        "is_current",
+        "tech_used",
+        "icon",
+    )
 
 
 @admin.register(Education)
@@ -112,6 +166,17 @@ class EducationAdmin(TranslatableAdmin):
     list_filter = ("start_date", "end_date")
     ordering = ("-start_date",)
     list_select_related = ("translations",)
+
+
+@admin.register(Recognition)
+class RecognitionAdmin(TranslatableAdmin):
+    show_add_link = True
+    list_display = ("title", "date_text", "order")
+    list_editable = ("order",)
+    search_fields = ("translations__title", "translations__description")
+    ordering = ("order",)
+    list_select_related = ("translations",)
+    fields = ("title", "subtitle", "date_text", "description", "icon_emoji", "order")
 
 
 @admin.register(Hobby)

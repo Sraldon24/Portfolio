@@ -124,9 +124,12 @@ class HomeViewTest(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/home.html")
+        # Profile name (hero + nav + footer) and the "Built with Django" footer.
         self.assertContains(response, "Dev")
         self.assertContains(response, "Django")
-        self.assertContains(response, "Portfolio")
+        # The <title> is now driven by SiteSettings/profile (Task 6), not a
+        # hardcoded "Portfolio" string — assert the document has a title tag.
+        self.assertContains(response, "<title>")
 
     def test_contact_form_submission(self):
         data = {

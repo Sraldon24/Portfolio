@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %}
-{% load i18n cache %}
+{% load i18n cache content_extras %}
 {% block content %}
 
 <!-- ═══════════════════════════════════════════════════
@@ -70,10 +70,15 @@
                 </h1>
 
                 <!-- Typed role subtitle -->
-                <p class="font-mono text-sm text-crt-amber/70 mb-4 opacity-0" id="hero-role"
+                <p class="font-mono text-sm text-crt-amber/70 mb-2 opacity-0" id="hero-role"
                    style="transform:translateY(10px);transition:opacity 0.6s ease 0.15s,transform 0.6s ease 0.15s;">
                     <span id="typed-role"></span><span class="animate-blink" style="border-right:2px solid #f59e0b;display:inline-block;height:1em;vertical-align:middle;margin-left:2px;"></span>
                 </p>
+
+                {% if site_settings.hero_tagline %}
+                <!-- Configurable tagline -->
+                <p class="font-mono text-xs text-crt-muted/80 mb-4">{{ site_settings.hero_tagline }}</p>
+                {% endif %}
 
                 <!-- Hero bio -->
                 <p id="hero-bio" class="text-crt-text/80 font-sans leading-relaxed mb-8 max-w-lg opacity-0"
@@ -84,11 +89,13 @@
                 <!-- CTAs -->
                 <div id="hero-ctas" class="flex flex-wrap gap-4 opacity-0"
                      style="transform:translateY(20px);transition:opacity 0.7s ease 0.35s,transform 0.7s ease 0.35s;">
-                    {% if profile.resume %}
-                    <a href="{{ profile.resume.url }}" download class="btn-amber rounded-sm">
+                    {% with resume=site_settings.resume_file|default:profile.resume %}
+                    {% if resume %}
+                    <a href="{{ resume.url }}" download class="btn-amber rounded-sm">
                         <i class="fa-solid fa-file-arrow-down mr-2 text-xs"></i>{% trans "./resume.pdf" %}
                     </a>
                     {% endif %}
+                    {% endwith %}
                     <a href="#contact" class="btn-terminal rounded-sm">
                         <i class="fa-solid fa-terminal mr-2 text-xs"></i>{% trans "./contact" %}
                     </a>
@@ -107,7 +114,7 @@
                     <span class="crt-corner bl"></span>
                     <span class="crt-corner br"></span>
                     {% if profile.profile_picture %}
-                        <img src="{{ profile.profile_picture.url }}" alt="{{ profile.name }}" class="w-full h-full object-cover" loading="eager" fetchpriority="high">
+                        <img src="{{ profile.profile_picture.url }}" alt="{% blocktrans with name=profile.name %}Portrait of {{ name }}{% endblocktrans %}" width="288" height="288" class="w-full h-full object-cover" loading="eager" fetchpriority="high">
                     {% else %}
                         <div class="w-full h-full bg-crt-surface flex items-center justify-center">
                             <i class="fa-solid fa-user text-6xl text-crt-amber/30"></i>
@@ -118,7 +125,8 @@
                 <!-- Status badge under photo -->
                 <div class="mt-4 font-mono text-xs text-crt-muted/70 flex items-center gap-2">
                     <span class="status-dot"></span>
-                    <span>{% trans "Available for work" %}</span>
+                    {% trans "Available for work" as default_avail %}
+                    <span>{% firstof site_settings.availability_text default_avail %}</span>
                 </div>
             </div>
         </div>
@@ -131,7 +139,7 @@
     </div>
 </section>
 
-<div class="terminal-divider py-2">// ─────────────────────────────────────────── //</div>
+<div class="terminal-divider py-2" aria-hidden="true"></div>
 
 <!-- ═══════════════════════════════════════════════════
      ZONE 2 — SYSTEM INFO (About + Skills)
@@ -140,7 +148,7 @@
     <div class="container mx-auto px-6">
         <div class="fade-up">
             <p class="section-label">{% trans "system.info" %}</p>
-            <h2 class="section-title">{% trans "About" %} <span class="accent">/</span> {% trans "Skills" %}</h2>
+            <h2 class="section-title">{% blocktrans %}About <span class="accent">/</span> Skills{% endblocktrans %}</h2>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
@@ -155,7 +163,10 @@
                     {% if contact_info.email %}
                     <div class="whois-line">
                         <span class="whois-key">{% trans "email:" %}</span>
-                        <span class="whois-val"><a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a></span>
+                        <span class="whois-val">
+                            <a class="js-email" href="#" data-email="{{ contact_info.email|b64email }}">{% trans "click to reveal" %}</a>
+                            <noscript>{% trans "JavaScript required to show email" %}</noscript>
+                        </span>
                     </div>
                     {% endif %}
                     {% if contact_info.github_url %}
@@ -185,18 +196,20 @@
                     <i class="fa-solid fa-microchip text-crt-amber"></i>
                     <span>{% trans "skills.log" %}</span>
                 </div>
-                <div id="skills-section" class="space-y-1.5 max-h-72 overflow-y-auto custom-scroll pr-2">
+                <div id="skills-section" class="space-y-4 max-h-72 overflow-y-auto custom-scroll pr-2">
                     {% cache 3600 "home.skills" LANGUAGE_CODE %}
-                    {% for skill in skills %}
-                    <div class="skill-row">
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="font-mono text-sm text-crt-text">{{ skill.name }}</span>
-                            <span class="font-mono text-xs text-crt-amber skill-counter" data-target="{{ skill.proficiency }}">0%</span>
-                        </div>
-                        <div class="ascii-bar" data-width="{{ skill.proficiency|default:0 }}">
-                            <span class="ascii-empty">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</span>
+                    {% regroup skills by get_category_display as skill_groups %}
+                    {% for group in skill_groups %}
+                    <div class="skill-group">
+                        <p class="skill-group-label">&gt; {{ group.grouper|lower }}/</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            {% for skill in group.list %}
+                            <span class="skill-chip">{{ skill.name }}</span>
+                            {% endfor %}
                         </div>
                     </div>
+                    {% empty %}
+                    <p class="font-mono text-xs text-crt-muted">{% trans "// no skills listed yet" %}</p>
                     {% endfor %}
                     {% endcache %}
                 </div>
@@ -211,7 +224,7 @@
     </div>
 </section>
 
-<div class="terminal-divider py-2">// ─────────────────────────────────────────── //</div>
+<div class="terminal-divider py-2" aria-hidden="true"></div>
 
 <!-- ═══════════════════════════════════════════════════
      ZONE 3 — PROJECTS (Bento grid)
@@ -220,7 +233,7 @@
     <div class="container mx-auto px-6">
         <div class="fade-up">
             <p class="section-label">{% trans "projects.list" %}</p>
-            <h2 class="section-title">{% trans "Featured" %} <span class="accent">Projects</span></h2>
+            <h2 class="section-title">{% blocktrans %}Featured <span class="accent">Projects</span>{% endblocktrans %}</h2>
         </div>
 
         <div class="bento-grid stagger-group">
@@ -231,7 +244,7 @@
                 <div class="project-image-wrap h-48 {% if forloop.first %}md:h-60{% endif %}">
                     <span class="project-idx">[{{ forloop.counter|stringformat:"02d" }} / {{ projects|length|stringformat:"02d" }}]</span>
                     {% if project.image %}
-                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                        <img src="{{ project.image.url }}" alt="{% blocktrans with t=project.title %}Screenshot of {{ t }}{% endblocktrans %}" width="600" height="400" class="w-full h-full object-cover" loading="lazy" decoding="async">
                     {% else %}
                         <div class="project-fallback">
                             <i class="fa-solid fa-code text-crt-amber/25" style="font-size:{% if forloop.first %}6rem{% else %}4rem{% endif %};"></i>
@@ -242,26 +255,37 @@
                         <a href="{{ project.code_link }}" target="_blank" rel="noopener" class="btn-terminal text-xs py-1.5 px-3 rounded-sm">[{% trans "code" %}]</a>
                         {% endif %}
                         {% if project.demo_link %}
-                        <a href="{{ project.demo_link }}" target="_blank" rel="noopener" class="btn-amber text-xs py-1.5 px-3 rounded-sm">[{% trans "demo" %}]</a>
+                        <a href="{{ project.demo_link|localize_url:LANGUAGE_CODE }}" target="_blank" rel="noopener" class="btn-amber text-xs py-1.5 px-3 rounded-sm">[{% trans "demo" %}]</a>
                         {% endif %}
                     </div>
                 </div>
                 <!-- Content -->
                 <div class="p-5">
-                    <div class="flex justify-between items-start mb-2">
+                    <div class="flex justify-between items-start mb-1.5">
                         <h3 class="font-mono font-bold text-crt-text leading-tight">{{ project.title }}</h3>
-                        <span class="font-mono text-xs text-crt-muted ml-3 flex-shrink-0">[{{ project.created_date|date:"Y" }}]</span>
+                        <span class="font-mono text-xs text-crt-muted ml-3 flex-shrink-0">[{{ project.date_range|default:project.created_date|date:"Y" }}]</span>
                     </div>
+                    {% if project.role %}
+                    <p class="role-badge mb-2">{{ project.role }}</p>
+                    {% endif %}
                     {% if project.description %}
                         <p class="text-crt-text/65 text-sm font-sans mb-3 {% if forloop.first %}line-clamp-3{% else %}line-clamp-2{% endif %}">{{ project.description }}</p>
                     {% endif %}
-                    {% if project.tech_stack %}
+                    {% with tags=project.tech_tags.all %}
+                    {% if tags %}
+                    <div class="flex flex-wrap gap-1.5 mt-2">
+                        {% for tag in tags %}
+                        <span class="tag-badge">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% elif project.tech_stack %}
                     <div class="flex flex-wrap gap-1.5 mt-2">
                         {% for tag in project.tech_stack.split %}
                         <span class="tag-badge">{{ tag|cut:"," }}</span>
                         {% endfor %}
                     </div>
                     {% endif %}
+                    {% endwith %}
                 </div>
             </div>
             {% endfor %}
@@ -270,7 +294,7 @@
     </div>
 </section>
 
-<div class="terminal-divider py-2">// ─────────────────────────────────────────── //</div>
+<div class="terminal-divider py-2" aria-hidden="true"></div>
 
 <!-- ═══════════════════════════════════════════════════
      ZONE 4 — CAREER (Timeline)
@@ -279,7 +303,7 @@
     <div class="container mx-auto px-6">
         <div class="fade-up">
             <p class="section-label">{% trans "career.log" %}</p>
-            <h2 class="section-title">{% trans "Experience" %} <span class="accent">&amp;</span> {% trans "Education" %}</h2>
+            <h2 class="section-title">{% blocktrans %}Experience <span class="accent">&amp;</span> Education{% endblocktrans %}</h2>
         </div>
 
         <div class="relative max-w-3xl mx-auto">
@@ -299,11 +323,21 @@
                     <div class="entry-card w-5/12">
                         <div class="glass-card rounded-lg p-4 hover:border-crt-amber/30 transition-colors">
                             <p class="font-mono text-xs text-crt-muted mb-1">
-                                {{ exp.start_date|date:"Y-m" }} → {% if exp.end_date %}{{ exp.end_date|date:"Y-m" }}{% else %}{% trans "Present" %}{% endif %}
+                                {{ exp.start_date|date:"Y-m" }} → {% if exp.is_current or not exp.end_date %}{% trans "Present" %}{% else %}{{ exp.end_date|date:"Y-m" }}{% endif %}
                             </p>
-                            <h3 class="font-mono font-bold text-crt-text mb-0.5">{{ exp.job_title }}</h3>
+                            <div class="flex flex-wrap items-baseline gap-2 mb-0.5">
+                                <h3 class="font-mono font-bold text-crt-text">{{ exp.job_title }}</h3>
+                                {% if exp.role_type %}<span class="role-badge">{{ exp.get_role_type_display }}</span>{% endif %}
+                            </div>
                             <p class="font-mono text-sm text-crt-amber mb-2 phosphor">{{ exp.company }}</p>
-                            {% if exp.description %}<p class="font-sans text-xs text-crt-text/65">{{ exp.description }}</p>{% endif %}
+                            {% if exp.description %}<div class="career-content font-sans text-xs text-crt-text/65">{{ exp.description|bullets }}</div>{% endif %}
+                            {% with exp_tags=exp.tech_used.all %}
+                            {% if exp_tags %}
+                            <div class="flex flex-wrap gap-1.5 mt-2.5">
+                                {% for tag in exp_tags %}<span class="tag-badge">{{ tag.name }}</span>{% endfor %}
+                            </div>
+                            {% endif %}
+                            {% endwith %}
                             {% if exp.icon %}<i class="{{ exp.icon }} text-crt-amber/40 text-xs mt-2 block"></i>{% endif %}
                         </div>
                     </div>
@@ -332,7 +366,40 @@
     </div>
 </section>
 
-<div class="terminal-divider py-2">// ─────────────────────────────────────────── //</div>
+<div class="terminal-divider py-2" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════════════════════════
+     ZONE 4b — RECOGNITION (Awards)
+═══════════════════════════════════════════════════ -->
+{% if recognitions %}
+<section id="recognition" class="py-24">
+    <div class="container mx-auto px-6">
+        <div class="fade-up">
+            <p class="section-label">{% trans "awards.log" %}</p>
+            <h2 class="section-title">{% trans "Recognition" %}</h2>
+        </div>
+        <div class="max-w-3xl mx-auto space-y-4 stagger-group">
+            {% cache 3600 "home.recognitions" LANGUAGE_CODE %}
+            {% for rec in recognitions %}
+            <div class="glass-card rounded-lg p-5 flex items-start gap-4 fade-up">
+                <div class="recognition-icon" aria-hidden="true">{{ rec.icon_emoji|default:"›" }}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                        <h3 class="font-mono font-bold text-crt-text leading-tight">{{ rec.title }}</h3>
+                        {% if rec.date_text %}<span class="font-mono text-xs text-crt-muted flex-shrink-0">[{{ rec.date_text }}]</span>{% endif %}
+                    </div>
+                    {% if rec.subtitle %}<p class="font-mono text-sm text-crt-amber mt-0.5 phosphor">{{ rec.subtitle }}</p>{% endif %}
+                    {% if rec.description %}<p class="font-sans text-xs text-crt-text/65 mt-2 leading-relaxed">{{ rec.description }}</p>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% endcache %}
+        </div>
+    </div>
+</section>
+
+<div class="terminal-divider py-2" aria-hidden="true"></div>
+{% endif %}
 
 <!-- ═══════════════════════════════════════════════════
      ZONE 5 — HUMAN (Hobbies)
@@ -352,7 +419,7 @@
                     {% if hobby.font_awesome_icon %}
                         <i class="{{ hobby.font_awesome_icon }} text-xl text-crt-amber group-hover:text-crt-amber-light transition-colors"></i>
                     {% elif hobby.icon %}
-                        <img src="{{ hobby.icon.url }}" alt="{{ hobby.name }}" class="w-7 h-7 object-contain" loading="lazy" decoding="async" />
+                        <img src="{{ hobby.icon.url }}" alt="{{ hobby.name }}" width="28" height="28" class="w-7 h-7 object-contain" loading="lazy" decoding="async" />
                     {% else %}
                         <i class="fa-solid fa-heart text-xl text-crt-amber"></i>
                     {% endif %}
@@ -366,7 +433,7 @@
     </div>
 </section>
 
-<div class="terminal-divider py-2">// ─────────────────────────────────────────── //</div>
+<div class="terminal-divider py-2" aria-hidden="true"></div>
 
 <!-- ═══════════════════════════════════════════════════
      ZONE 6 — SOCIAL PROOF (Testimonials)
@@ -375,12 +442,12 @@
 <section id="testimonials" class="py-24 section-alt fade-up">
     <div class="container mx-auto px-6">
         <p class="section-label">{% trans "reviews.log" %}</p>
-        <h2 class="section-title">{% trans "Endorsements" %} <span class="accent">&amp;</span> {% trans "References" %}</h2>
+        <h2 class="section-title">{% blocktrans %}Endorsements <span class="accent">&amp;</span> References{% endblocktrans %}</h2>
 
         <!-- Metrics strip -->
         <div class="metrics-strip">
             <div class="glass-card metric-card rounded-lg">
-                <div class="metric-val">{{ testimonials|length }}<span class="unit">+</span></div>
+                <div class="metric-val">{{ testimonials|length }}</div>
                 <div class="metric-lbl">{% trans "Verified Reviews" %}</div>
                 <div class="metric-delta">&#9679; {% trans "100% positive" %}</div>
             </div>
@@ -462,7 +529,7 @@
     </div>
 </section>
 
-<div class="terminal-divider py-2">// ─────────────────────────────────────────── //</div>
+<div class="terminal-divider py-2" aria-hidden="true"></div>
 
 <!-- ═══════════════════════════════════════════════════
      ZONE 7 — CONTACT
@@ -487,7 +554,8 @@
                     <div class="avail-ring-icon"><i class="fa-solid fa-circle-check"></i></div>
                     <div class="avail-ring-text">
                         <span class="status">{% trans "AVAILABLE" %}</span>
-                        <span class="note">{% trans "Open to internships & contracts" %}</span>
+                        {% trans "Open to internships & contracts" as default_note %}
+                        <span class="note">{% firstof site_settings.availability_text default_note %}</span>
                     </div>
                 </div>
 
@@ -495,8 +563,11 @@
                     {% if contact_info.email %}
                     <div class="whois-line">
                         <span class="whois-key">{% trans "email:" %}</span>
-                        <span class="whois-val"><a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a></span>
-                        <button type="button" class="whois-copy" data-copy="{{ contact_info.email }}" aria-label="{% trans 'Copy email' %}">COPY</button>
+                        <span class="whois-val">
+                            <a class="js-email" href="#" data-email="{{ contact_info.email|b64email }}">{% trans "click to reveal" %}</a>
+                            <noscript>{% trans "JavaScript required to show email" %}</noscript>
+                        </span>
+                        <button type="button" class="whois-copy js-email-copy" data-email="{{ contact_info.email|b64email }}" aria-label="{% trans 'Copy email' %}">COPY</button>
                     </div>
                     {% endif %}
                     {% if contact_info.phone %}
@@ -714,7 +785,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { text: '{% trans "Initializing portfolio..."|escapejs %}', ok: false, delay: 300 },
         { text: '{% trans "Loading profile..."|escapejs %} <span style="color:#4ade80">OK</span>', ok: false, delay: 850 },
         { text: '{% trans "Name:"|escapejs %} <span style="color:#fde68a">{{ profile.name|escapejs }}</span>', ok: false, delay: 1300 },
-        { text: '{% trans "Status:"|escapejs %} <span style="color:#4ade80">{% trans "Available for work"|escapejs %}</span>', ok: false, delay: 1700 },
+        { text: '{% trans "Status:"|escapejs %} <span style="color:#4ade80">{% trans "Available for work" as boot_avail %}{% firstof site_settings.availability_text boot_avail as avail %}{{ avail|escapejs }}</span>', ok: false, delay: 1700 },
         { text: '{% trans "Languages:"|escapejs %} <span style="color:#fbbf24">{% trans "EN / FR"|escapejs %}</span>', ok: false, delay: 2100 },
         { text: '{% trans "Ready."|escapejs %}', ok: false, delay: 2500 },
     ];
@@ -777,39 +848,14 @@ if (slides.length > 1) {
     }, 5000);
 }
 
-// 6. ASCII SKILL BARS
-var skillsSection = document.getElementById('skills-section');
-if (skillsSection) {
-    var obs = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (!entry.isIntersecting) return;
-            entry.target.querySelectorAll('.skill-row').forEach(function(row) {
-                var bar = row.querySelector('.ascii-bar');
-                var counter = row.querySelector('.skill-counter');
-                var w = parseInt(bar.dataset.width, 10) || 0;
-                var total = 30, filled = Math.round(w / 100 * total);
-                bar.innerHTML = '<span class="ascii-fill">' + '█'.repeat(filled) + '</span><span class="ascii-empty">' + '░'.repeat(total - filled) + '</span>';
-                var cur2 = 0, step = Math.max(1, Math.ceil(w / 40));
-                var iv = setInterval(function() {
-                    cur2 = Math.min(cur2 + step, w);
-                    if (counter) counter.textContent = cur2 + '%';
-                    if (cur2 >= w) clearInterval(iv);
-                }, 28);
-            });
-            obs.unobserve(entry.target);
-        });
-    }, { threshold: 0.15 });
-    obs.observe(skillsSection);
-}
-
-// 7. TESTIMONIAL FORM TOGGLE
+// 6. TESTIMONIAL FORM TOGGLE
 var toggleBtn = document.getElementById('toggle-testimonial-form');
 var formBox = document.getElementById('testimonial-form-box');
 if (toggleBtn && formBox) {
     toggleBtn.addEventListener('click', function() { formBox.classList.toggle('hidden'); });
 }
 
-// 8. MARQUEE DRAG
+// 7. MARQUEE DRAG
 var track = document.querySelector('.marquee-track');
 if (track) {
     var isDown = false, startX, scrollLeft;
@@ -823,7 +869,7 @@ if (track) {
     });
 }
 
-// 9. CONTACT FORM — terminal output animation
+// 8. CONTACT FORM — terminal output animation
 var contactForm = document.getElementById('contact-form');
 var resultPanel = document.getElementById('contact-result-panel');
 var termOutput = document.getElementById('contact-terminal-output');

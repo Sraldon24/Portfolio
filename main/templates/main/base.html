@@ -5,15 +5,33 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}{% trans "Portfolio" %}{% endblock %}</title>
-    <meta name="description" content="{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}" />
-    <meta name="author" content="{% if profile %}{{ profile.name }}{% endif %}" />
-    <meta property="og:title" content="{% trans 'Portfolio' %}{% if profile %} - {{ profile.name }}{% endif %}" />
-    <meta property="og:description" content="{% trans 'Professional Portfolio displaying projects, skills, and experience.' %}" />
+
+    {# ── SEO / Open Graph — per-locale, editable via SiteSettings ── #}
+    {% trans "Professional portfolio — projects, skills, and experience." as default_desc %}
+    {% firstof site_settings.meta_description default_desc as meta_desc %}
+    {% if site_settings.og_title %}
+        {% firstof site_settings.og_title as page_title %}
+    {% elif profile.name %}
+        {% firstof profile.name as page_title %}
+    {% else %}
+        {% trans "Portfolio" as page_title %}
+    {% endif %}
+
+    <title>{% block title %}{{ page_title }}{% if site_settings.hero_tagline %} — {{ site_settings.hero_tagline }}{% endif %}{% endblock %}</title>
+    <meta name="description" content="{{ meta_desc }}" />
+    <meta name="author" content="{{ profile.name|default:'' }}" />
+
+    <meta property="og:title" content="{{ page_title }}" />
+    <meta property="og:description" content="{{ meta_desc }}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ request.build_absolute_uri }}" />
     <meta property="og:image" content="{% static 'main/images/og-card.png' %}" />
-    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="og:locale" content="{% if LANGUAGE_CODE == 'fr' %}fr_CA{% else %}en_US{% endif %}" />
+    <meta property="og:site_name" content="{{ profile.name|default:'Portfolio' }}" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ page_title }}" />
+    <meta name="twitter:description" content="{{ meta_desc }}" />
     <meta name="twitter:image" content="{% static 'main/images/og-card.png' %}" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,6 +44,9 @@
 </head>
 
 <body class="bg-crt-bg text-crt-text font-sans antialiased">
+
+<!-- Skip to main content (screen-reader / keyboard a11y) -->
+<a href="#main-content" class="skip-link">{% trans "Skip to main content" %}</a>
 
 <!-- Boot Screen -->
 <div id="boot-screen" aria-hidden="true">
@@ -61,7 +82,7 @@
 <nav id="main-nav" class="fixed w-full z-50 border-b border-crt-amber/15 transition-all duration-300 bg-crt-bg/85 backdrop-blur-md">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
 
-        <a href="{% url 'home' %}" class="font-mono text-crt-amber font-bold text-lg tracking-wider hover:text-crt-amber-light transition-colors">
+        <a href="{% url 'home' %}" class="inline-flex items-center min-h-[44px] font-mono text-crt-amber font-bold text-lg tracking-wider hover:text-crt-amber-light transition-colors">
             {% if profile %}{{ profile.name }}{% else %}{% trans "Portfolio" %}{% endif %}<span class="animate-blink text-crt-glow">_</span>
         </a>
 
@@ -94,7 +115,7 @@
                 {% get_language_info_list for LANGUAGES as languages %}
                 {% for language in languages %}
                 <a href="/{{ language.code }}/"
-                    class="px-2 py-1 border transition-colors {% if language.code == LANGUAGE_CODE %}border-crt-amber text-crt-amber bg-crt-amber/10{% else %}border-crt-muted/30 text-crt-muted hover:border-crt-amber hover:text-crt-amber{% endif %}"
+                    class="inline-flex items-center justify-center min-h-[44px] px-3 border transition-colors {% if language.code == LANGUAGE_CODE %}border-crt-amber text-crt-amber bg-crt-amber/10{% else %}border-crt-muted/30 text-crt-muted hover:border-crt-amber hover:text-crt-amber{% endif %}"
                     aria-label="{% trans 'Switch language to' %} {{ language.name_local }}">
                     [{{ language.code|upper }}]
                 </a>
@@ -102,7 +123,7 @@
             </div>
 
             <!-- Mobile menu toggle -->
-            <button id="mobile-menu-btn" class="md:hidden text-crt-amber hover:text-crt-amber-light focus:outline-none" aria-label="{% trans 'Toggle navigation menu' %}">
+            <button id="mobile-menu-btn" class="md:hidden inline-flex items-center justify-center min-h-[44px] min-w-[44px] text-crt-amber hover:text-crt-amber-light" aria-label="{% trans 'Toggle navigation menu' %}">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                 </svg>
@@ -121,7 +142,7 @@
     </div>
 </nav>
 
-<main class="relative z-10">
+<main id="main-content" class="relative z-10">
     {% if messages %}
     <div id="toast-container" class="fixed bottom-5 right-5 z-[70] flex flex-col gap-3 pointer-events-none">
         {% for message in messages %}
@@ -162,7 +183,7 @@
             <span class="text-crt-amber/30 mx-2">—</span>
             {% trans "All rights reserved." %}
             <span class="text-crt-amber/30 mx-2">—</span>
-            <span class="text-crt-amber/50">{% trans "Built with" %} <span class="text-crt-amber">Django</span></span>
+            <span class="text-crt-amber/80">{% trans "Built with" %} <span class="text-crt-amber">Django</span></span>
         </p>
     </div>
 </footer>
@@ -382,10 +403,15 @@ cmdInput.addEventListener('input', () => { renderCmdItems(cmdInput.value); activ
 const scrollProgress = document.getElementById('scroll-progress');
 const mainNav = document.getElementById('main-nav');
 
+const scrollHint = document.querySelector('.scroll-hint');
+
 window.addEventListener('scroll', () => {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
     if (scrollProgress) scrollProgress.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+    // Fade out the "SCROLL ▼" hint once the user has started scrolling — it's a
+    // stale UI element if it lingers past the hero.
+    if (scrollHint) scrollHint.classList.toggle('scroll-hint-hidden', scrollTop > 80);
     if (mainNav) {
         if (scrollTop > 50) {
             mainNav.style.background = 'rgba(10,8,0,0.97)';
@@ -449,7 +475,11 @@ function legacyCopy(val) {
 document.addEventListener('click', function(e) {
     const btn = e.target.closest('.whois-copy');
     if (!btn) return;
-    const val = btn.getAttribute('data-copy');
+    // .js-email-copy stores the email base64-encoded so it never appears in
+    // page source; decode it at click time.
+    var val = btn.classList.contains('js-email-copy')
+        ? decodeEmail(btn.getAttribute('data-email'))
+        : btn.getAttribute('data-copy');
     if (!val) return;
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(val).then(
@@ -459,6 +489,29 @@ document.addEventListener('click', function(e) {
     } else {
         flashCopied(btn, legacyCopy(val));
     }
+});
+
+// ─── EMAIL REVEAL (base64-decoded client-side) ───────────────────
+// The email is never present literally in the HTML source — this defeats
+// scrapers and prevents Cloudflare email-obfuscation from mangling the UI.
+function decodeEmail(b64) {
+    try { return decodeURIComponent(escape(atob(b64 || ''))); }
+    catch (e) { return ''; }
+}
+document.querySelectorAll('a.js-email').forEach(function(link) {
+    var email = decodeEmail(link.getAttribute('data-email'));
+    if (!email) return;
+    var revealed = false;
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (!revealed) {
+            link.textContent = email;
+            link.setAttribute('href', 'mailto:' + email);
+            revealed = true;
+        } else {
+            window.location.href = 'mailto:' + email;
+        }
+    });
 });
 
 // ─── REVEAL ANIMATIONS ───────────────────────────────────────────

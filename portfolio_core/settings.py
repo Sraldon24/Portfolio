@@ -114,6 +114,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.i18n",
+                "main.context_processors.site_globals",
             ],
         },
     },
@@ -308,15 +309,15 @@ UNFOLD = {
                         "link": reverse_lazy("admin:main_education_changelist"),
                     },
                     {
+                        "title": _("Recognition"),
+                        "icon": "trophy",
+                        "link": reverse_lazy("admin:main_recognition_changelist"),
+                    },
+                    {
                         "title": _("Hobbies"),
                         "icon": "sports_esports",
                         "link": reverse_lazy("admin:main_hobby_changelist"),
                     },
-                    # {
-                    #    "title": _("Hero Slides"),
-                    #    "icon": "view_carousel",
-                    #    "link": reverse_lazy("admin:main_heroslide_changelist"),
-                    # },
                 ],
             },
             {
@@ -345,6 +346,11 @@ UNFOLD = {
                         "title": _("Contact Info"),
                         "icon": "contact_phone",
                         "link": reverse_lazy("admin:main_contactinfo_changelist"),
+                    },
+                    {
+                        "title": _("Site Settings"),
+                        "icon": "settings",
+                        "link": reverse_lazy("admin:main_sitesettings_changelist"),
                     },
                 ],
             },

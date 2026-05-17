@@ -6,7 +6,17 @@ from django.utils.translation import gettext as _
 from django_ratelimit.decorators import ratelimit
 
 from .forms import ContactForm, TestimonialForm
-from .models import ContactInfo, Education, Experience, Hobby, Profile, Project, Skill, Testimonial
+from .models import (
+    ContactInfo,
+    Education,
+    Experience,
+    Hobby,
+    Profile,
+    Project,
+    Recognition,
+    Skill,
+    Testimonial,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -73,9 +83,14 @@ def home(request):
         "profile": Profile.load(),
         "contact_info": ContactInfo.load(),
         "skills": Skill.objects.prefetch_related("translations"),
-        "projects": Project.objects.prefetch_related("translations").order_by("-created_date"),
-        "experiences": Experience.objects.prefetch_related("translations").order_by("-start_date"),
+        "projects": Project.objects.prefetch_related("translations", "tech_tags").order_by(
+            "-created_date"
+        ),
+        "experiences": Experience.objects.prefetch_related("translations", "tech_used").order_by(
+            "-start_date"
+        ),
         "educations": Education.objects.prefetch_related("translations").order_by("-start_date"),
+        "recognitions": Recognition.objects.prefetch_related("translations").order_by("order"),
         "hobbies": Hobby.objects.prefetch_related("translations"),
         "testimonials": Testimonial.objects.filter(is_approved=True)
         .prefetch_related("translations")

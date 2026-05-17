@@ -21,7 +21,9 @@ module.exports = {
           'amber-dark': '#d97706',
           glow: '#ea580c',
           text: '#fde68a',
-          muted: '#92400e',
+          // #92400e (the original) scored only 2.83:1 on #0a0800 — fails WCAG AA.
+          // #bf6a12 keeps the muted warm-amber look at a compliant 5.05:1.
+          muted: '#bf6a12',
         },
       },
       keyframes: {
