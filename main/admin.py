@@ -92,6 +92,42 @@ class SkillAdmin(TranslatableAdmin):
     list_filter = ("category",)
     ordering = ("category", "order")
     fields = ("name", "category", "order")
+    actions = [
+        "set_category_languages",
+        "set_category_frameworks",
+        "set_category_infra",
+        "set_category_ai_ml",
+        "set_category_other",
+    ]
+
+    def _bulk_set_category(self, request, queryset, value, label):
+        """Bulk-update category. queryset.update() skips post_save, so the
+        skills fragment cache is cleared explicitly here."""
+        from .signals import _invalidate_home_fragments
+
+        count = queryset.update(category=value)
+        _invalidate_home_fragments(Skill)
+        self.message_user(request, f"{count} skill(s) set to {label}.")
+
+    @admin.action(description="Set category → Languages")
+    def set_category_languages(self, request, queryset):
+        self._bulk_set_category(request, queryset, "LANGUAGES", "Languages")
+
+    @admin.action(description="Set category → Frameworks")
+    def set_category_frameworks(self, request, queryset):
+        self._bulk_set_category(request, queryset, "FRAMEWORKS", "Frameworks")
+
+    @admin.action(description="Set category → Infrastructure")
+    def set_category_infra(self, request, queryset):
+        self._bulk_set_category(request, queryset, "INFRA", "Infrastructure")
+
+    @admin.action(description="Set category → AI / ML")
+    def set_category_ai_ml(self, request, queryset):
+        self._bulk_set_category(request, queryset, "AI_ML", "AI / ML")
+
+    @admin.action(description="Set category → Other")
+    def set_category_other(self, request, queryset):
+        self._bulk_set_category(request, queryset, "OTHER", "Other")
 
 
 @admin.register(TechTag)
