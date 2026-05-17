@@ -675,9 +675,13 @@ document.addEventListener('DOMContentLoaded', function() {
 (function() {
     const canvas = document.getElementById('hero-particles');
     if (!canvas) return;
+    // Honor the OS "reduce motion" setting — skip the animation entirely.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     const ctx = canvas.getContext('2d');
     const COLORS = ['rgba(245,158,11,', 'rgba(234,88,12,', 'rgba(251,191,36,'];
     const NUM = 48, CONNECT_DIST = 130;
+    const CONNECT_DIST_SQ = CONNECT_DIST * CONNECT_DIST;
     let W, H, particles = [];
     let isVisible = true;
     let isTabVisible = !document.hidden;
@@ -718,12 +722,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const p = particles[i];
             p.pulse += 0.016;
             const op = Math.max(0.04, p.op + Math.sin(p.pulse) * 0.07);
-            // Draw connections
+            // Draw connections — compare squared distance, skip the sqrt.
             for (let j = i + 1; j < particles.length; j++) {
                 const q = particles[j];
                 const dx = p.x - q.x, dy = p.y - q.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < CONNECT_DIST) {
+                const distSq = dx * dx + dy * dy;
+                if (distSq < CONNECT_DIST_SQ) {
+                    const dist = Math.sqrt(distSq);
                     ctx.beginPath();
                     ctx.moveTo(p.x, p.y);
                     ctx.lineTo(q.x, q.y);
@@ -751,7 +756,10 @@ document.addEventListener('DOMContentLoaded', function() {
 (function() {
     const c = document.getElementById('hero-meteors');
     if (!c) return;
-    for (let i = 0; i < 6; i++) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Fewer meteors on small screens — each is a continuously animating element.
+    const count = window.innerWidth < 768 ? 3 : 6;
+    for (let i = 0; i < count; i++) {
         const m = document.createElement('div');
         const delay = (Math.random() * 14).toFixed(1);
         const dur = (Math.random() * 5 + 6).toFixed(1);

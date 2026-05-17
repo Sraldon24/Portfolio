@@ -75,7 +75,10 @@ body::after {
   );
   pointer-events: none;
   z-index: 2;
-  animation: scanline-drift 12s linear infinite;
+  /* No background-position animation: animating it on a fixed full-viewport
+     layer forced a whole-screen repaint every frame (~66ms GPU/scroll in
+     profiling). The 4px scanline drift was imperceptible anyway — the static
+     pattern keeps the CRT look at zero per-frame cost. */
 }
 
 /* Scrollbar */
@@ -84,6 +87,16 @@ html { scrollbar-width: thin; scrollbar-color: #d97706 #0a0800; }
 ::-webkit-scrollbar-track { background: #0a0800; }
 ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #d97706, #ea580c); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
+
+/* ─── Reduced motion: honor the OS accessibility preference ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
 /* ═══════════════════════════════════════════
    BOOT SCREEN
@@ -1230,11 +1243,6 @@ html { scrollbar-width: thin; scrollbar-color: #d97706 #0a0800; }
 @keyframes shine-sweep {
   0% { left: -100%; }
   100% { left: 140%; }
-}
-
-@keyframes scanline-drift {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 100px; }
 }
 
 @keyframes grid-pulse {
