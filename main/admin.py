@@ -91,7 +91,6 @@ class SkillAdmin(TranslatableAdmin):
     search_fields = ("translations__name",)
     list_filter = ("category",)
     ordering = ("category", "order")
-    list_select_related = ("translations",)
     fields = ("name", "category", "order")
 
 
@@ -109,7 +108,6 @@ class ProjectAdmin(TranslatableAdmin):
     list_display = ("title", "created_date", "description_snippet", "link")
     search_fields = ("translations__title", "translations__description")
     list_filter = ("created_date",)
-    list_select_related = ("translations",)
     filter_horizontal = ("tech_tags",)
     fields = (
         "title",
@@ -143,7 +141,6 @@ class ExperienceAdmin(TranslatableAdmin):
     search_fields = ("translations__job_title", "translations__company")
     list_filter = ("role_type", "is_current", "start_date")
     ordering = ("-start_date",)
-    list_select_related = ("translations",)
     filter_horizontal = ("tech_used",)
     fields = (
         "job_title",
@@ -165,7 +162,6 @@ class EducationAdmin(TranslatableAdmin):
     search_fields = ("translations__degree", "translations__institution")
     list_filter = ("start_date", "end_date")
     ordering = ("-start_date",)
-    list_select_related = ("translations",)
 
 
 @admin.register(Recognition)
@@ -175,7 +171,6 @@ class RecognitionAdmin(TranslatableAdmin):
     list_editable = ("order",)
     search_fields = ("translations__title", "translations__description")
     ordering = ("order",)
-    list_select_related = ("translations",)
     fields = ("title", "subtitle", "date_text", "description", "icon_emoji", "order")
 
 
@@ -183,7 +178,6 @@ class RecognitionAdmin(TranslatableAdmin):
 class HobbyAdmin(TranslatableAdmin):
     show_add_link = True
     list_display = ("name", "font_awesome_icon", "icon")
-    list_select_related = ("translations",)
 
 
 @admin.register(ContactMessage)
@@ -205,7 +199,6 @@ class TestimonialAdmin(TranslatableAdmin):
     show_add_link = True
     list_display = ("name", "get_role_company", "quote_snippet", "is_approved", "created_at")
     list_filter = ("is_approved", "created_at")
-    list_select_related = ("translations",)
     actions = ["approve_testimonials", "reject_testimonials"]
     search_fields = ("name", "translations__quote", "translations__role_company")
 
