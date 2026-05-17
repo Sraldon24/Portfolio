@@ -11,8 +11,17 @@ db.sqlite3-journal
 
 # Virtual Env
 venv/
+.venv/
 env/
 .env
+
+# Runtime artifacts
+server.pid
+*.pid
+
+# Playwright
+.playwright-mcp/
+test-results/
 
 # Media
 media/

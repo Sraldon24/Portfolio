@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-11 16:46+0000\n"
+"POT-Creation-Date: 2026-05-17 12:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,333 +17,618 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: main/forms.py:21
+#: main/forms.py:23
 #, python-format
 msgid "Message must be %(max)s characters or less."
 msgstr "Le message doit contenir au maximum %(max)s caractères."
 
-#: main/forms.py:37
+#: main/forms.py:39
 #, python-format
 msgid "Testimonial must be %(max)s characters or less."
 msgstr "Le témoignage doit contenir au maximum %(max)s caractères."
 
-#: main/views.py:16
-msgid "Too many submissions. Please try again later."
-msgstr "Trop de soumissions. Veuillez réessayer plus tard."
+#: main/templates/404.html:3
+msgid "404 — Segmentation Fault"
+msgstr "404 — Erreur de segmentation"
 
-#: templates/admin/base_site.html:2
-msgid "Django site admin"
-msgstr ""
+#: main/templates/404.html:11
+msgid "SEGMENTATION_FAULT"
+msgstr "SEGMENTATION_FAULT"
 
-#: templates/admin/base_site.html:3
-msgid "Django administration"
-msgstr ""
+#: main/templates/404.html:20
+msgid "file not found in this directory"
+msgstr "fichier introuvable dans ce répertoire"
 
+#: main/templates/404.html:22
+msgid "ls: cannot access that route"
+msgstr "ls : impossible d'accéder à cette route"
+
+#: main/templates/404.html:23
+msgid "the page you requested wandered off the filesystem."
+msgstr "la page demandée s'est égarée du système de fichiers."
+
+#: main/templates/404.html:28 main/templates/500.html:31
+msgid "cd ~/home"
+msgstr "cd ~/accueil"
+
+#: main/templates/404.html:31
+msgid "return"
+msgstr "retour"
+
+#: main/templates/404.html:38
+msgid "no matching view"
+msgstr "aucune vue correspondante"
+
+#: main/templates/500.html:3
+msgid "500 — Core Dumped"
+msgstr "500 — Vidage mémoire"
+
+#: main/templates/500.html:11
+msgid "CORE_DUMPED"
+msgstr "CORE_DUMPED"
+
+#: main/templates/500.html:20
+msgid "the server tripped over its own cable"
+msgstr "le serveur s'est pris les pieds dans son propre câble"
+
+#: main/templates/500.html:23
+msgid "our team has been paged. give it a minute."
+msgstr "notre équipe a été alertée. patientez un instant."
+
+#: main/templates/500.html:28
+msgid "retry"
+msgstr "réessayer"
+
+#: main/templates/500.html:38
+msgid "timeout after 30s"
+msgstr "expiration après 30 s"
+
+#: main/templates/main/base.html:10
+#| msgid "Professional Portfolio displaying projects, skills, and experience."
+msgid "Professional portfolio — projects, skills, and experience."
+msgstr "Portfolio professionnel — projets, compétences et expérience."
+"Portfolio professionnel présentant des projets, compétences et expériences."
+
+#: main/templates/main/base.html:17 main/templates/main/base.html:83
 msgid "Portfolio"
 msgstr "Portfolio"
 
-msgid "About"
-msgstr "À propos"
-
-msgid "Skills"
-msgstr "Compétences"
-
-msgid "Projects"
-msgstr "Projets"
-
-msgid "Contact"
-msgstr "Contact"
-
-msgid "All rights reserved."
-msgstr "Tous droits réservés."
-
-msgid "Download Resume"
-msgstr "Télécharger le CV"
-
-msgid "Get in Touch"
-msgstr "Contactez-nous"
-
-msgid "My Skills"
-msgstr "Mes Compétences"
-
-msgid "Featured Projects"
-msgstr "Projets en Vedette"
-
-msgid "Code"
-msgstr "Code"
-
-msgid "Live Demo"
-msgstr "Démo en Direct"
-
-msgid "Experience"
-msgstr "Expérience"
-
-msgid "Present"
-msgstr "Présent"
-
-msgid "Education"
-msgstr "Éducation"
-
-msgid "Testimonials"
-msgstr "Témoignages"
-
-msgid "Get In Touch"
-msgstr "Contactez-nous"
-
-msgid "Contact Info"
-msgstr "Info Contact"
-
-msgid "Name"
-msgstr "Nom"
-
-msgid "Email"
-msgstr "E-mail"
-
-msgid "Subject"
-msgstr "Sujet"
-
-msgid "Message"
-msgstr "Message"
-
-msgid "Send Message"
-msgstr "Envoyer Message"
-
-msgid "Worked with me? Leave a testimonial!"
-msgstr "Vous avez travaillé avec moi ? Laissez un témoignage !"
-
-msgid "Your Name"
-msgstr "Votre Nom"
-
-msgid "Role / Company (Optional)"
-msgstr "Rôle / Entreprise (Optionnel)"
-
-msgid "Your Testimonial"
-msgstr "Votre Témoignage"
-
-msgid "Submit Testimonial"
-msgstr "Envoyer Témoignage"
-
-msgid "* Submissions are reviewed before being published."
-msgstr "* Les soumissions sont examinées avant d'être publiées."
-
-msgid "My Hobbies"
-msgstr "Mes Loisirs"
-
-msgid "Professional Portfolio displaying projects, skills, and experience."
-msgstr "Portfolio professionnel présentant des projets, compétences et expériences."
-
-msgid "Your message has been sent successfully!"
-msgstr "Votre message a été envoyé avec succès !"
-
-msgid "There was an error sending your message. Please check the form."
-msgstr "Une erreur s'est produite lors de l'envoi de votre message. Veuillez vérifier le formulaire."
-
-msgid "Thank you! Your testimonial has been submitted for review."
-msgstr "Merci ! Votre témoignage a été soumis pour examen."
-
-msgid "There was an error submitting your testimonial."
-msgstr "Une erreur s'est produite lors de la soumission de votre témoignage."
-
-msgid "English"
-msgstr "Anglais"
-
-msgid "French"
-msgstr "Français"
-
-msgid "Career"
-msgstr "Carrière"
-
-msgid "Home"
-msgstr "Accueil"
-
-msgid "Human"
-msgstr "Humain"
-
-msgid "Social Proof"
-msgstr "Témoignages"
-
-msgid "Command palette"
-msgstr "Palette de commandes"
-
-msgid "Command input"
-msgstr "Saisie de commande"
-
-msgid "Open command palette"
-msgstr "Ouvrir la palette de commandes"
-
-msgid "Type a command or jump to section..."
-msgstr "Tapez une commande ou sautez à une section..."
-
-msgid "navigate"
-msgstr "naviguer"
-
-msgid "select"
-msgstr "sélectionner"
-
-msgid "close"
-msgstr "fermer"
-
-msgid "CMD+K"
-msgstr "CMD+K"
-
-msgid "Toggle navigation menu"
-msgstr "Basculer le menu de navigation"
-
-msgid "Dismiss"
-msgstr "Fermer"
-
-msgid "Switch language to"
-msgstr "Changer de langue vers"
-
-msgid "Switch to English"
-msgstr "Passer à l'anglais"
-
-msgid "Switch to French"
-msgstr "Passer au français"
-
-msgid "Built with"
-msgstr "Construit avec"
-
-msgid "portfolio.sh"
-msgstr "portfolio.sh"
-
-msgid "ONLINE"
-msgstr "EN LIGNE"
-
-msgid "Available for work"
-msgstr "Disponible pour travailler"
-
+#: main/templates/main/base.html:52
 msgid "LOADING SYSTEM..."
 msgstr "CHARGEMENT DU SYSTÈME..."
 
+#: main/templates/main/base.html:58
+msgid "Command palette"
+msgstr "Palette de commandes"
+
+#: main/templates/main/base.html:64
+msgid "Type a command or jump to section..."
+msgstr "Tapez une commande ou sautez à une section..."
+
+#: main/templates/main/base.html:64
+msgid "Command input"
+msgstr "Saisie de commande"
+
+#: main/templates/main/base.html:68
+msgid "navigate"
+msgstr "naviguer"
+
+#: main/templates/main/base.html:69
+msgid "select"
+msgstr "sélectionner"
+
+#: main/templates/main/base.html:70
+msgid "close"
+msgstr "fermer"
+
+#: main/templates/main/base.html:90 main/templates/main/base.html:134
+#: main/templates/main/base.html:337
+msgid "About"
+msgstr "À propos"
+
+#: main/templates/main/base.html:93 main/templates/main/base.html:135
+#: main/templates/main/base.html:338
+msgid "Projects"
+msgstr "Projets"
+
+#: main/templates/main/base.html:96 main/templates/main/base.html:136
+#: main/templates/main/base.html:339
+msgid "Career"
+msgstr "Carrière"
+
+#: main/templates/main/base.html:99 main/templates/main/base.html:137
+#: main/templates/main/base.html:342
+msgid "Contact"
+msgstr "Contact"
+
+#: main/templates/main/base.html:102
+msgid "Open command palette"
+msgstr "Ouvrir la palette de commandes"
+
+#: main/templates/main/base.html:104
+msgid "CMD+K"
+msgstr "CMD+K"
+
+#: main/templates/main/base.html:116
+msgid "Switch language to"
+msgstr "Changer de langue vers"
+
+#: main/templates/main/base.html:123
+msgid "Toggle navigation menu"
+msgstr "Basculer le menu de navigation"
+
+#: main/templates/main/base.html:155
+msgid "Dismiss"
+msgstr "Fermer"
+
+#: main/templates/main/base.html:181
+msgid "All rights reserved."
+msgstr "Tous droits réservés."
+
+#: main/templates/main/base.html:183
+msgid "Built with"
+msgstr "Construit avec"
+
+#: main/templates/main/base.html:336
+msgid "Home"
+msgstr "Accueil"
+
+#: main/templates/main/base.html:340
+msgid "Human"
+msgstr "Humain"
+
+#: main/templates/main/base.html:341
+msgid "Testimonials"
+msgstr "Témoignages"
+
+#: main/templates/main/base.html:343
+msgid "Switch to English"
+msgstr "Passer à l'anglais"
+
+#: main/templates/main/base.html:344
+msgid "Switch to French"
+msgstr "Passer au français"
+
+#: main/templates/main/home.html:55
+msgid "portfolio.sh"
+msgstr "portfolio.sh"
+
+#: main/templates/main/home.html:57
+msgid "ONLINE"
+msgstr "EN LIGNE"
+
+#: main/templates/main/home.html:95
 msgid "./resume.pdf"
 msgstr "./cv.pdf"
 
+#: main/templates/main/home.html:100
 msgid "./contact"
 msgstr "./contact"
 
+#: main/templates/main/home.html:128 main/templates/main/home.html:782
+msgid "Available for work"
+msgstr "Disponible pour travailler"
+
+#: main/templates/main/home.html:136
+msgid "SCROLL"
+msgstr "DÉFILER"
+
+#: main/templates/main/home.html:150
 msgid "system.info"
 msgstr "system.info"
 
+#: main/templates/main/home.html:151
+msgid "About <span class=\"accent\">/</span> Skills"
+msgstr "À propos <span class=\"accent\">/</span> Compétences"
+
+#: main/templates/main/home.html:159
 msgid "about.txt"
 msgstr "about.txt"
 
-msgid "skills.log"
-msgstr "skills.log"
-
-msgid "projects.list"
-msgstr "projects.list"
-
-msgid "Featured"
-msgstr "Mis en avant"
-
-msgid "career.log"
-msgstr "career.log"
-
-msgid "human.exe"
-msgstr "human.exe"
-
-msgid "// not just a developer"
-msgstr "// pas seulement un développeur"
-
-msgid "reviews.log"
-msgstr "reviews.log"
-
-msgid "contact.init"
-msgstr "contact.init"
-
-msgid "leave_testimonial()"
-msgstr "laisser_témoignage()"
-
-msgid "submit_testimonial()"
-msgstr "envoyer_témoignage()"
-
-msgid "Submissions are reviewed before being published."
-msgstr "Les soumissions sont examinées avant d'être publiées."
-
-msgid "send_message()"
-msgstr "envoyer_message()"
-
-msgid "send_message.sh"
-msgstr "send_message.sh"
-
-msgid "Connecting to server..."
-msgstr "Connexion au serveur..."
-
-msgid "Connection established"
-msgstr "Connexion établie"
-
-msgid "Encrypting payload..."
-msgstr "Chiffrement du contenu..."
-
-msgid "Payload ready"
-msgstr "Contenu prêt"
-
-msgid "Transmitting message..."
-msgstr "Transmission du message..."
-
-msgid "Initializing portfolio..."
-msgstr "Initialisation du portfolio..."
-
-msgid "Loading profile..."
-msgstr "Chargement du profil..."
-
-msgid "Name:"
-msgstr "Nom :"
-
-msgid "Status:"
-msgstr "Statut :"
-
-msgid "Languages:"
-msgstr "Langues :"
-
-msgid "EN / FR"
-msgstr "EN / FR"
-
-msgid "Ready."
-msgstr "Prêt."
-
-msgid "Software Developer"
-msgstr "Développeur Logiciel"
-
-msgid "CS Student"
-msgstr "Étudiant en Informatique"
-
-msgid "Problem Solver"
-msgstr "Résolveur de Problèmes"
-
-msgid "Full Stack Dev"
-msgstr "Développeur Full Stack"
-
-msgid "View Project"
-msgstr "Voir le projet"
-
-msgid "code"
-msgstr "code"
-
-msgid "demo"
-msgstr "démo"
-
-msgid "link"
-msgstr "lien"
-
-msgid "profile"
-msgstr "profil"
-
+#: main/templates/main/home.html:165 main/templates/main/home.html:562
 msgid "email:"
 msgstr "email :"
 
-msgid "phone:"
-msgstr "téléphone :"
-
+#: main/templates/main/home.html:171 main/templates/main/home.html:576
 msgid "github:"
 msgstr "github :"
 
+#: main/templates/main/home.html:177 main/templates/main/home.html:583
 msgid "linkedin:"
 msgstr "linkedin :"
 
+#: main/templates/main/home.html:178 main/templates/main/home.html:184
+msgid "profile"
+msgstr "profil"
+
+#: main/templates/main/home.html:183 main/templates/main/home.html:590
 msgid "twitter:"
 msgstr "twitter :"
 
-msgid "$ whois"
-msgstr "$ whois"
+#: main/templates/main/home.html:194
+msgid "skills.log"
+msgstr "skills.log"
+
+#: main/templates/main/home.html:209
+msgid "// no skills listed yet"
+msgstr "// aucune compétence répertoriée pour l'instant"
+
+#: main/templates/main/home.html:215
+msgid "skill matrix loaded"
+msgstr "matrice de compétences chargée"
+
+#: main/templates/main/home.html:215
+msgid "entries"
+msgstr "entrées"
+
+#: main/templates/main/home.html:216
+msgid "proficiency recalculated"
+msgstr "maîtrise recalculée"
+
+#: main/templates/main/home.html:217
+msgid "always learning"
+msgstr "toujours en apprentissage"
+
+#: main/templates/main/home.html:232
+msgid "projects.list"
+msgstr "projects.list"
+
+#: main/templates/main/home.html:233
+msgid "Featured <span class=\"accent\">Projects</span>"
+msgstr "Projets <span class=\"accent\">en vedette</span>"
+
+#: main/templates/main/home.html:252
+msgid "code"
+msgstr "code"
+
+#: main/templates/main/home.html:255
+msgid "demo"
+msgstr "démo"
+
+#: main/templates/main/home.html:302
+msgid "career.log"
+msgstr "career.log"
+
+#: main/templates/main/home.html:303
+msgid "Experience <span class=\"accent\">&amp;</span> Education"
+msgstr "Expérience <span class=\"accent\">&amp;</span> Formation"
+
+#: main/templates/main/home.html:323 main/templates/main/home.html:351
+msgid "Present"
+msgstr "Présent"
+
+#: main/templates/main/home.html:375
+#| msgid "career.log"
+msgid "awards.log"
+msgstr "distinctions.log"
+
+#: main/templates/main/home.html:376
+msgid "Recognition"
+msgstr "Distinctions"
+
+#: main/templates/main/home.html:407
+msgid "human.exe"
+msgstr "human.exe"
+
+#: main/templates/main/home.html:408
+msgid "// not just a developer"
+msgstr "// pas seulement un développeur"
+
+#: main/templates/main/home.html:409
+msgid "My Hobbies"
+msgstr "Mes Loisirs"
+
+#: main/templates/main/home.html:441
+msgid "reviews.log"
+msgstr "reviews.log"
+
+#: main/templates/main/home.html:442
+msgid "Endorsements <span class=\"accent\">&amp;</span> References"
+msgstr "Recommandations <span class=\"accent\">&amp;</span> Références"
+
+#: main/templates/main/home.html:448
+msgid "Verified Reviews"
+msgstr "Avis vérifiés"
+
+#: main/templates/main/home.html:449
+msgid "100% positive"
+msgstr "100% positif"
+
+#: main/templates/main/home.html:453
+msgid "Avg. Rating"
+msgstr "Note moyenne"
+
+#: main/templates/main/home.html:458
+msgid "Bilingual"
+msgstr "Bilingue"
+
+#: main/templates/main/home.html:459
+msgid "fluent both"
+msgstr "couramment les deux"
+
+#: main/templates/main/home.html:463
+msgid "Response Time"
+msgstr "Temps de réponse"
+
+#: main/templates/main/home.html:464
+msgid "avg. reply"
+msgstr "réponse moy."
+
+#: main/templates/main/home.html:476
+msgid "VERIFIED"
+msgstr "VÉRIFIÉ"
+
+#: main/templates/main/home.html:502
+msgid "leave_testimonial()"
+msgstr "laisser_témoignage()"
+
+#: main/templates/main/home.html:514
+msgid "Your Name"
+msgstr "Votre Nom"
+
+#: main/templates/main/home.html:517
+msgid "Role / Company (Optional)"
+msgstr "Rôle / Entreprise (Optionnel)"
+
+#: main/templates/main/home.html:520
+msgid "Your Testimonial"
+msgstr "Votre Témoignage"
+
+#: main/templates/main/home.html:522
+msgid "submit_testimonial()"
+msgstr "envoyer_témoignage()"
+
+#: main/templates/main/home.html:523
+msgid "Submissions are reviewed before being published."
+msgstr "Les soumissions sont examinées avant d'être publiées."
+
+#: main/templates/main/home.html:537
+msgid "contact.init"
+msgstr "contact.init"
+
+#: main/templates/main/home.html:538
+msgid "Get In Touch"
+msgstr "Contactez-nous"
+
+#: main/templates/main/home.html:553
+msgid "AVAILABLE"
+msgstr "DISPONIBLE"
+
+#: main/templates/main/home.html:554
+msgid "Open to internships & contracts"
+msgstr "Ouvert aux stages et contrats"
+
+#: main/templates/main/home.html:564
+#| msgid "email:"
+msgid "Copy email"
+msgstr "Copier l'email"
+
+#: main/templates/main/home.html:569
+msgid "phone:"
+msgstr "téléphone :"
+
+#: main/templates/main/home.html:571
+#| msgid "phone:"
+msgid "Copy phone"
+msgstr "Copier le téléphone"
+
+#: main/templates/main/home.html:577 main/templates/main/home.html:584
+#: main/templates/main/home.html:591
+msgid "link"
+msgstr "lien"
+
+#: main/templates/main/home.html:578
+msgid "Copy github url"
+msgstr "Copier l'URL GitHub"
+
+#: main/templates/main/home.html:585
+#| msgid "linkedin:"
+msgid "Copy linkedin url"
+msgstr "Copier l'URL LinkedIn"
+
+#: main/templates/main/home.html:592
+msgid "Copy twitter url"
+msgstr "Copier l'URL Twitter"
+
+#: main/templates/main/home.html:606
+msgid "SECURE"
+msgstr "SÉCURISÉ"
+
+#: main/templates/main/home.html:610
+msgid "Establishing encrypted channel"
+msgstr "Établissement d'un canal chiffré"
+
+#: main/templates/main/home.html:611
+msgid "Awaiting input"
+msgstr "En attente de saisie"
+
+#: main/templates/main/home.html:618
+msgid "send_message.sh"
+msgstr "send_message.sh"
+
+#: main/templates/main/home.html:633
+msgid "Name"
+msgstr "Nom"
+
+#: main/templates/main/home.html:636
+msgid "Email"
+msgstr "E-mail"
+
+#: main/templates/main/home.html:640
+msgid "Subject"
+msgstr "Sujet"
+
+#: main/templates/main/home.html:643
+msgid "Message"
+msgstr "Message"
+
+#: main/templates/main/home.html:646
+msgid "send_message()"
+msgstr "envoyer_message()"
+
+#: main/templates/main/home.html:779
+msgid "Initializing portfolio..."
+msgstr "Initialisation du portfolio..."
+
+#: main/templates/main/home.html:780
+msgid "Loading profile..."
+msgstr "Chargement du profil..."
+
+#: main/templates/main/home.html:781
+msgid "Name:"
+msgstr "Nom :"
+
+#: main/templates/main/home.html:782
+msgid "Status:"
+msgstr "Statut :"
+
+#: main/templates/main/home.html:783
+msgid "Languages:"
+msgstr "Langues :"
+
+#: main/templates/main/home.html:783
+msgid "EN / FR"
+msgstr "EN / FR"
+
+#: main/templates/main/home.html:784
+msgid "Ready."
+msgstr "Prêt."
+
+#: main/templates/main/home.html:813
+msgid "Software Developer"
+msgstr "Développeur Logiciel"
+
+#: main/templates/main/home.html:814
+msgid "CS Student"
+msgstr "Étudiant en Informatique"
+
+#: main/templates/main/home.html:815
+msgid "Problem Solver"
+msgstr "Résolveur de Problèmes"
+
+#: main/templates/main/home.html:816
+msgid "Full Stack Dev"
+msgstr "Développeur Full Stack"
+
+#: main/templates/main/home.html:879
+msgid "Connecting to server..."
+msgstr "Connexion au serveur..."
+
+#: main/templates/main/home.html:880
+msgid "Connection established"
+msgstr "Connexion établie"
+
+#: main/templates/main/home.html:881
+msgid "Encrypting payload..."
+msgstr "Chiffrement du contenu..."
+
+#: main/templates/main/home.html:882
+msgid "Payload ready"
+msgstr "Contenu prêt"
+
+#: main/templates/main/home.html:883
+msgid "Transmitting message..."
+msgstr "Transmission du message..."
+
+#: main/views.py:31
+msgid "Too many submissions. Please try again later."
+msgstr "Trop de soumissions. Veuillez réessayer plus tard."
+
+#: main/views.py:44
+msgid "Your message has been sent successfully!"
+msgstr "Votre message a été envoyé avec succès !"
+
+#: main/views.py:49
+msgid "Sorry, we couldn't save your message. Please try again in a moment."
+msgstr "Désolé, nous n'avons pas pu enregistrer votre message. Veuillez réessayer dans un instant."
+
+#: main/views.py:54
+msgid "There was an error sending your message. Please check the form."
+msgstr "Une erreur s'est produite lors de l'envoi de votre message. Veuillez vérifier le formulaire."
+"Une erreur s'est produite lors de l'envoi de votre message. Veuillez "
+"vérifier le formulaire."
+
+#: main/views.py:67
+msgid "Thank you! Your testimonial has been submitted for review."
+msgstr "Merci ! Votre témoignage a été soumis pour examen."
+
+#: main/views.py:74
+msgid "Sorry, we couldn't save your testimonial. Please try again in a moment."
+msgstr "Désolé, nous n'avons pas pu enregistrer votre témoignage. Veuillez réessayer dans un instant."
+
+#: main/views.py:80
+msgid "There was an error submitting your testimonial."
+msgstr "Une erreur s'est produite lors de la soumission de votre témoignage."
+
+#: templates/admin/base_site.html:5
+msgid "Django site admin"
+msgstr "Administration du site Django"
+
+#: templates/admin/base_site.html:21
+msgid "Django administration"
+msgstr "Administration de Django"
+
+#: templates/admin/base_site.html:24
+#| msgid "Portfolio"
+msgid "Portfolio Admin Panel"
+msgstr "Panneau d'administration du portfolio"
+
+#~ msgid "Skills"
+#~ msgstr "Compétences"
+
+#~ msgid "Download Resume"
+#~ msgstr "Télécharger le CV"
+
+#~ msgid "Get in Touch"
+#~ msgstr "Contactez-nous"
+
+#~ msgid "My Skills"
+#~ msgstr "Mes Compétences"
+
+#~ msgid "Featured Projects"
+#~ msgstr "Projets en Vedette"
+
+#~ msgid "Code"
+#~ msgstr "Code"
+
+#~ msgid "Live Demo"
+#~ msgstr "Démo en Direct"
+
+#~ msgid "Experience"
+#~ msgstr "Expérience"
+
+#~ msgid "Education"
+#~ msgstr "Éducation"
+
+#~ msgid "Contact Info"
+#~ msgstr "Info Contact"
+
+#~ msgid "Send Message"
+#~ msgstr "Envoyer Message"
+
+#~ msgid "Worked with me? Leave a testimonial!"
+#~ msgstr "Vous avez travaillé avec moi ? Laissez un témoignage !"
+
+#~ msgid "Submit Testimonial"
+#~ msgstr "Envoyer Témoignage"
+
+#~ msgid "* Submissions are reviewed before being published."
+#~ msgstr "* Les soumissions sont examinées avant d'être publiées."
+
+#~ msgid "English"
+#~ msgstr "Anglais"
+
+#~ msgid "French"
+#~ msgstr "Français"
+
+#~ msgid "Social Proof"
+#~ msgstr "Témoignages"
+
+#~ msgid "Featured"
+#~ msgstr "Mis en avant"
+
+#~ msgid "View Project"
+#~ msgstr "Voir le projet"
+
+#~ msgid "$ whois"
+#~ msgstr "$ whois"

@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
@@ -9,22 +10,39 @@ from .models import (
     Hobby,
     Profile,
     Project,
+    Recognition,
+    SiteSettings,
     Skill,
     Testimonial,
     schedule_auto_translate,
 )
 
-# Fragment-cache keys (kept in sync with {% cache N KEY %} blocks in home.html)
-HOME_FRAGMENT_KEYS = (
+# Fragment-cache fragment names — kept in sync with {% cache N "name" LANGUAGE_CODE %}
+# blocks in home.html. Each {% cache %} block varies on LANGUAGE_CODE, so the real
+# cache key is derived per language via make_template_fragment_key().
+HOME_FRAGMENT_NAMES = (
     "home.skills",
+    "home.recognitions",
     "home.projects",
     "home.career",
     "home.hobbies",
     "home.testimonials",
-    "home.profile",
 )
 
-TRANSLATABLE_MODELS = (Profile, Skill, Project, Experience, Education, Hobby, Testimonial)
+# Languages the {% cache %} blocks can be rendered under.
+_LANGUAGES = ("en", "fr")
+
+TRANSLATABLE_MODELS = (
+    Profile,
+    SiteSettings,
+    Skill,
+    Project,
+    Experience,
+    Education,
+    Hobby,
+    Recognition,
+    Testimonial,
+)
 
 
 # ─── Background auto-translate on every translatable save ────────
@@ -38,14 +56,22 @@ for _model in TRANSLATABLE_MODELS:
 
 # ─── Fragment cache invalidation on content changes ──────────────
 def _invalidate_home_fragments(sender, **kwargs):
-    cache.delete_many(HOME_FRAGMENT_KEYS)
-    # Django's {% cache %} tag prefixes keys; clear template-cache variants too.
-    # (make_template_fragment_key is the authoritative way; keeping simple delete_many
-    # covers our manually-named keys. The i18n vary adds language suffix — also covered
-    # because cache.delete_many works with prefix matching if the backend supports it.)
+    """Delete every per-language {% cache %} fragment on the home page.
+
+    {% cache %} keys are hashed by Django (make_template_fragment_key), so the
+    raw fragment name never matches the stored key. We must reconstruct the key
+    for each (fragment name, language) pair — a plain delete_many of the names
+    silently does nothing.
+    """
+    keys = [
+        make_template_fragment_key(name, [lang])
+        for name in HOME_FRAGMENT_NAMES
+        for lang in _LANGUAGES
+    ]
+    cache.delete_many(keys)
 
 
-for _model in (Profile, Skill, Project, Experience, Education, Hobby, Testimonial):
+for _model in TRANSLATABLE_MODELS:
     post_save.connect(_invalidate_home_fragments, sender=_model, weak=False)
     post_delete.connect(_invalidate_home_fragments, sender=_model, weak=False)
 

@@ -119,6 +119,55 @@ class Profile(SingletonModel, TranslatableModel):
         return self.safe_translation_getter("name", any_language=True) or "Profile"
 
 
+class SiteSettings(SingletonModel, TranslatableModel):
+    """Singleton for site-wide editable copy — hero CTA, tagline, SEO, resume."""
+
+    translations = TranslatedFields(
+        availability_text=models.CharField(
+            max_length=120,
+            default="Available for Summer 2026 internships",
+            help_text="Shown in the hero status badge and contact section.",
+        ),
+        hero_tagline=models.CharField(
+            max_length=200,
+            blank=True,
+            help_text='Subheadline under your name, e.g. "AI Research Intern at '
+            'Polytechnique • Incoming SWE at Concordia".',
+        ),
+        meta_description=models.CharField(
+            max_length=300,
+            blank=True,
+            help_text="SEO meta description + Open Graph description for this language.",
+        ),
+        og_title=models.CharField(
+            max_length=120,
+            blank=True,
+            help_text="Open Graph / browser tab title. Falls back to name + role if blank.",
+        ),
+    )
+    resume_file = models.FileField(
+        upload_to="resume/",
+        blank=True,
+        help_text="The resume PDF offered for download. Replaceable here without code changes.",
+    )
+
+    class Meta:
+        verbose_name = "Site Settings"
+        verbose_name_plural = "Site Settings"
+
+    @classmethod
+    def load(cls):
+        obj, _created = cls.objects.get_or_create(pk=1)
+        if not obj.has_translation("en"):
+            obj.set_current_language("en")
+            obj.availability_text = "Available for Summer 2026 internships"
+            obj.save()
+        return obj
+
+    def __str__(self):
+        return "Site Settings"
+
+
 class HeroSlide(models.Model):
     profile = models.ForeignKey(Profile, related_name="hero_slides", on_delete=models.CASCADE)
     image = models.ImageField(upload_to="hero/slides/")
@@ -152,32 +201,86 @@ class ContactInfo(SingletonModel):
 
 
 class Skill(TranslatableModel):
+    CATEGORY_CHOICES = [
+        ("LANGUAGES", "Languages"),
+        ("FRAMEWORKS", "Frameworks"),
+        ("INFRA", "Infrastructure"),
+        ("AI_ML", "AI / ML"),
+        ("OTHER", "Other"),
+    ]
+
     translations = TranslatedFields(
         name=models.CharField(max_length=100),
     )
-    proficiency = models.PositiveIntegerField(help_text="1-100")
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default="OTHER",
+        db_index=True,
+        help_text="Group this skill renders under.",
+    )
+    order = models.IntegerField(
+        default=0,
+        help_text="Manual sort order within the category (low numbers first).",
+    )
+    # Deprecated: skills now render as categorized chips, not percentage bars.
+    # Kept nullable for backwards compatibility and reversible migrations.
+    proficiency = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="Deprecated — no longer displayed. Left for backwards compatibility.",
+    )
 
     class Meta:
-        ordering = ["-proficiency"]
+        ordering = ["category", "order"]
 
     def __str__(self):
         return self.safe_translation_getter("name", any_language=True)
+
+
+class TechTag(models.Model):
+    """A reusable technology tag — shared by Projects and Experience entries."""
+
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
 
 
 class Project(TranslatableModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=200),
         description=models.TextField(blank=True),
+        role=models.CharField(
+            max_length=120,
+            blank=True,
+            help_text='Optional, e.g. "Transactions Domain Lead".',
+        ),
     )
     image = models.ImageField(upload_to="projects/", blank=True, null=True)
     code_link = models.URLField(blank=True)
     demo_link = models.URLField(blank=True, verbose_name="Demo Link (Optional)")
     created_date = models.DateField(verbose_name="Creation Date", db_index=True)
+    start_date = models.CharField(
+        max_length=20,
+        blank=True,
+        help_text='Free text, e.g. "2025". Optional.',
+    )
+    end_date = models.CharField(
+        max_length=20,
+        blank=True,
+        help_text='Free text, e.g. "2026" or "Present". Optional.',
+    )
+    tech_tags = models.ManyToManyField(TechTag, blank=True, related_name="projects")
+    # Deprecated: superseded by tech_tags M2M. Kept for backwards compatibility.
     tech_stack = models.CharField(
         max_length=300,
         blank=True,
         default="",
-        help_text="Comma-separated tags e.g. Python, Django, Docker",
+        help_text="Deprecated — use Tech tags instead. Comma-separated legacy field.",
     )
 
     class Meta:
@@ -186,13 +289,46 @@ class Project(TranslatableModel):
     def __str__(self):
         return self.safe_translation_getter("title", any_language=True)
 
+    @property
+    def date_range(self):
+        """Display string from start/end_date — '2025 → 2026', '2026', or ''."""
+        start = (self.start_date or "").strip()
+        end = (self.end_date or "").strip()
+        if start and end:
+            return f"{start} → {end}"
+        return start or end
+
 
 class Experience(TranslatableModel):
+    ROLE_TYPE_CHOICES = [
+        ("INTERNSHIP", "Internship"),
+        ("PART_TIME", "Part-time"),
+        ("FULL_TIME", "Full-time"),
+        ("TUTORING", "Tutoring"),
+        ("RESEARCH", "Research"),
+        ("VOLUNTEER", "Volunteer"),
+        ("EDUCATION", "Education"),
+    ]
+
     translations = TranslatedFields(
         job_title=models.CharField(max_length=200),
         company=models.CharField(max_length=200),
-        description=models.TextField(blank=True),
+        description=models.TextField(
+            blank=True,
+            help_text="Supports Markdown — use '- ' lines for bullet points.",
+        ),
     )
+    role_type = models.CharField(
+        max_length=20,
+        choices=ROLE_TYPE_CHOICES,
+        blank=True,
+        help_text="Shown as a small badge next to the title.",
+    )
+    is_current = models.BooleanField(
+        default=False,
+        help_text="If checked, the end date shows '→ Present' automatically.",
+    )
+    tech_used = models.ManyToManyField("TechTag", blank=True, related_name="experiences")
     start_date = models.DateField(verbose_name="Start Date", db_index=True)
     end_date = models.DateField(
         null=True, blank=True, verbose_name="End Date (Leave blank for 'Present')"
@@ -281,6 +417,34 @@ class Hobby(TranslatableModel):
 
     def __str__(self):
         return self.safe_translation_getter("name", any_language=True)
+
+
+class Recognition(TranslatableModel):
+    """Awards, honors, scholarships, hackathon placements — the awards.log section."""
+
+    translations = TranslatedFields(
+        title=models.CharField(max_length=200),
+        subtitle=models.CharField(max_length=200, blank=True),
+        description=models.TextField(blank=True),
+    )
+    date_text = models.CharField(
+        max_length=60,
+        blank=True,
+        help_text='Free text, e.g. "November 2025" or "Fall 2025".',
+    )
+    icon_emoji = models.CharField(
+        max_length=8,
+        blank=True,
+        help_text='Optional emoji, e.g. "🏆".',
+    )
+    order = models.IntegerField(default=0, help_text="Manual sort order (low numbers first).")
+
+    class Meta:
+        ordering = ["order"]
+        verbose_name_plural = "Recognitions"
+
+    def __str__(self):
+        return self.safe_translation_getter("title", any_language=True) or "Recognition"
 
 
 class ContactMessage(models.Model):
